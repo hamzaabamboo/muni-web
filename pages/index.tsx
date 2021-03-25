@@ -9,7 +9,13 @@ export default function Home() {
   return (
     <>
       <Flex flexDirection="column" w="full" minH="100vh" alignItems="center">
-        <Flex as="main" flexDirection="column" flex={1} maxW={["100%", "90%"]}>
+        <Flex
+          as="main"
+          flexDirection="column"
+          alignItems="center"
+          flex={1}
+          maxW={["100%", "90%"]}
+        >
           <EventInfo />
           <Leaderboard interval={10000} />
         </Flex>

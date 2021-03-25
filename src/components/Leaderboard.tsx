@@ -4,7 +4,7 @@ import { Leaderboard as ILeaderboard, Tier as ITier } from "types/Leaderboard";
 import { getLeaderboardData } from "api/getLeaderboardData";
 import { sleep } from "utils/sleep";
 import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
-import { Td, Th, Tr, Text, TextProps, Flex } from "@chakra-ui/react";
+import { Td, Th, Tr, Text, TextProps, Flex, Spinner } from "@chakra-ui/react";
 import { DateTime, Duration } from "luxon";
 import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
@@ -75,7 +75,9 @@ export const Leaderboard: FC<LeaderboardProps> = ({
       }) + " ago"
     );
   }, [lastUpdated]);
-  if (!lbData) return null;
+
+  if (!lbData) return <Spinner size="xl" mt="5" />;
+
   return (
     <Flex flexDir="column">
       <Flex flexDir="column">
