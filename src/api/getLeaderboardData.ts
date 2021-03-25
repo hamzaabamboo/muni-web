@@ -1,13 +1,14 @@
 import axios from "axios";
 import { Leaderboard, LeaderboardEntry } from "types/Leaderboard";
+import { getProxiedUrl } from "./utils";
 
 export const getLeaderboardData = async (): Promise<Leaderboard> => {
   const res = await Promise.all([
     axios.get<Leaderboard>(
-      "https://hambot.ham-san.net/d4dj/sig?url=http://www.projectdivar.com/eventdata/t20"
+      getProxiedUrl("http://www.projectdivar.com/eventdata/t20")
     ),
     axios.get<Leaderboard>(
-      "https://hambot.ham-san.net/d4dj/sig?url=http://www.projectdivar.com/eventdata/t50"
+      getProxiedUrl("http://www.projectdivar.com/eventdata/t50")
     ),
   ]);
   return res

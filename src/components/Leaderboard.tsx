@@ -4,9 +4,10 @@ import { Leaderboard as ILeaderboard, Tier as ITier } from "types/Leaderboard";
 import { getLeaderboardData } from "api/getLeaderboardData";
 import { sleep } from "utils/sleep";
 import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
-import { Td, Th, Tr, Text, TextProps } from "@chakra-ui/react";
+import { Td, Th, Tr, Text, TextProps, Flex } from "@chakra-ui/react";
+import { DateTime, Duration } from "luxon";
+import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
-import { DateTime } from "luxon";
 
 interface LeaderboardProps {
   interval?: number;
@@ -15,7 +16,7 @@ interface LeaderboardProps {
 
 export const Leaderboard: FC<LeaderboardProps> = ({
   interval = 1000,
-  isPlaying = true,
+  isPlaying: showIsPlaying = true,
 }) => {
   const [lbData, setLbData] = useState<ILeaderboard>();
   const [changes, setChanges] = useState<{ [key: number]: number }>({});
@@ -64,12 +65,27 @@ export const Leaderboard: FC<LeaderboardProps> = ({
     setLastUpdated(new Date());
   };
 
+  const lastUpdatedText = useMemo(() => {
+    const ms = DateTime.fromJSDate(lastUpdated).diffNow().as("milliseconds");
+    if (ms === 0) return "Just now";
+    return (
+      humanize(ms, {
+        round: true,
+        largest: 2,
+      }) + " ago"
+    );
+  }, [lastUpdated]);
   if (!lbData) return null;
   return (
-    <>
-      <Text fontSize="md">
-        Last Updated: {DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss")}
-      </Text>
+    <Flex flexDir="column">
+      <Flex flexDir="column">
+        <Text fontSize="4xl" fontWeight="bold">
+          Muniboard{" "}
+          <Text fontSize="sm" as="span" fontWeight="normal">
+            Last Updated: {lastUpdatedText}
+          </Text>
+        </Text>
+      </Flex>
       <Table size="sm">
         <Thead>
           <Tr>
@@ -84,14 +100,24 @@ export const Leaderboard: FC<LeaderboardProps> = ({
         </Thead>
         <Tbody>
           {lbData.map((entry, index, arr) => (
-            <Tr key={entry.rank} {...getIsPlayingStyles(entry.date)}>
+            <Tr
+              key={entry.rank}
+              {...(showIsPlaying ? getIsPlayingStyles(entry.date) : {})}
+              borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
+              borderBottomColor="gray.400"
+            >
               <Td>
                 <Tier tier={entry.rank} />
               </Td>
-              <Td>{entry.name}</Td>
               <Td>
-                {entry.points}
-                (+{changes[entry.rank] ?? 0})
+                <Text fontSize="md">{entry.name}</Text>
+                <Text fontSize="xs">{entry.description}</Text>
+              </Td>
+              <Td>
+                <Text fontSize="md">{entry.points}</Text>
+                {changes?.[entry.rank] > 0 && (
+                  <Text fontSize="xs">(+{changes[entry.rank] ?? 0})</Text>
+                )}
               </Td>
               <Td>
                 {index + 1 < arr.length
@@ -101,28 +127,21 @@ export const Leaderboard: FC<LeaderboardProps> = ({
               <Td>{entry.rate}</Td>
               <Td>
                 {index + 1 < arr.length && !isNaN(Number(arr[index + 1]?.rate))
-                  ? humanize(
+                  ? getToBoatTime(
                       ((entry.points - arr[index + 1]?.points) /
                         Number(arr[index + 1]?.rate)) *
                         60 *
                         60 *
-                        1000,
-                      { round: true, largest: 2 }
+                        1000
                     )
                   : "-"}
               </Td>
-              <Td>
-                {humanize(
-                  DateTime.fromISO(entry.date).diffNow().as("milliseconds"),
-                  { round: true, largest: 2 }
-                )}{" "}
-                ago
-              </Td>
+              <Td>{getLastUpdateTime(entry.date)}</Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
-    </>
+    </Flex>
   );
 };
 const getIsPlayingStyles = (date: string): Partial<TableRowProps> => {
@@ -131,6 +150,16 @@ const getIsPlayingStyles = (date: string): Partial<TableRowProps> => {
         bg: "gray.100",
       }
     : {};
+};
+
+const getToBoatTime = (ms: number): string => {
+  return Duration.fromMillis(ms).toFormat("hh:mm");
+};
+
+const getLastUpdateTime = (date: string) => {
+  return DateTime.fromISO(date).diffNow().as("minute") > -3
+    ? "Just now"
+    : DateTime.now().diff(DateTime.fromISO(date)).toFormat("hh:mm");
 };
 
 const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
@@ -151,6 +180,7 @@ const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
       case 5000:
       case 10000:
       case 20000:
+      case 30000:
       case 50000:
         return { fontSize: "xl", fontWeight: "bold" };
       default:
