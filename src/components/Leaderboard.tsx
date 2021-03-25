@@ -22,7 +22,6 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   const [lastUpdated, setLastUpdated] = useState<Date>();
 
   const oldLb = useRef<ILeaderboard>();
-  const oldChanges = useRef<{ [key: number]: number }>();
 
   useEffect(() => {
     let killMe = false;
@@ -68,19 +67,23 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   if (!lbData) return null;
   return (
     <>
-      <p>Last Updated: {lastUpdated?.toDateString()}</p>
+      <Text fontSize="md">
+        Last Updated: {DateTime.now().toFormat("yyyy-MM-dd HH:mm:ss")}
+      </Text>
       <Table size="sm">
         <Thead>
           <Tr>
             <Th>Rank</Th>
             <Th>Name</Th>
             <Th>Points</Th>
+            <Th>Gap</Th>
             <Th>Rate</Th>
+            <Th>Time to boat</Th>
             <Th>Last Updated</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {lbData.map((entry) => (
+          {lbData.map((entry, index, arr) => (
             <Tr key={entry.rank} {...getIsPlayingStyles(entry.date)}>
               <Td>
                 <Tier tier={entry.rank} />
@@ -90,7 +93,24 @@ export const Leaderboard: FC<LeaderboardProps> = ({
                 {entry.points}
                 (+{changes[entry.rank] ?? 0})
               </Td>
+              <Td>
+                {index + 1 < arr.length
+                  ? entry.points - arr[index + 1]?.points
+                  : 0}
+              </Td>
               <Td>{entry.rate}</Td>
+              <Td>
+                {index + 1 < arr.length && !isNaN(Number(arr[index + 1]?.rate))
+                  ? humanize(
+                      ((entry.points - arr[index + 1]?.points) /
+                        Number(arr[index + 1]?.rate)) *
+                        60 *
+                        60 *
+                        1000,
+                      { round: true, largest: 2 }
+                    )
+                  : "-"}
+              </Td>
               <Td>
                 {humanize(
                   DateTime.fromISO(entry.date).diffNow().as("milliseconds"),

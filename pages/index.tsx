@@ -12,7 +12,7 @@ export default function Home() {
           Welcome to Muniboard
         </Text>
       </main>
-      <Leaderboard interval={30000} />
+      <Leaderboard interval={10000} />
       <footer>
         Powered by{" "}
         <Link href="https://www.youtube.com/watch?v=M2wZs7eHHVo">むに</Link>
