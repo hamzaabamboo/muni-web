@@ -6,6 +6,7 @@
     "dev": "next dev",
     "muni": "next dev",
     "build": "next build",
+    "build:static": "next build && next export",
     "start": "next start"
   },
   "dependencies": {

@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: "12"
       - run: npm install
-      - run: npm run build
+      - run: npm run build:static
         env:
           CI: false
 
