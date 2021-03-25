@@ -6,7 +6,6 @@ import { ChakraProvider } from "@chakra-ui/react";
 
 const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 function MyApp({ Component, pageProps }) {
-  console.log(process.env);
   return (
     <>
       <Head>
