@@ -114,7 +114,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
               <Td>
                 {humanize(
                   DateTime.fromISO(entry.date).diffNow().as("milliseconds"),
-                  { round: true }
+                  { round: true, largest: 2 }
                 )}{" "}
                 ago
               </Td>
