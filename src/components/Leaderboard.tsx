@@ -122,7 +122,6 @@ export const Leaderboard: FC<LeaderboardProps> = ({
           ))}
         </Tbody>
       </Table>
-      <ul></ul>
     </>
   );
 };
