@@ -27,6 +27,7 @@ jobs:
       - run: npm run build:static
         env:
           DEPLOY_TARGET: "gh-pages"
+          NEXT_PUBLIC_BASE_URL: "/muni-web"
           CI: false
 
       - run: touch out/.nojekyll
