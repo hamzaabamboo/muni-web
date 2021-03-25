@@ -1,3 +1,5 @@
+const ghPages = process.env.DEPLOY_TARGET === "gh-pages";
+
 module.exports = {
-  basePath: "/muni-web",
+  basePath: ghPages ? "/muni-web" : "",
 };
