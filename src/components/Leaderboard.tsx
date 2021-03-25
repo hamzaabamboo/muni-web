@@ -91,12 +91,14 @@ export const Leaderboard: FC<LeaderboardProps> = ({
       <Table size="sm">
         <Thead>
           <Tr>
-            <Th>Rank</Th>
+            <Th textAlign="center">Rank</Th>
             <Th>Name</Th>
             <Th>Points</Th>
-            <Th>Gap</Th>
-            <Th>Rate</Th>
-            <Th>Time to boat</Th>
+            <Th textAlign="end">Gap</Th>
+            <Th textAlign="end">Rate</Th>
+            <Th textAlign="end" whiteSpace="break-spaces">
+              Time to boat
+            </Th>
             <Th>Last Updated</Th>
           </Tr>
         </Thead>
@@ -108,7 +110,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
               borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
               borderBottomColor="gray.400"
             >
-              <Td>
+              <Td textAlign="center">
                 <Tier tier={entry.rank} />
               </Td>
               <Td>
@@ -121,17 +123,17 @@ export const Leaderboard: FC<LeaderboardProps> = ({
                   <Text fontSize="xs">(+{changes[entry.rank] ?? 0})</Text>
                 )}
               </Td>
-              <Td>
+              <Td isNumeric>
                 {index + 1 < arr.length
                   ? entry.points - arr[index + 1]?.points
                   : 0}
               </Td>
-              <Td>{entry.rate}</Td>
-              <Td>
+              <Td isNumeric>{entry.rate}</Td>
+              <Td isNumeric>
                 {index + 1 < arr.length && !isNaN(Number(arr[index + 1]?.rate))
                   ? getToBoatTime(
                       ((entry.points - arr[index + 1]?.points) /
-                        Number(arr[index + 1]?.rate)) *
+                        (Number(arr[index + 1]?.rate) - Number(entry.rate))) *
                         60 *
                         60 *
                         1000
@@ -155,6 +157,7 @@ const getIsPlayingStyles = (date: string): Partial<TableRowProps> => {
 };
 
 const getToBoatTime = (ms: number): string => {
+  if (isNaN(ms) || ms < 0) return "--:--";
   return Duration.fromMillis(ms).toFormat("hh:mm");
 };
 
