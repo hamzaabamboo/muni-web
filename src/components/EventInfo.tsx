@@ -55,7 +55,7 @@ const CountdownTimer = ({
         setTimeUntil("Time until results");
         setTimeLeft(diffResults.toFormat("hh:mm"));
       }
-      const timeInEvent = Math.round(
+      const timeInEvent = Math.floor(
         DateTime.now().diff(DateTime.fromISO(startTime)).as("hours")
       );
 

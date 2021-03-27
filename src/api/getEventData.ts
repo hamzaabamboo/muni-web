@@ -5,7 +5,12 @@ import { fetchD4DB } from "./fetchD4DB";
 
 export const getEventData = async (): Promise<Event> => {
   const res = await fetchD4DB<D4DBEvent>(["EventMaster"]);
-  const towa = Object.values(res[0]).sort((a: any, b: any) => b.Id - a.Id)[0];
+  const towa = Object.values(res[0]).find((e) => {
+    return (
+      DateTime.fromSeconds(e.StartDate).diffNow().as("seconds") < 0 &&
+      DateTime.fromSeconds(e.RankFixStartDate).diffNow().as("seconds") > 0
+    );
+  });
 
   return {
     id: 101,
@@ -14,6 +19,6 @@ export const getEventData = async (): Promise<Event> => {
     startdate: DateTime.fromSeconds(towa.StartDate).toISO(),
     enddate: DateTime.fromSeconds(towa.EndDate).toISO(),
     rank_end: DateTime.fromSeconds(towa.RankFixStartDate).toISO(),
-    type: towa.Type.__name__,
+    type: towa.Type._name_,
   };
 };

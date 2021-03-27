@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Leaderboard, LeaderboardEntry } from "types/Leaderboard";
+import { Leaderboard } from "types/Leaderboard";
 import { getProxiedUrl } from "./utils";
 
 export const getLeaderboardData = async (): Promise<Leaderboard> => {

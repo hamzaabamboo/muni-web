@@ -1,6 +1,6 @@
 export interface Event {
   id: number;
-  type?: string;
+  type?: EventType;
   eventid: number;
   name: string;
   startdate: string;
@@ -17,7 +17,8 @@ export interface D4DBEvent {
   ResultAnnouncementDate: number;
   StartDate: number;
   Type: {
-    __name__: string;
-    __value__: string;
+    _name_: EventType;
+    _value_: string;
   };
 }
+export type EventType = "Poker" | "Medley" | "Bingo" | "Raid" | string;

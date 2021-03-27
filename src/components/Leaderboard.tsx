@@ -1,4 +1,12 @@
-import React, { FC, memo, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  FC,
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   Leaderboard as ILeaderboard,
@@ -12,6 +20,9 @@ import { Td, Th, Tr, Text, TextProps, Flex, Spinner } from "@chakra-ui/react";
 import { DateTime, Duration } from "luxon";
 import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
+import { EventType } from "types/Event";
+import { EventContext } from "src/contexts/EventContext";
+import { thresholds } from "constants/threshold";
 
 interface LeaderboardProps {
   interval?: number;
@@ -25,7 +36,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   const [lbData, setLbData] = useState<ILeaderboard>();
   const [changes, setChanges] = useState<{ [key: number]: number }>({});
   const [lastUpdated, setLastUpdated] = useState<Date>();
-
+  const { event } = useContext(EventContext);
   const oldLb = useRef<ILeaderboard>();
 
   useEffect(() => {
@@ -111,7 +122,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
             <Tr
               key={entry.rank}
               {...(showIsPlaying
-                ? getIsPlayingStyles(entry, changes?.[entry.rank])
+                ? getIsPlayingStyles(entry, changes?.[entry.rank], event?.type)
                 : {})}
               borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
               borderBottomColor="gray.400"
@@ -154,8 +165,13 @@ export const Leaderboard: FC<LeaderboardProps> = ({
     </Flex>
   );
 };
-const getIsPlayingStyles = (data: LeaderboardEntry, lastUpdated: number) => {
-  if (lastUpdated > 3000) return { bg: "red.100" };
+const getIsPlayingStyles = (
+  data: LeaderboardEntry,
+  lastUpdated: number,
+  eventType: EventType
+) => {
+  if (lastUpdated > thresholds[eventType]?.maxPerGame ?? 3000)
+    return { bg: "red.100" };
   if (DateTime.fromISO(data.date).diffNow().as("minutes") < -10) return {};
   return {
     bg: "gray.100",
