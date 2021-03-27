@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "muni": "next dev",
+    "muni": "next dev -p 6262",
     "build": "next build",
     "build:static": "next build && next export",
     "start": "next start"

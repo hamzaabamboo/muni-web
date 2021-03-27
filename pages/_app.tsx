@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 
 import { ChakraProvider } from "@chakra-ui/react";
+import { EventProvider } from "src/contexts/EventContext";
 
 const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 function MyApp({ Component, pageProps }) {
@@ -19,7 +20,9 @@ function MyApp({ Component, pageProps }) {
         <meta property="og:description" content="Munimunimunimunimuni" />
       </Head>
       <ChakraProvider>
-        <Component {...pageProps} />
+        <EventProvider>
+          <Component {...pageProps} />
+        </EventProvider>
       </ChakraProvider>
     </>
   );

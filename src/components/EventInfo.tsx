@@ -1,19 +1,12 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { getEventData } from "api/getEventData";
 import { DateTime } from "luxon";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { EventContext } from "src/contexts/EventContext";
 import { Event as IEvent } from "types/Event";
 
 export const EventInfo = () => {
-  const [event, setEvent] = useState<IEvent>();
-
-  useEffect(() => {
-    const f = async () => {
-      const data = await getEventData();
-      setEvent(data);
-    };
-    f();
-  }, []);
+  const { event } = useContext(EventContext);
 
   if (!event) return null;
 
@@ -78,7 +71,8 @@ const CountdownTimer = ({
     };
 
     f();
-    const interval = setInterval(f, 1000);
+
+    const interval = setInterval(f, 30000);
 
     () => {
       clearInterval(interval);

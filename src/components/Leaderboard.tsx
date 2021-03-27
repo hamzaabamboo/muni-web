@@ -1,6 +1,10 @@
 import React, { FC, memo, useEffect, useMemo, useRef, useState } from "react";
 
-import { Leaderboard as ILeaderboard, Tier as ITier } from "types/Leaderboard";
+import {
+  Leaderboard as ILeaderboard,
+  LeaderboardEntry,
+  Tier as ITier,
+} from "types/Leaderboard";
 import { getLeaderboardData } from "api/getLeaderboardData";
 import { sleep } from "utils/sleep";
 import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
@@ -106,7 +110,9 @@ export const Leaderboard: FC<LeaderboardProps> = ({
           {lbData.map((entry, index, arr) => (
             <Tr
               key={entry.rank}
-              {...(showIsPlaying ? getIsPlayingStyles(entry.date) : {})}
+              {...(showIsPlaying
+                ? getIsPlayingStyles(entry, changes?.[entry.rank])
+                : {})}
               borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
               borderBottomColor="gray.400"
             >
@@ -148,12 +154,12 @@ export const Leaderboard: FC<LeaderboardProps> = ({
     </Flex>
   );
 };
-const getIsPlayingStyles = (date: string): Partial<TableRowProps> => {
-  return DateTime.fromISO(date).diffNow().as("minutes") > -10
-    ? {
-        bg: "gray.100",
-      }
-    : {};
+const getIsPlayingStyles = (data: LeaderboardEntry, lastUpdated: number) => {
+  if (lastUpdated > 3000) return { bg: "red.100" };
+  if (DateTime.fromISO(data.date).diffNow().as("minutes") < -10) return {};
+  return {
+    bg: "gray.100",
+  };
 };
 
 const getToBoatTime = (ms: number): string => {
