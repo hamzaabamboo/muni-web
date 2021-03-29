@@ -24,7 +24,7 @@ export const TierSelector = () => {
       },
       {
         label: "< T10",
-        tiers: allTiers.filter((t) => t <= 20),
+        tiers: allTiers.filter((t) => t <= 10),
       },
       {
         label: "< T20",
