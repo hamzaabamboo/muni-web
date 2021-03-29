@@ -15,6 +15,7 @@ import {
   ScaleTime,
   Selection,
   ZoomBehavior,
+  ZoomTransform,
 } from "d3";
 import { LeaderboardPoint } from "types/Leaderboard";
 import { getAllLeaderboard } from "api/getAllLeaderboard";
@@ -40,6 +41,7 @@ export const Graph = () => {
 
   const zoom = useRef<ZoomBehavior<any, any>>();
   const xZoomed = useRef<ScaleTime<any, any, any>>();
+  const zoomTransform = useRef<ZoomTransform>();
 
   const margin = { top: 20, right: 20, bottom: 30, left: 60 };
   const width = 1000 - margin.left - margin.right;
@@ -50,7 +52,7 @@ export const Graph = () => {
 
     zoom.current = d3
       .zoom()
-      .scaleExtent([1, 20])
+      .scaleExtent([1, 25])
       .extent([
         [0, 0],
         [width, height],
@@ -127,8 +129,9 @@ export const Graph = () => {
   }, []);
 
   function zoomed(event: D3ZoomEvent<any, any>) {
-    xZoomed.current = event.transform.rescaleX(x.current);
+    zoomTransform.current = event.transform;
 
+    xZoomed.current = zoomTransform.current.rescaleX(x.current);
     xAxis.current = d3.axisBottom(xZoomed.current);
 
     updateAxes();
@@ -185,16 +188,9 @@ export const Graph = () => {
         .toJSDate(),
     ]);
 
-    xZoomed.current.domain([
-      event
-        ? DateTime.fromISO(event.startdate).toJSDate()
-        : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date)),
-      DateTime.fromJSDate(
-        d3.max(points, (d: LeaderboardPoint) => isoParse(d.date))
-      )
-        .plus({ hour: 1 })
-        .toJSDate(),
-    ]);
+    if (zoomTransform.current) {
+      xZoomed.current = zoomTransform.current.rescaleX(x.current);
+    }
 
     y.current.domain([0, d3.max(points, (d) => d.points)]).nice();
 
@@ -215,6 +211,8 @@ export const Graph = () => {
       .attr("stroke", function (d) {
         return color.current(d[0]);
       })
+      .transition()
+      .duration(200)
       .attr("stroke-width", 2)
       .attr("d", (d) => {
         return d3
