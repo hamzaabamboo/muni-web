@@ -23,7 +23,7 @@ import { GraphContext } from "src/contexts/GraphContext";
 import { EventContext } from "src/contexts/EventContext";
 import { DateTime } from "luxon";
 
-const ANIMATION_SPEED = 3000;
+const ANIMATION_SPEED = 500;
 export const Graph = () => {
   const { points } = useContext(GraphContext);
   const { event } = useContext(EventContext);
@@ -52,7 +52,7 @@ export const Graph = () => {
 
     zoom.current = d3
       .zoom()
-      .scaleExtent([1, 25])
+      .scaleExtent([1, 500])
       .extent([
         [0, 0],
         [width, height],
@@ -119,9 +119,6 @@ export const Graph = () => {
       .attr("id", "lines");
 
     d3.select("#lbgraph").call(zoom.current);
-    //   .transition()
-    //   .duration(750)
-    //   .call(zoom.current.scaleTo, 4, [x.current(Date.UTC(2001, 8, 1)), 0]);
 
     () => {
       d3.select("#lbgraph").selectAll("*").remove();
@@ -148,35 +145,42 @@ export const Graph = () => {
     });
   }
 
-  const updateAxes = useCallback(() => {
-    svg.current.select(".xAxis").call(xAxis.current as any);
-    svg.current.select(".yAxis").call(yAxis.current as any);
-
+  const updateAxes = useCallback((withTransition: boolean = false) => {
     svg.current
       .select(".xGrid")
       .attr("color", "lightgray")
+      .transition()
+      .duration(withTransition ? ANIMATION_SPEED : 0)
       .call(
         d3
           .axisBottom(xZoomed.current)
           .tickSize(-height)
-          .tickFormat(() => "")
+          .tickFormat(() => "") as any
       );
     svg.current
       .select(".yGrid")
       .attr("color", "lightgray")
+      .transition()
+      .duration(withTransition ? ANIMATION_SPEED : 0)
       .call(
         d3
           .axisLeft(y.current)
           .tickSize(-width)
-          .tickFormat(() => "")
+          .tickFormat(() => "") as any
       );
+    svg.current
+      .select(".xAxis")
+      .transition()
+      .duration(withTransition ? ANIMATION_SPEED : 0)
+      .call(xAxis.current as any);
+    svg.current
+      .select(".yAxis")
+      .transition()
+      .duration(withTransition ? ANIMATION_SPEED : 0)
+      .call(yAxis.current as any);
   }, []);
 
   useEffect(() => {
-    const data = points;
-
-    if (!data && !data[0]) return;
-
     x.current.domain([
       event
         ? DateTime.fromISO(event.startdate).toJSDate()
@@ -190,19 +194,18 @@ export const Graph = () => {
 
     if (zoomTransform.current) {
       xZoomed.current = zoomTransform.current.rescaleX(x.current);
+      xAxis.current = d3.axisBottom(xZoomed.current);
     }
 
     y.current.domain([0, d3.max(points, (d) => d.points)]).nice();
 
-    updateAxes();
-
-    let graphData = d3.groups(data, (d) => d.rank);
+    let graphData = d3.groups(points, (d) => d.rank);
 
     color.current = color.current.domain(graphData.map((d) => d[0]));
 
-    graph.current
-      .selectAll(".line")
-      .data(graphData)
+    const graphNode = graph.current.selectAll("path").data(graphData);
+
+    graphNode
       .enter()
       .append("path")
       .attr("class", "line")
@@ -211,19 +214,22 @@ export const Graph = () => {
       .attr("stroke", function (d) {
         return color.current(d[0]);
       })
-      .transition()
-      .duration(200)
-      .attr("stroke-width", 2)
-      .attr("d", (d) => {
-        return d3
-          .line<LeaderboardPoint>()
-          .x(function (d) {
-            return xZoomed.current(isoParse(d.date));
-          })
-          .y(function (d) {
-            return y.current(d.points);
-          })(d[1]);
-      });
+      .attr("stroke-width", 2);
+
+    graph.current.selectAll("path.line").attr("d", (d: any) => {
+      return d3
+        .line<LeaderboardPoint>()
+        .x(function (d) {
+          return xZoomed.current(isoParse(d.date));
+        })
+        .y(function (d) {
+          return y.current(d.points);
+        })(d[1]);
+    });
+
+    graphNode.exit().remove();
+
+    updateAxes(true);
   }, [points]);
 
   if (!points) return <Spinner />;

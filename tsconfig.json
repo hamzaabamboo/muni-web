@@ -18,7 +18,8 @@
       "components/*": ["./src/components/*"],
       "utils/*": ["./src/utils/*"],
       "api/*": ["./src/api/*"],
-      "constants/*": ["./src/constants/*"]
+      "constants/*": ["./src/constants/*"],
+      "hooks/*": ["./src/hooks/*"]
     },
     "baseUrl": "."
   },

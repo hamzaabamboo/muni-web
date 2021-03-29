@@ -7,8 +7,9 @@ import { GraphProvider } from "src/contexts/GraphContext";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { DateTime } from "luxon";
 import humanize from "humanize-duration";
+import { TierSelector } from "components/TierSelector";
 
-export default function Home() {
+export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
 
   const lastUpdatedText = useMemo(() => {
@@ -28,6 +29,7 @@ export default function Home() {
       <Text color="red.600"> This is super experimental, muni will break</Text>
       <Text>Last Updated: {lastUpdatedText}</Text>
       <Graph />
+      <TierSelector />
     </GraphProvider>
   );
 }
