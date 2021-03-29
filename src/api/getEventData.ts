@@ -17,8 +17,8 @@ export const getEventData = async (): Promise<Event> => {
     eventid: towa.Id,
     name: towa.Name,
     startdate: DateTime.fromSeconds(towa.StartDate).toISO(),
-    enddate: DateTime.fromSeconds(towa.EndDate).toISO(),
-    rank_end: DateTime.fromSeconds(towa.RankFixStartDate).toISO(),
+    enddate: DateTime.fromSeconds(towa.ResultAnnouncementDate).toISO(),
+    rank_end: DateTime.fromSeconds(towa.ReceptionCloseDate).toISO(),
     type: towa.Type._name_,
   };
 };

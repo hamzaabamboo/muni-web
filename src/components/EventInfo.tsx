@@ -17,7 +17,7 @@ export const EventInfo = () => {
       </Text>
       <CountdownTimer
         startTime={event.startdate}
-        endTime={event.enddate}
+        rankEndTime={event.rank_end}
         resultsTime={event.rank_end}
       />
     </Flex>
@@ -26,11 +26,11 @@ export const EventInfo = () => {
 
 const CountdownTimer = ({
   startTime,
-  endTime,
+  rankEndTime,
   resultsTime,
 }: {
   startTime: string;
-  endTime: string;
+  rankEndTime: string;
   resultsTime: string;
 }) => {
   const [timeLeft, setTimeLeft] = useState<string>("--:--");
@@ -38,23 +38,26 @@ const CountdownTimer = ({
   const [progress, setProgress] = useState<string>("-");
 
   const totalHours = useMemo(() => {
+    console.log(rankEndTime, resultsTime);
     return Math.round(
-      DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime)).as("hours")
+      DateTime.fromISO(rankEndTime)
+        .diff(DateTime.fromISO(startTime))
+        .as("hours")
     );
-  }, [startTime, endTime]);
+  }, [startTime, rankEndTime]);
 
   useEffect(() => {
     const f = () => {
-      const diffEnd = DateTime.fromISO(endTime).diffNow();
+      const diffEnd = DateTime.fromISO(rankEndTime).diffNow();
+      const diffResults = DateTime.fromISO(resultsTime).diffNow();
       if (diffEnd.as("hours") > 0) {
         setTimeUntil("Time until end");
         setTimeLeft(diffEnd.toFormat("hh:mm"));
-      }
-      const diffResults = DateTime.fromISO(resultsTime).diffNow();
-      if (diffResults.as("hours") > 0) {
+      } else if (diffResults.as("hours") > 0) {
         setTimeUntil("Time until results");
         setTimeLeft(diffResults.toFormat("hh:mm"));
       }
+
       const timeInEvent = Math.floor(
         DateTime.now().diff(DateTime.fromISO(startTime)).as("hours")
       );

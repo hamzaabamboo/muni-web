@@ -8,6 +8,7 @@ import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { DateTime } from "luxon";
 import humanize from "humanize-duration";
 import { TierSelector } from "components/TierSelector";
+import { Navigation } from "components/Navigation";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
@@ -26,7 +27,11 @@ export default function GraphPage() {
   return (
     <GraphProvider>
       <EventInfo />
-      <Text color="red.600"> This is super experimental, muni will break</Text>
+      <Navigation />
+      <Text color="red.600" fontStyle="italic">
+        {" "}
+        This is super experimental, muni may break
+      </Text>
       <Text>Last Updated: {lastUpdatedText}</Text>
       <Graph />
       <TierSelector />
