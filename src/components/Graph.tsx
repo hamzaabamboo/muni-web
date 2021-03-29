@@ -153,12 +153,20 @@ export const Graph = () => {
       .select(".xGrid")
       .attr("color", "lightgray")
       .call(
-        d3.axisBottom(xZoomed.current).tickSize(-height).tickFormat("") as any
+        d3
+          .axisBottom(xZoomed.current)
+          .tickSize(-height)
+          .tickFormat(() => "")
       );
     svg.current
       .select(".yGrid")
       .attr("color", "lightgray")
-      .call(d3.axisLeft(y.current).tickSize(-width).tickFormat("") as any);
+      .call(
+        d3
+          .axisLeft(y.current)
+          .tickSize(-width)
+          .tickFormat(() => "")
+      );
   }, []);
 
   useEffect(() => {
