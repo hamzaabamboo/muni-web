@@ -9,6 +9,16 @@ export interface LeaderboardEntry {
   rate: string;
 }
 
+export interface LeaderboardPoint {
+  id?: number;
+  eventid: number;
+  rank: number;
+  date: string;
+  name: string;
+  description: string;
+  points: number;
+}
+
 export type Tier =
   | 1
   | 2

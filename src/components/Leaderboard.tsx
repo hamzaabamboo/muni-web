@@ -23,6 +23,8 @@ import humanize from "humanize-duration";
 import { EventType } from "types/Event";
 import { EventContext } from "src/contexts/EventContext";
 import { thresholds } from "constants/threshold";
+import { LeaderboardContext } from "src/contexts/LeaderboardContext";
+import { getLastUpdatedTime } from "utils/time";
 
 interface LeaderboardProps {
   interval?: number;
@@ -33,52 +35,8 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   interval = 1000,
   isPlaying: showIsPlaying = true,
 }) => {
-  const [lbData, setLbData] = useState<ILeaderboard>();
-  const [changes, setChanges] = useState<{ [key: number]: number }>({});
-  const [lastUpdated, setLastUpdated] = useState<Date>();
+  const { lbData, changes, lastUpdated } = useContext(LeaderboardContext);
   const { event } = useContext(EventContext);
-  const oldLb = useRef<ILeaderboard>();
-
-  useEffect(() => {
-    let killMe = false;
-    const loop = async () => {
-      // get muni
-      const data = await getLeaderboardData();
-      if (!killMe) {
-        updateData(data);
-        await sleep(interval);
-        loop();
-      }
-    };
-    loop();
-    () => {
-      killMe = true;
-    };
-  }, [interval]);
-
-  const updateData = (data: ILeaderboard) => {
-    if (oldLb.current) {
-      setChanges((previousChanges) => {
-        const changes = data.map((d) => {
-          const old = oldLb.current?.find((olb) => olb.rank === d.rank);
-          const dPoints = d.points - old.points;
-          return [
-            d.rank,
-            // Only update if the new point is not 0 and not old enough
-            dPoints > 0
-              ? dPoints
-              : DateTime.fromISO(d.date).diffNow().as("minutes") > -4
-              ? previousChanges[d.rank]
-              : 0,
-          ];
-        });
-        return Object.fromEntries(changes);
-      });
-    }
-    oldLb.current = data;
-    setLbData(data);
-    setLastUpdated(new Date());
-  };
 
   const lastUpdatedText = useMemo(() => {
     const ms = DateTime.fromJSDate(lastUpdated).diffNow().as("milliseconds");
@@ -157,7 +115,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
                     )
                   : "-"}
               </Td>
-              <Td>{getLastUpdateTime(entry.date)}</Td>
+              <Td>{getLastUpdatedTime(entry.date)}</Td>
             </Tr>
           ))}
         </Tbody>
@@ -182,13 +140,6 @@ const getToBoatTime = (ms: number): string => {
   if (isNaN(ms) || ms < 0) return "--:--";
   return Duration.fromMillis(ms).toFormat("hh:mm");
 };
-
-const getLastUpdateTime = (date: string) => {
-  return DateTime.fromISO(date).diffNow().as("minute") > -3
-    ? "Just now"
-    : DateTime.now().diff(DateTime.fromISO(date)).toFormat("hh:mm");
-};
-
 const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
   const styles: Partial<TextProps> = useMemo(() => {
     switch (tier) {
