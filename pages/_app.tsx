@@ -1,7 +1,7 @@
 import Head from "next/head";
 import React from "react";
 
-import { ChakraProvider, Flex, Link, Text } from "@chakra-ui/react";
+import { Box, ChakraProvider, Flex, Link, Text } from "@chakra-ui/react";
 import { EventProvider } from "src/contexts/EventContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 
@@ -27,18 +27,20 @@ function MyApp({ Component, pageProps }) {
               flexDirection="column"
               w="full"
               minH="100vh"
-              alignItems="center"
+              alignItems="stretch"
             >
               <Flex
                 as="main"
                 flexDirection="column"
-                alignItems="center"
+                alignItems="stretch"
+                justifyContent="stretch"
                 flex={1}
-                maxW={["100%", "90%"]}
               >
-                <Component {...pageProps} />
+                <Box maxW={["100%", null, "90%"]} w="full" mx="auto">
+                  <Component {...pageProps} />
+                </Box>
               </Flex>
-              <Flex as="footer" py="20px">
+              <Flex as="footer" py="20px" justifyContent="center">
                 Powered by{" "}
                 <Link href="https://www.youtube.com/watch?v=M2wZs7eHHVo">
                   <Text as="span" color="blue.500" cursor="pointer" ml="2">

@@ -1,5 +1,6 @@
 import { getLeaderboardData } from "api/getLeaderboardData";
 import { DateTime } from "luxon";
+import { kill } from "node:process";
 import { createContext, useEffect, useRef, useState } from "react";
 import { Leaderboard } from "types/Leaderboard";
 import { sleep } from "utils/sleep";
@@ -23,11 +24,10 @@ export const LeaderboardProvider = ({ children }) => {
     const loop = async () => {
       // get muni
       const data = await getLeaderboardData();
-      if (!killMe) {
-        updateData(data);
-        await sleep(interval);
-        loop();
-      }
+      if (killMe) return;
+      updateData(data);
+      await sleep(interval);
+      loop();
     };
     loop();
     () => {

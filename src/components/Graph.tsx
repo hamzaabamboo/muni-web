@@ -29,12 +29,18 @@ import { getAllLeaderboard } from "api/getAllLeaderboard";
 import { GraphContext } from "src/contexts/GraphContext";
 import { EventContext } from "src/contexts/EventContext";
 import { DateTime } from "luxon";
+import { formatPoints } from "utils/formatPoints";
+import { CenteredSpinner } from "./CenteredSpinner";
 
 const ANIMATION_SPEED = 500;
 export const Graph = ({
+  isSmall = false,
+  isLive = false,
   width: _width,
   height: _height = 600,
 }: {
+  isLive?: boolean;
+  isSmall?: boolean;
   width?: number;
   height?: number;
 }) => {
@@ -56,16 +62,18 @@ export const Graph = ({
   const xZoomed = useRef<ScaleTime<any, any, any>>();
   const zoomTransform = useRef<ZoomTransform>();
 
-  const margin = { top: 20, right: 20, bottom: 30, left: 60 };
+  const margin = useMemo(() => {
+    return { top: 20, right: 20, bottom: 30, left: isSmall ? 45 : 60 };
+  }, [isSmall]);
 
   const width = useMemo(() => {
     const w = _width - margin.left - margin.right;
     return w < 0 ? 0 : w;
-  }, [_width]);
+  }, [margin, _width]);
   const height = useMemo(() => {
     const h = _height - margin.top - margin.bottom;
     return h < 0 ? 0 : h;
-  }, [_height]);
+  }, [margin, _height]);
 
   useEffect(() => {
     d3.select("#lbgraph").selectAll("*").remove();
@@ -146,6 +154,7 @@ export const Graph = ({
   }, [width, height]);
 
   function zoomed(event: D3ZoomEvent<any, any>) {
+    if (isLive) return;
     zoomTransform.current = event.transform;
 
     xZoomed.current = zoomTransform.current.rescaleX(x.current);
@@ -198,22 +207,37 @@ export const Graph = ({
         .select(".yAxis")
         .transition()
         .duration(withTransition ? ANIMATION_SPEED : 0)
-        .call(yAxis.current as any);
+        .call(
+          isSmall
+            ? yAxis.current.tickFormat((d) => formatPoints(d))
+            : (yAxis.current as any)
+        );
     },
-    [height, width]
+    [height, width, isSmall]
   );
 
   useEffect(() => {
-    x.current.domain([
-      event
-        ? DateTime.fromISO(event.startdate).toJSDate()
-        : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date)),
-      DateTime.fromJSDate(
-        d3.max(points, (d: LeaderboardPoint) => isoParse(d.date))
-      )
-        .plus({ hour: 1 })
-        .toJSDate(),
-    ]);
+    const afterMax = DateTime.now().plus({ minutes: 30 });
+    const eventStart = DateTime.fromISO(event?.startdate);
+    const eventEnd = DateTime.fromISO(event?.rank_end);
+    const bounds = isLive
+      ? [
+          event &&
+          DateTime.now().minus({ hour: 3 }).diff(eventStart).as("second") < 0
+            ? eventStart.toJSDate()
+            : DateTime.now().minus({ hour: 3 }).toJSDate(),
+          DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0
+            ? eventEnd
+            : afterMax,
+        ]
+      : [
+          event
+            ? DateTime.fromISO(event.startdate).toJSDate()
+            : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date)),
+          afterMax,
+        ];
+
+    x.current.domain(bounds);
 
     if (zoomTransform.current) {
       xZoomed.current = zoomTransform.current.rescaleX(x.current);
@@ -257,18 +281,14 @@ export const Graph = ({
       });
 
     updateAxes(true);
-  }, [points, width, height]);
+  }, [points, width, height, isSmall]);
 
   useEffect(() => {
     color.current = color.current.domain(allTiers);
   }, [allTiers]);
 
   if (points.length === 0 && (!displayTier || displayTier.length > 0))
-    return (
-      <Flex w="full" alignItems="center" justifyContent="center" h="full">
-        <Spinner size="xl" />
-      </Flex>
-    );
+    return <CenteredSpinner />;
 
   return <svg id="lbgraph"></svg>;
 };

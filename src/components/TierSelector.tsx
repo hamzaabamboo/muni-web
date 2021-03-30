@@ -31,19 +31,19 @@ export const TierSelector = () => {
         tiers: allTiers.filter((t) => t <= 20),
       },
       {
-        label: "< T50",
-        tiers: allTiers.filter((t) => t <= 50),
+        label: "< T100",
+        tiers: allTiers.filter((t) => t <= 100),
       },
       {
         label: "> T500",
-        tiers: allTiers.filter((t) => t > 500),
+        tiers: allTiers.filter((t) => t >= 500),
       },
     ],
     [allTiers]
   );
 
   return (
-    <Flex maxW={"60%"} w="full" flexWrap="wrap">
+    <Flex w="full" flexWrap="wrap" mx="auto">
       {moreTiers.map((t) => (
         <Button
           m={2}

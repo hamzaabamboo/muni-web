@@ -16,7 +16,16 @@ import {
 import { getLeaderboardData } from "api/getLeaderboardData";
 import { sleep } from "utils/sleep";
 import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
-import { Td, Th, Tr, Text, TextProps, Flex, Spinner } from "@chakra-ui/react";
+import {
+  Td,
+  Th,
+  Tr,
+  Text,
+  TextProps,
+  Flex,
+  Spinner,
+  useBreakpoint,
+} from "@chakra-ui/react";
 import { DateTime, Duration } from "luxon";
 import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
@@ -25,19 +34,23 @@ import { EventContext } from "src/contexts/EventContext";
 import { thresholds } from "constants/threshold";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { getLastUpdatedTime } from "utils/time";
+import { CenteredSpinner } from "./CenteredSpinner";
+import { formatPoints } from "utils/formatPoints";
 
 interface LeaderboardProps {
   interval?: number;
   isPlaying?: boolean;
+  isSmall?: boolean;
 }
 
 export const Leaderboard: FC<LeaderboardProps> = ({
+  isSmall,
   interval = 1000,
   isPlaying: showIsPlaying = true,
 }) => {
   const { lbData, changes, lastUpdated } = useContext(LeaderboardContext);
   const { event } = useContext(EventContext);
-
+  const breakpoint = useBreakpoint();
   const lastUpdatedText = useMemo(() => {
     const ms = DateTime.fromJSDate(lastUpdated).diffNow().as("milliseconds");
     if (ms === 0) return "Just now";
@@ -49,16 +62,18 @@ export const Leaderboard: FC<LeaderboardProps> = ({
     );
   }, [lastUpdated]);
 
-  if (!lbData) return <Spinner size="xl" mt="5" />;
+  if (!lbData) return <CenteredSpinner />;
 
+  const smallMode = isSmall || breakpoint === "base" || breakpoint === "sm";
+  const hideIfSmall = smallMode && { display: "none" };
   return (
     <Flex flexDir="column">
       <Flex flexDir="column">
         <Text fontSize="4xl" fontWeight="bold">
-          Muniboard{" "}
-          <Text fontSize="sm" as="span" fontWeight="normal">
-            Last Updated: {lastUpdatedText}
-          </Text>
+          Muniboard
+        </Text>
+        <Text fontSize="sm" as="span" fontWeight="normal">
+          Last Updated: {lastUpdatedText}
         </Text>
       </Flex>
       <Table size="sm">
@@ -67,9 +82,13 @@ export const Leaderboard: FC<LeaderboardProps> = ({
             <Th textAlign="center">Rank</Th>
             <Th>Name</Th>
             <Th>Points</Th>
-            <Th textAlign="end">Gap</Th>
-            <Th textAlign="end">Rate</Th>
-            <Th textAlign="end" whiteSpace="break-spaces">
+            <Th textAlign="end" {...hideIfSmall}>
+              Gap
+            </Th>
+            <Th textAlign="end" {...hideIfSmall}>
+              Rate
+            </Th>
+            <Th textAlign="end" whiteSpace="break-spaces" {...hideIfSmall}>
               Time to boat
             </Th>
             <Th>Last Updated</Th>
@@ -86,25 +105,36 @@ export const Leaderboard: FC<LeaderboardProps> = ({
               borderBottomColor="gray.400"
             >
               <Td textAlign="center">
-                <Tier tier={entry.rank} />
+                <Tier tier={entry.rank}>
+                  {smallMode ? formatPoints(entry.rank) : entry.rank}
+                </Tier>
               </Td>
               <Td>
-                <Text fontSize="md">{entry.name}</Text>
-                <Text fontSize="xs">{entry.description}</Text>
+                <Text
+                  fontSize={smallMode ? "sm" : "md"}
+                  overflow={smallMode ? "ellipsis" : "unset"}
+                >
+                  {entry.name}
+                </Text>
+                <Text fontSize="xs" {...hideIfSmall}>
+                  {entry.description}
+                </Text>
               </Td>
               <Td>
-                <Text fontSize="md">{entry.points}</Text>
+                <Text fontSize={smallMode ? "sm" : "md"}>{entry.points}</Text>
                 {changes?.[entry.rank] > 0 && (
                   <Text fontSize="xs">(+{changes[entry.rank] ?? 0})</Text>
                 )}
               </Td>
-              <Td isNumeric>
+              <Td isNumeric {...hideIfSmall}>
                 {index + 1 < arr.length
                   ? entry.points - arr[index + 1]?.points
                   : 0}
               </Td>
-              <Td isNumeric>{entry.rate}</Td>
-              <Td isNumeric>
+              <Td isNumeric {...hideIfSmall}>
+                {entry.rate}
+              </Td>
+              <Td isNumeric {...hideIfSmall}>
                 {index + 1 < arr.length && !isNaN(Number(arr[index + 1]?.rate))
                   ? getToBoatTime(
                       ((entry.points - arr[index + 1]?.points) /

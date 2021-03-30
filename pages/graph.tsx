@@ -32,11 +32,10 @@ export default function GraphPage() {
     <GraphProvider>
       <EventInfo />
       <Navigation />
-      <Text color="red.600" fontStyle="italic">
-        {" "}
+      <Text color="red.600" fontStyle="italic" textAlign="center">
         This is super experimental, muni may break
       </Text>
-      <Text>Last Updated: {lastUpdatedText}</Text>
+      <Text textAlign="center">Last Updated: {lastUpdatedText}</Text>
       <Box ref={graphRef} w={"full"} h="600px">
         <Graph width={width} height={height} />
       </Box>

@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 export const Navigation = () => {
   const router = useRouter();
   return (
-    <Flex p={2}>
+    <Flex p={2} justifyContent="center">
       <Box
         mx={4}
         p={2}
@@ -25,6 +25,16 @@ export const Navigation = () => {
         fontSize="lg"
       >
         <Link href="/graph">Graph</Link>
+      </Box>
+      <Box
+        mx={4}
+        p={2}
+        rounded="md"
+        bg={router.pathname === "/live" ? "gray.200" : "transparent"}
+        color={router.pathname === "/live" ? "blue.400" : "black"}
+        fontSize="lg"
+      >
+        <Link href="/live">Live View</Link>
       </Box>
     </Flex>
   );
