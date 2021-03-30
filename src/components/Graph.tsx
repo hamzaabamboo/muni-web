@@ -1,6 +1,13 @@
-import { Box } from "@chakra-ui/layout";
+import { Box, Flex } from "@chakra-ui/layout";
 import { Spinner } from "@chakra-ui/spinner";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import * as d3 from "d3";
 import {
@@ -24,8 +31,14 @@ import { EventContext } from "src/contexts/EventContext";
 import { DateTime } from "luxon";
 
 const ANIMATION_SPEED = 500;
-export const Graph = () => {
-  const { points } = useContext(GraphContext);
+export const Graph = ({
+  width: _width,
+  height: _height = 600,
+}: {
+  width?: number;
+  height?: number;
+}) => {
+  const { points, allTiers, displayTier } = useContext(GraphContext);
   const { event } = useContext(EventContext);
 
   const svg = useRef<Selection<any, any, any, any>>();
@@ -44,8 +57,15 @@ export const Graph = () => {
   const zoomTransform = useRef<ZoomTransform>();
 
   const margin = { top: 20, right: 20, bottom: 30, left: 60 };
-  const width = 1000 - margin.left - margin.right;
-  const height = 600 - margin.top - margin.bottom;
+
+  const width = useMemo(() => {
+    const w = _width - margin.left - margin.right;
+    return w < 0 ? 0 : w;
+  }, [_width]);
+  const height = useMemo(() => {
+    const h = _height - margin.top - margin.bottom;
+    return h < 0 ? 0 : h;
+  }, [_height]);
 
   useEffect(() => {
     d3.select("#lbgraph").selectAll("*").remove();
@@ -123,7 +143,7 @@ export const Graph = () => {
     () => {
       d3.select("#lbgraph").selectAll("*").remove();
     };
-  }, []);
+  }, [width, height]);
 
   function zoomed(event: D3ZoomEvent<any, any>) {
     zoomTransform.current = event.transform;
@@ -145,40 +165,43 @@ export const Graph = () => {
     });
   }
 
-  const updateAxes = useCallback((withTransition: boolean = false) => {
-    svg.current
-      .select(".xGrid")
-      .attr("color", "lightgray")
-      .transition()
-      .duration(withTransition ? ANIMATION_SPEED : 0)
-      .call(
-        d3
-          .axisBottom(xZoomed.current)
-          .tickSize(-height)
-          .tickFormat(() => "") as any
-      );
-    svg.current
-      .select(".yGrid")
-      .attr("color", "lightgray")
-      .transition()
-      .duration(withTransition ? ANIMATION_SPEED : 0)
-      .call(
-        d3
-          .axisLeft(y.current)
-          .tickSize(-width)
-          .tickFormat(() => "") as any
-      );
-    svg.current
-      .select(".xAxis")
-      .transition()
-      .duration(withTransition ? ANIMATION_SPEED : 0)
-      .call(xAxis.current as any);
-    svg.current
-      .select(".yAxis")
-      .transition()
-      .duration(withTransition ? ANIMATION_SPEED : 0)
-      .call(yAxis.current as any);
-  }, []);
+  const updateAxes = useCallback(
+    (withTransition: boolean = false) => {
+      svg.current
+        .select(".xGrid")
+        .attr("color", "lightgray")
+        .transition()
+        .duration(withTransition ? ANIMATION_SPEED : 0)
+        .call(
+          d3
+            .axisBottom(xZoomed.current)
+            .tickSize(-height)
+            .tickFormat(() => "") as any
+        );
+      svg.current
+        .select(".yGrid")
+        .attr("color", "lightgray")
+        .transition()
+        .duration(withTransition ? ANIMATION_SPEED : 0)
+        .call(
+          d3
+            .axisLeft(y.current)
+            .tickSize(-width)
+            .tickFormat(() => "") as any
+        );
+      svg.current
+        .select(".xAxis")
+        .transition()
+        .duration(withTransition ? ANIMATION_SPEED : 0)
+        .call(xAxis.current as any);
+      svg.current
+        .select(".yAxis")
+        .transition()
+        .duration(withTransition ? ANIMATION_SPEED : 0)
+        .call(yAxis.current as any);
+    },
+    [height, width]
+  );
 
   useEffect(() => {
     x.current.domain([
@@ -200,8 +223,6 @@ export const Graph = () => {
     y.current.domain([0, d3.max(points, (d) => d.points)]).nice();
 
     let graphData = d3.groups(points, (d) => d.rank);
-
-    color.current = color.current.domain(graphData.map((d) => d[0]));
 
     const graphNode = graph.current
       .selectAll("path")
@@ -236,13 +257,18 @@ export const Graph = () => {
       });
 
     updateAxes(true);
-  }, [points]);
+  }, [points, width, height]);
 
-  if (!points) return <Spinner />;
+  useEffect(() => {
+    color.current = color.current.domain(allTiers);
+  }, [allTiers]);
 
-  return (
-    <Box maxW="100vw" maxH="100vh">
-      <svg id="lbgraph"></svg>
-    </Box>
-  );
+  if (points.length === 0 && (!displayTier || displayTier.length > 0))
+    return (
+      <Flex w="full" alignItems="center" justifyContent="center" h="full">
+        <Spinner size="xl" />
+      </Flex>
+    );
+
+  return <svg id="lbgraph"></svg>;
 };

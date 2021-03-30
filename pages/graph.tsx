@@ -1,6 +1,6 @@
-import React, { useContext, useMemo } from "react";
+import React, { useContext, useMemo, useRef } from "react";
 
-import { Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { Graph } from "components/Graph";
 import { EventInfo } from "components/EventInfo";
 import { GraphProvider } from "src/contexts/GraphContext";
@@ -9,9 +9,13 @@ import { DateTime } from "luxon";
 import humanize from "humanize-duration";
 import { TierSelector } from "components/TierSelector";
 import { Navigation } from "components/Navigation";
+import { useSize } from "web-api-hooks";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
+
+  const graphRef = useRef<HTMLDivElement>(null);
+  const [width, height] = useSize(graphRef);
 
   const lastUpdatedText = useMemo(() => {
     const ms = DateTime.fromJSDate(lastUpdated).diffNow().as("milliseconds");
@@ -33,7 +37,9 @@ export default function GraphPage() {
         This is super experimental, muni may break
       </Text>
       <Text>Last Updated: {lastUpdatedText}</Text>
-      <Graph />
+      <Box ref={graphRef} w={"full"} h="600px">
+        <Graph width={width} height={height} />
+      </Box>
       <TierSelector />
     </GraphProvider>
   );

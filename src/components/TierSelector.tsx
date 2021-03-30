@@ -8,7 +8,7 @@ export const TierSelector = () => {
   const { displayTier, setDisplayTier, allTiers } = useContext(GraphContext);
 
   const toggleTier = (t: Tier) => {
-    if (displayTier.includes(t))
+    if (displayTier?.includes(t))
       return setDisplayTier((dt) => dt.filter((i) => i !== t));
     setDisplayTier((dt) => [...dt, t]);
   };
@@ -60,7 +60,7 @@ export const TierSelector = () => {
           <Button
             m={2}
             key={t}
-            bg={displayTier.includes(t) ? "green.200" : "gray.200"}
+            bg={displayTier?.includes(t) ? "green.200" : "gray.200"}
             onClick={() => toggleTier(t)}
           >
             T{t}
