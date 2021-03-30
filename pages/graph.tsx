@@ -3,7 +3,6 @@ import React, { useContext, useMemo, useRef } from "react";
 import { Box, Text } from "@chakra-ui/react";
 import { Graph } from "components/Graph";
 import { EventInfo } from "components/EventInfo";
-import { GraphProvider } from "src/contexts/GraphContext";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { DateTime } from "luxon";
 import humanize from "humanize-duration";
@@ -29,7 +28,7 @@ export default function GraphPage() {
   }, [lastUpdated]);
 
   return (
-    <GraphProvider>
+    <>
       <EventInfo />
       <Navigation />
       <Text color="red.600" fontStyle="italic" textAlign="center">
@@ -40,6 +39,6 @@ export default function GraphPage() {
         <Graph width={width} height={height} />
       </Box>
       <TierSelector />
-    </GraphProvider>
+    </>
   );
 }
