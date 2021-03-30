@@ -203,7 +203,9 @@ export const Graph = () => {
 
     color.current = color.current.domain(graphData.map((d) => d[0]));
 
-    const graphNode = graph.current.selectAll("path").data(graphData);
+    const graphNode = graph.current
+      .selectAll("path")
+      .data(graphData, (k) => k[0]);
 
     graphNode
       .enter()
@@ -216,18 +218,22 @@ export const Graph = () => {
       })
       .attr("stroke-width", 2);
 
-    graph.current.selectAll("path.line").attr("d", (d: any) => {
-      return d3
-        .line<LeaderboardPoint>()
-        .x(function (d) {
-          return xZoomed.current(isoParse(d.date));
-        })
-        .y(function (d) {
-          return y.current(d.points);
-        })(d[1]);
-    });
-
     graphNode.exit().remove();
+
+    graph.current
+      .selectAll("path.line")
+      .transition()
+      .duration(ANIMATION_SPEED)
+      .attr("d", (d: any) => {
+        return d3
+          .line<LeaderboardPoint>()
+          .x(function (d) {
+            return xZoomed.current(isoParse(d.date));
+          })
+          .y(function (d) {
+            return y.current(d.points);
+          })(d[1]);
+      });
 
     updateAxes(true);
   }, [points]);
