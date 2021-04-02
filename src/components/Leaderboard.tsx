@@ -1,20 +1,5 @@
-import React, {
-  FC,
-  memo,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-
-import {
-  Leaderboard as ILeaderboard,
-  LeaderboardEntry,
-  Tier as ITier,
-} from "types/Leaderboard";
-import { getLeaderboardData } from "api/getLeaderboardData";
-import { sleep } from "utils/sleep";
+import React, { FC, memo, useContext, useMemo } from "react";
+import { LeaderboardEntry, Tier as ITier } from "types/Leaderboard";
 import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
 import {
   Td,
@@ -23,7 +8,6 @@ import {
   Text,
   TextProps,
   Flex,
-  Spinner,
   useBreakpoint,
 } from "@chakra-ui/react";
 import { DateTime, Duration } from "luxon";
@@ -41,12 +25,14 @@ interface LeaderboardProps {
   interval?: number;
   isPlaying?: boolean;
   isSmall?: boolean;
+  onTierSelected?: (tier: ITier) => void;
 }
 
 export const Leaderboard: FC<LeaderboardProps> = ({
   isSmall,
   interval = 1000,
   isPlaying: showIsPlaying = true,
+  onTierSelected,
 }) => {
   const { lbData, changes, lastUpdated } = useContext(LeaderboardContext);
   const { event } = useContext(EventContext);
@@ -103,6 +89,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
                 : {})}
               borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
               borderBottomColor="gray.400"
+              onClick={() => onTierSelected?.(entry.rank)}
             >
               <Td textAlign="center">
                 <Tier tier={entry.rank}>

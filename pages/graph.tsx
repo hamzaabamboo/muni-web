@@ -1,7 +1,6 @@
 import React, { useContext, useMemo, useRef } from "react";
 
 import { Box, Text } from "@chakra-ui/react";
-import { Graph } from "components/Graph";
 import { EventInfo } from "components/EventInfo";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { DateTime } from "luxon";
@@ -9,6 +8,7 @@ import humanize from "humanize-duration";
 import { TierSelector } from "components/TierSelector";
 import { Navigation } from "components/Navigation";
 import { useSize } from "web-api-hooks";
+import { ScoreGraph } from "components/ScoreGraph";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
@@ -36,7 +36,7 @@ export default function GraphPage() {
       </Text>
       <Text textAlign="center">Last Updated: {lastUpdatedText}</Text>
       <Box ref={graphRef} w={"full"} h="600px">
-        <Graph width={width} height={height} />
+        <ScoreGraph width={width} height={height} />
       </Box>
       <TierSelector />
     </>

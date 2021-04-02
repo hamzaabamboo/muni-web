@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
 
 import { Box, Flex } from "@chakra-ui/react";
-import { Graph } from "components/Graph";
 import { EventInfo } from "components/EventInfo";
 import { TierSelector } from "components/TierSelector";
 import { Navigation } from "components/Navigation";
 import { useSize } from "web-api-hooks";
 import { Leaderboard } from "components/Leaderboard";
+import { ScoreGraph } from "components/ScoreGraph";
 
 export default function LivePage() {
   const graphRef = useRef<HTMLDivElement>(null);
@@ -24,7 +24,7 @@ export default function LivePage() {
       >
         <Box flex="1">
           <Box ref={graphRef} h="full" minH="400px" maxH="600px">
-            <Graph width={width} height={height} isSmall isLive />
+            <ScoreGraph width={width} height={height} isSmall isLive />
           </Box>
           <TierSelector />
         </Box>

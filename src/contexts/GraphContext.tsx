@@ -1,5 +1,4 @@
 import { getAllLeaderboard } from "api/getAllLeaderboard";
-import { getLeaderboardData } from "api/getLeaderboardData";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
 import {

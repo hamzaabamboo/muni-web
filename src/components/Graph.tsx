@@ -1,21 +1,8 @@
-import { Box, Flex } from "@chakra-ui/layout";
-import { Spinner } from "@chakra-ui/spinner";
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { LeaderboardContext } from "src/contexts/LeaderboardContext";
+import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import * as d3 from "d3";
 import {
   Axis,
-  BaseType,
-  BrushBehavior,
   D3ZoomEvent,
-  groups,
   isoParse,
   ScaleLinear,
   ScaleOrdinal,
@@ -25,28 +12,28 @@ import {
   ZoomTransform,
 } from "d3";
 import { LeaderboardPoint } from "types/Leaderboard";
-import { getAllLeaderboard } from "api/getAllLeaderboard";
-import { GraphContext } from "src/contexts/GraphContext";
-import { EventContext } from "src/contexts/EventContext";
 import { DateTime } from "luxon";
 import { formatPoints } from "utils/formatPoints";
 import { CenteredSpinner } from "./CenteredSpinner";
 
 const ANIMATION_SPEED = 500;
 export const Graph = ({
+  points,
+  startDate,
+  endDate,
   isSmall = false,
   isLive = false,
   width: _width,
   height: _height = 600,
 }: {
+  points: LeaderboardPoint[];
+  startDate: string;
+  endDate: string;
   isLive?: boolean;
   isSmall?: boolean;
   width?: number;
   height?: number;
 }) => {
-  const { points, allTiers, displayTier } = useContext(GraphContext);
-  const { event } = useContext(EventContext);
-
   const svg = useRef<Selection<any, any, any, any>>();
 
   const x = useRef<ScaleTime<number, number, never>>();
@@ -218,15 +205,15 @@ export const Graph = ({
 
   useEffect(() => {
     const afterMax = DateTime.now().plus({ minutes: 30 });
-    const eventStart = DateTime.fromISO(event?.startdate);
-    const eventEnd = DateTime.fromISO(event?.rank_end);
+    const eventStart = DateTime.fromISO(startDate);
+    const eventEnd = DateTime.fromISO(endDate);
     const timeStart = isLive
-      ? event &&
+      ? startDate &&
         DateTime.now().minus({ hour: 3 }).diff(eventStart).as("second") < 0
         ? eventStart.toJSDate()
         : DateTime.now().minus({ hour: 3 }).toJSDate()
-      : event
-      ? DateTime.fromISO(event.startdate).toJSDate()
+      : startDate
+      ? eventStart.toJSDate()
       : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date));
 
     const timeEnd = isLive
@@ -236,6 +223,8 @@ export const Graph = ({
       : afterMax;
 
     const bounds = [timeStart, timeEnd];
+
+    color.current = color.current.domain(new Set(points.map((p) => p.rank)));
 
     x.current.domain(bounds);
 
@@ -298,12 +287,7 @@ export const Graph = ({
     updateAxes(true);
   }, [points, width, height, isSmall]);
 
-  useEffect(() => {
-    color.current = color.current.domain(allTiers);
-  }, [allTiers]);
-
-  if (points.length === 0 && (!displayTier || displayTier.length > 0))
-    return <CenteredSpinner />;
+  if (points.length === 0) return <CenteredSpinner />;
 
   return <svg id="lbgraph"></svg>;
 };
