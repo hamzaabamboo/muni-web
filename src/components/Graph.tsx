@@ -220,22 +220,22 @@ export const Graph = ({
     const afterMax = DateTime.now().plus({ minutes: 30 });
     const eventStart = DateTime.fromISO(event?.startdate);
     const eventEnd = DateTime.fromISO(event?.rank_end);
-    const bounds = isLive
-      ? [
-          event &&
-          DateTime.now().minus({ hour: 3 }).diff(eventStart).as("second") < 0
-            ? eventStart.toJSDate()
-            : DateTime.now().minus({ hour: 3 }).toJSDate(),
-          DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0
-            ? eventEnd
-            : afterMax,
-        ]
-      : [
-          event
-            ? DateTime.fromISO(event.startdate).toJSDate()
-            : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date)),
-          afterMax,
-        ];
+    const timeStart = isLive
+      ? event &&
+        DateTime.now().minus({ hour: 3 }).diff(eventStart).as("second") < 0
+        ? eventStart.toJSDate()
+        : DateTime.now().minus({ hour: 3 }).toJSDate()
+      : event
+      ? DateTime.fromISO(event.startdate).toJSDate()
+      : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date));
+
+    const timeEnd = isLive
+      ? DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0
+        ? eventEnd
+        : afterMax
+      : afterMax;
+
+    const bounds = [timeStart, timeEnd];
 
     x.current.domain(bounds);
 
@@ -244,7 +244,22 @@ export const Graph = ({
       xAxis.current = d3.axisBottom(xZoomed.current);
     }
 
-    y.current.domain([0, d3.max(points, (d) => d.points)]).nice();
+    y.current
+      .domain([
+        isLive
+          ? d3.min(
+              points.filter(
+                (d) =>
+                  DateTime.fromISO(d.date)
+                    .diff(DateTime.fromJSDate(timeStart))
+                    .as("seconds") > 0
+              ),
+              (d) => d.points
+            )
+          : 0,
+        d3.max(points, (d) => d.points),
+      ])
+      .nice();
 
     let graphData = d3.groups(points, (d) => d.rank);
 

@@ -38,7 +38,6 @@ const CountdownTimer = ({
   const [progress, setProgress] = useState<string>("-");
 
   const totalHours = useMemo(() => {
-    console.log(rankEndTime, resultsTime);
     return Math.round(
       DateTime.fromISO(rankEndTime)
         .diff(DateTime.fromISO(startTime))
