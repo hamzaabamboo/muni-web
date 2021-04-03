@@ -15,16 +15,17 @@ import { LeaderboardPoint } from "types/Leaderboard";
 import { DateTime } from "luxon";
 import { formatPoints } from "utils/formatPoints";
 import { CenteredSpinner } from "./CenteredSpinner";
+import { useBreakpoint } from "@chakra-ui/react";
 
 const ANIMATION_SPEED = 500;
 export const Graph = ({
   points,
   startDate,
   endDate,
-  isSmall = false,
   isLive = false,
   width: _width,
   height: _height = 600,
+  ...props
 }: {
   points: LeaderboardPoint[];
   startDate: string;
@@ -48,6 +49,10 @@ export const Graph = ({
   const zoom = useRef<ZoomBehavior<any, any>>();
   const xZoomed = useRef<ScaleTime<any, any, any>>();
   const zoomTransform = useRef<ZoomTransform>();
+
+  const breakpoint = useBreakpoint();
+
+  const isSmall = props.isSmall || breakpoint === "base" || breakpoint === "sm";
 
   const margin = useMemo(() => {
     return { top: 20, right: 20, bottom: 30, left: isSmall ? 45 : 60 };
@@ -133,15 +138,16 @@ export const Graph = ({
       .attr("clip-path", "url(#graph)")
       .attr("id", "lines");
 
-    d3.select("#lbgraph").call(zoom.current);
+    if (!isLive) {
+      d3.select("#lbgraph").call(zoom.current);
+    }
 
     () => {
       d3.select("#lbgraph").selectAll("*").remove();
     };
-  }, [width, height]);
+  }, [width, height, isLive]);
 
   function zoomed(event: D3ZoomEvent<any, any>) {
-    if (isLive) return;
     zoomTransform.current = event.transform;
 
     xZoomed.current = zoomTransform.current.rescaleX(x.current);
@@ -286,8 +292,6 @@ export const Graph = ({
 
     updateAxes(true);
   }, [points, width, height, isSmall]);
-
-  if (points.length === 0) return <CenteredSpinner />;
 
   return <svg id="lbgraph"></svg>;
 };

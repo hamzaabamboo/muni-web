@@ -1,33 +1,31 @@
 import { getLeaderboardData } from "api/getLeaderboardData";
-import { DateTime } from "luxon";
-import { kill } from "node:process";
 import { createContext, useEffect, useRef, useState } from "react";
 import { Leaderboard } from "types/Leaderboard";
 import { sleep } from "utils/sleep";
 
 export const LeaderboardContext = createContext<{
   lbData?: Leaderboard;
-  changes?: { [key: number]: number };
   lastUpdated?: Date;
 }>({});
 
 export const LeaderboardProvider = ({ children }) => {
   const [lbData, setLbData] = useState<Leaderboard>();
-  const [changes, setChanges] = useState<{ [key: number]: number }>({});
   const [lastUpdated, setLastUpdated] = useState<Date>();
-  const [interval] = useState<number>(30000);
-
-  const oldLb = useRef<Leaderboard>();
+  const [interval] = useState<number>(20000);
 
   useEffect(() => {
     let killMe = false;
     const loop = async () => {
-      // get muni
-      const data = await getLeaderboardData();
-      if (killMe) return;
-      updateData(data);
-      await sleep(interval);
-      loop();
+      while (!killMe) {
+        try {
+          const data = await getLeaderboardData();
+          if (killMe) break;
+          setLbData(data);
+          setLastUpdated(new Date());
+        } finally {
+          await sleep(interval);
+        }
+      }
     };
     loop();
     () => {
@@ -35,32 +33,8 @@ export const LeaderboardProvider = ({ children }) => {
     };
   }, [interval]);
 
-  const updateData = (data: Leaderboard) => {
-    if (oldLb.current) {
-      setChanges((previousChanges) => {
-        const changes = data.map((d) => {
-          const old = oldLb.current?.find((olb) => olb.rank === d.rank);
-          const dPoints = d.points - old.points;
-          return [
-            d.rank,
-            // Only update if the new point is not 0 and not old enough
-            dPoints > 0
-              ? dPoints
-              : DateTime.fromISO(d.date).diffNow().as("minutes") > -4
-              ? previousChanges[d.rank]
-              : 0,
-          ];
-        });
-        return Object.fromEntries(changes);
-      });
-    }
-    oldLb.current = data;
-    setLbData(data);
-    setLastUpdated(new Date());
-  };
-
   return (
-    <LeaderboardContext.Provider value={{ lbData, changes, lastUpdated }}>
+    <LeaderboardContext.Provider value={{ lbData, lastUpdated }}>
       {children}
     </LeaderboardContext.Provider>
   );

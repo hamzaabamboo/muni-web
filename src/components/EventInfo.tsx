@@ -46,9 +46,15 @@ const CountdownTimer = ({
   }, [startTime, rankEndTime]);
 
   useEffect(() => {
+    let canceled = false;
     const f = () => {
       const diffEnd = DateTime.fromISO(rankEndTime).diffNow();
       const diffResults = DateTime.fromISO(resultsTime).diffNow();
+      const timeInEvent = Math.floor(
+        DateTime.now().diff(DateTime.fromISO(startTime)).as("hours")
+      );
+
+      if (canceled) return;
       if (diffEnd.as("hours") > 0) {
         setTimeUntil("Time until end");
         setTimeLeft(diffEnd.toFormat("hh:mm"));
@@ -56,10 +62,6 @@ const CountdownTimer = ({
         setTimeUntil("Time until results");
         setTimeLeft(diffResults.toFormat("hh:mm"));
       }
-
-      const timeInEvent = Math.floor(
-        DateTime.now().diff(DateTime.fromISO(startTime)).as("hours")
-      );
 
       setProgress(
         `${
@@ -78,6 +80,7 @@ const CountdownTimer = ({
 
     () => {
       clearInterval(interval);
+      canceled = true;
     };
   }, [totalHours]);
   return (

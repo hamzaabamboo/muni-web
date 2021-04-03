@@ -14,6 +14,7 @@ import {
   Th,
   Thead,
   Text,
+  Tr,
 } from "@chakra-ui/react";
 import React, { useContext } from "react";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
@@ -37,11 +38,11 @@ export const RankDetailModal: React.FC<{
             <Flex>
               <Table variant="small">
                 <Thead>
-                  <Th>
-                    <Td>Score</Td>
-                    <Td>Change</Td>
-                    <Td>Date/Time</Td>
-                  </Th>
+                  <Tr>
+                    <Th>Score</Th>
+                    <Th>Change</Th>
+                    <Th>Date/Time</Th>
+                  </Tr>
                 </Thead>
                 <Tbody></Tbody>
               </Table>

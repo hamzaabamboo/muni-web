@@ -1,10 +1,12 @@
 import { getAllLeaderboard } from "api/getAllLeaderboard";
 import { useLocalStorage } from "hooks/useLocalstorage";
+import { usePromiseEffect } from "hooks/usePromiseEffect";
 import { DateTime } from "luxon";
 import {
   createContext,
   Dispatch,
   SetStateAction,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -31,16 +33,14 @@ export const GraphProvider = ({ children }) => {
   const [allTiers, setAllTiers] = useState<Tier[]>([]);
   const lastUpdated = useRef<Record<string, DateTime>>({});
 
-  useEffect(() => {
-    const f = async () => {
-      const data = await getAllLeaderboard();
-      const allTiers = Array.from(new Set(data.map((d) => d.rank as Tier)));
-      setAllTiers(allTiers);
-      if (displayTier === null) setDisplayTier(allTiers);
-      setPoints(data);
-    };
-    f();
+  const updateData = useCallback((data: LeaderboardPoint[]) => {
+    const allTiers = Array.from(new Set(data.map((d) => d.rank as Tier)));
+    setAllTiers(allTiers);
+    if (displayTier === null) setDisplayTier(allTiers);
+    setPoints(data);
   }, []);
+
+  usePromiseEffect(getAllLeaderboard, updateData);
 
   useEffect(() => {
     if (!lbData) return;

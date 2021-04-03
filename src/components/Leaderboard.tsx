@@ -20,6 +20,7 @@ import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { getLastUpdatedTime } from "utils/time";
 import { CenteredSpinner } from "./CenteredSpinner";
 import { formatPoints } from "utils/formatPoints";
+import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
 
 interface LeaderboardProps {
   interval?: number;
@@ -34,7 +35,8 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   isPlaying: showIsPlaying = true,
   onTierSelected,
 }) => {
-  const { lbData, changes, lastUpdated } = useContext(LeaderboardContext);
+  const { lbData, lastUpdated } = useContext(LeaderboardContext);
+  const { changes } = useContext(LeaderboardChangesContext);
   const { event } = useContext(EventContext);
   const breakpoint = useBreakpoint();
   const lastUpdatedText = useMemo(() => {
