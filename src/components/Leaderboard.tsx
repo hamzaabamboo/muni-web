@@ -127,7 +127,8 @@ export const Leaderboard: FC<LeaderboardProps> = ({
                 {index + 1 < arr.length && !isNaN(Number(arr[index + 1]?.rate))
                   ? getToBoatTime(
                       ((entry.points - arr[index + 1]?.points) /
-                        (Number(arr[index + 1]?.rate) - Number(entry.rate))) *
+                        (Number(arr[index + 1]?.rate) -
+                          Number(entry.rate === "???" ? 0 : entry.rate))) *
                         60 *
                         60 *
                         1000
@@ -142,7 +143,8 @@ export const Leaderboard: FC<LeaderboardProps> = ({
     </Flex>
   );
 };
-const getIsPlayingStyles = (
+
+export const getIsPlayingStyles = (
   data: LeaderboardEntry,
   lastUpdated: number,
   eventType: EventType
