@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import * as d3 from "d3";
 import {
   Axis,
@@ -14,11 +14,12 @@ import {
 import { LeaderboardPoint } from "types/Leaderboard";
 import { DateTime } from "luxon";
 import { formatPoints } from "utils/formatPoints";
-import { CenteredSpinner } from "./CenteredSpinner";
 import { useBreakpoint } from "@chakra-ui/react";
+import { CenteredSpinner } from "./CenteredSpinner";
 
 const ANIMATION_SPEED = 500;
 export const Graph = ({
+  id,
   points,
   startDate,
   endDate,
@@ -27,6 +28,7 @@ export const Graph = ({
   height: _height = 600,
   ...props
 }: {
+  id: string;
   points: LeaderboardPoint[];
   startDate: string;
   endDate: string;
@@ -35,6 +37,8 @@ export const Graph = ({
   width?: number;
   height?: number;
 }) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+
   const svg = useRef<Selection<any, any, any, any>>();
 
   const x = useRef<ScaleTime<number, number, never>>();
@@ -68,7 +72,7 @@ export const Graph = ({
   }, [margin, _height]);
 
   useEffect(() => {
-    d3.select("#lbgraph").selectAll("*").remove();
+    d3.select(svgRef.current).selectAll("*").remove();
 
     zoom.current = d3
       .zoom()
@@ -84,7 +88,7 @@ export const Graph = ({
       .on("zoom", zoomed);
 
     svg.current = d3
-      .select("#lbgraph")
+      .select(svgRef.current)
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -96,7 +100,7 @@ export const Graph = ({
     xZoomed.current = x.current;
     clip.current = svg.current
       .append("clipPath")
-      .attr("id", "graph")
+      .attr("id", "clip-" + id)
       .append("rect")
       .attr("width", width)
       .attr("height", height);
@@ -135,15 +139,15 @@ export const Graph = ({
 
     graph.current = svg.current
       .append("g")
-      .attr("clip-path", "url(#graph)")
+      .attr("clip-path", `url(#clip-${id})`)
       .attr("id", "lines");
 
     if (!isLive) {
-      d3.select("#lbgraph").call(zoom.current);
+      d3.select(svgRef.current).call(zoom.current);
     }
 
     () => {
-      d3.select("#lbgraph").selectAll("*").remove();
+      d3.select(svgRef.current).selectAll("*").remove();
     };
   }, [width, height, isLive]);
 
@@ -293,5 +297,6 @@ export const Graph = ({
     updateAxes(true);
   }, [points, width, height, isSmall]);
 
-  return <svg id="lbgraph"></svg>;
+  if (width === 0 && height === 0) return <CenteredSpinner />;
+  return <svg ref={svgRef}></svg>;
 };

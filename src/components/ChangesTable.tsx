@@ -21,7 +21,7 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
     [pastUpdates, threshold, tier]
   );
   return (
-    <Box h="full" position="relative" maxH="600px" overflowX="auto">
+    <Box h="full" w="full" position="relative" maxH="600px" overflowX="auto">
       <Table size="sm" variant="simple">
         <Thead>
           <Tr>

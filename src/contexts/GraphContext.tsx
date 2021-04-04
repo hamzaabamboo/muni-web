@@ -18,29 +18,14 @@ import { LeaderboardContext } from "./LeaderboardContext";
 
 export const GraphContext = createContext<{
   points?: LeaderboardPoint[];
-  displayTier?: Tier[];
-  setDisplayTier?: Dispatch<SetStateAction<Tier[]>>;
-  allTiers?: Tier[];
 }>({});
 
 export const GraphProvider = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
-  const [_points, setPoints] = useState<LeaderboardPoint[]>([]);
-  const [displayTier, setDisplayTier] = useLocalStorage<Tier[]>(
-    "displayTier",
-    null
-  );
-  const [allTiers, setAllTiers] = useState<Tier[]>([]);
+  const [points, setPoints] = useState<LeaderboardPoint[]>([]);
   const lastUpdated = useRef<Record<string, DateTime>>({});
 
-  const updateData = useCallback((data: LeaderboardPoint[]) => {
-    const allTiers = Array.from(new Set(data.map((d) => d.rank as Tier)));
-    setAllTiers(allTiers);
-    if (displayTier === null) setDisplayTier(allTiers);
-    setPoints(data);
-  }, []);
-
-  usePromiseEffect(getAllLeaderboard, updateData);
+  usePromiseEffect(getAllLeaderboard, setPoints);
 
   useEffect(() => {
     if (!lbData) return;
@@ -59,16 +44,7 @@ export const GraphProvider = ({ children }) => {
     if (updated.length > 0) setPoints((p) => [...p, ...updated]);
   }, [lbData]);
 
-  const points = useMemo(() => {
-    if (!displayTier) return _points;
-    return _points.filter((f) => displayTier.includes(f.rank as Tier));
-  }, [_points, displayTier]);
-
   return (
-    <GraphContext.Provider
-      value={{ points, displayTier, setDisplayTier, allTiers }}
-    >
-      {children}
-    </GraphContext.Provider>
+    <GraphContext.Provider value={{ points }}>{children}</GraphContext.Provider>
   );
 };

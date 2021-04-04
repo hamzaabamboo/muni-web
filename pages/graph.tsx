@@ -9,6 +9,7 @@ import { TierSelector } from "components/TierSelector";
 import { Navigation } from "components/Navigation";
 import { useSize } from "web-api-hooks";
 import { ScoreGraph } from "components/ScoreGraph";
+import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
@@ -35,10 +36,12 @@ export default function GraphPage() {
         This is super experimental, muni may break
       </Text>
       <Text textAlign="center">Last Updated: {lastUpdatedText}</Text>
-      <Box ref={graphRef} w={"full"} h="600px">
-        <ScoreGraph width={width} height={height} />
-      </Box>
-      <TierSelector />
+      <GraphDisplayProvider>
+        <Box ref={graphRef} w={"full"} h="600px">
+          <ScoreGraph width={width} height={height} />
+        </Box>
+        <TierSelector />
+      </GraphDisplayProvider>
     </>
   );
 }

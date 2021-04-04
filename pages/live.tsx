@@ -9,6 +9,8 @@ import { Leaderboard } from "components/Leaderboard";
 import { ScoreGraph } from "components/ScoreGraph";
 import { RankDetailModal } from "components/RankDetailModal";
 import { Tier } from "types/Leaderboard";
+import { GraphContext, GraphProvider } from "src/contexts/GraphContext";
+import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 
 export default function LivePage() {
   const graphRef = useRef<HTMLDivElement>(null);
@@ -26,18 +28,21 @@ export default function LivePage() {
         minH="500px"
       >
         <Box flex="1">
-          <Box ref={graphRef} h="full" minH="400px" maxH="600px">
-            <ScoreGraph width={width} height={height} isSmall isLive />
-          </Box>
-          <TierSelector />
+          <GraphDisplayProvider>
+            <Box ref={graphRef} h="full" minH="400px" maxH="600px">
+              <ScoreGraph width={width} height={height} isSmall isLive />
+            </Box>
+            <TierSelector />
+          </GraphDisplayProvider>
         </Box>
         <Box px="8" flex="1">
           <Leaderboard isSmall onTierSelected={(t) => setCurrentTier(t)} />
-          <RankDetailModal
-            tier={currentTier}
-            onClose={() => setCurrentTier(undefined)}
-          />
-          ;
+          <GraphDisplayProvider>
+            <RankDetailModal
+              tier={currentTier}
+              onClose={() => setCurrentTier(undefined)}
+            />
+          </GraphDisplayProvider>
         </Box>
       </Flex>
     </Flex>
