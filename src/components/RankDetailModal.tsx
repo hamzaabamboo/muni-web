@@ -11,17 +11,12 @@ import {
   ModalOverlay,
   Text,
 } from "@chakra-ui/react";
-import { thresholds } from "constants/threshold";
 import { DateTime } from "luxon";
-import React, { useContext, useEffect, useMemo, useRef } from "react";
-import { EventContext } from "src/contexts/EventContext";
-import { GraphContext } from "src/contexts/GraphContext";
+import React, { useContext } from "react";
 import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { Tier } from "types/Leaderboard";
-import { useSize } from "web-api-hooks";
 import { ChangesTable } from "./ChangesTable";
-import { Graph } from "./Graph";
 import { PlayerGraph } from "./PlayerGraph";
 
 export const RankDetailModal: React.FC<{

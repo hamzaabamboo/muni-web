@@ -1,6 +1,6 @@
-import React, { useContext, useMemo, useRef } from "react";
+import React, { useContext, useMemo, useRef, useState } from "react";
 
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Flex, Switch, Text } from "@chakra-ui/react";
 import { EventInfo } from "components/EventInfo";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { DateTime } from "luxon";
@@ -10,12 +10,17 @@ import { Navigation } from "components/Navigation";
 import { useSize } from "web-api-hooks";
 import { ScoreGraph } from "components/ScoreGraph";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
+import { useLocalStorage } from "hooks/useLocalstorage";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
 
   const graphRef = useRef<HTMLDivElement>(null);
   const [width, height] = useSize(graphRef);
+  const [showTooltip, setShowTooltip] = useLocalStorage<boolean>(
+    "showTooltip",
+    false
+  );
 
   const lastUpdatedText = useMemo(() => {
     const ms = DateTime.fromJSDate(lastUpdated).diffNow().as("milliseconds");
@@ -32,13 +37,28 @@ export default function GraphPage() {
     <>
       <EventInfo />
       <Navigation />
-      <Text color="red.600" fontStyle="italic" textAlign="center">
-        This is super experimental, muni may break
-      </Text>
       <Text textAlign="center">Last Updated: {lastUpdatedText}</Text>
+      <Flex alignItems="center">
+        <Switch
+          isChecked={showTooltip}
+          onChange={(c) => setShowTooltip(c.target.checked)}
+        />
+        <Text ml={2}>
+          Show Details on hover
+          <Text
+            ml={1}
+            as="span"
+            color="red.600"
+            fontStyle="italic"
+            textAlign="center"
+          >
+            (This is super experimental, muni may break)
+          </Text>
+        </Text>
+      </Flex>
       <GraphDisplayProvider>
         <Box ref={graphRef} w={"full"} h="600px">
-          <ScoreGraph width={width} height={height} />
+          <ScoreGraph showTooltip={showTooltip} width={width} height={height} />
         </Box>
         <TierSelector />
       </GraphDisplayProvider>

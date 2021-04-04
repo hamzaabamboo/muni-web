@@ -9,11 +9,13 @@ export const ScoreGraph = ({
   height,
   isSmall = false,
   isLive = false,
+  showTooltip = false,
 }: {
   width?: number;
   height?: number;
   isSmall?: boolean;
   isLive?: boolean;
+  showTooltip?: boolean;
 }) => {
   const { points } = useContext(GraphDisplayContext);
   const { event } = useContext(EventContext);
@@ -28,6 +30,7 @@ export const ScoreGraph = ({
       height={height}
       isSmall={isSmall}
       isLive={isLive}
+      showTooltip={showTooltip}
     />
   );
 };

@@ -1,8 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import * as d3 from "d3";
 import {
   Axis,
+  Bisector,
   D3ZoomEvent,
+  interpolateRainbow,
+  interpolateSinebow,
+  interpolateTurbo,
   isoParse,
   ScaleLinear,
   ScaleOrdinal,
@@ -11,11 +15,12 @@ import {
   ZoomBehavior,
   ZoomTransform,
 } from "d3";
-import { LeaderboardPoint } from "types/Leaderboard";
+import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { DateTime } from "luxon";
 import { formatPoints } from "utils/formatPoints";
-import { useBreakpoint } from "@chakra-ui/react";
+import { Box, useBreakpoint } from "@chakra-ui/react";
 import { CenteredSpinner } from "./CenteredSpinner";
+import { allTiers, tierBorders } from "constants/tierborder";
 
 const ANIMATION_SPEED = 500;
 export const Graph = ({
@@ -26,6 +31,7 @@ export const Graph = ({
   isLive = false,
   width: _width,
   height: _height = 600,
+  showTooltip = false,
   ...props
 }: {
   id: string;
@@ -36,16 +42,18 @@ export const Graph = ({
   isSmall?: boolean;
   width?: number;
   height?: number;
+  showTooltip?: boolean;
 }) => {
-  const svgRef = useRef<SVGSVGElement>(null);
+  const parentRef = useRef<HTMLDivElement>(null);
 
+  const parent = useRef<Selection<HTMLDivElement, any, any, any>>();
   const svg = useRef<Selection<any, any, any, any>>();
 
   const x = useRef<ScaleTime<number, number, never>>();
   const xAxis = useRef<Axis<any>>();
   const y = useRef<ScaleLinear<number, number, never>>();
   const yAxis = useRef<Axis<any>>();
-  const color = useRef<ScaleOrdinal<any, any, never>>();
+  const color = useRef<ScaleOrdinal<number, string, never>>();
 
   const clip = useRef<Selection<any, any, any, any>>();
   const graph = useRef<Selection<any, any, any, any>>();
@@ -53,6 +61,19 @@ export const Graph = ({
   const zoom = useRef<ZoomBehavior<any, any>>();
   const xZoomed = useRef<ScaleTime<any, any, any>>();
   const zoomTransform = useRef<ZoomTransform>();
+
+  const bisectX = useRef(
+    d3.bisector<LeaderboardPoint, Date>((d) => {
+      return isoParse(d.date);
+    }).left
+  );
+
+  const tooltips = useRef<Selection<any, any, any, any>>();
+
+  const xLine = useRef<Selection<any, any, any, any>>();
+  const toolTip = useRef<Selection<any, any, any, any>>();
+
+  const hoverBoundary = useRef<Selection<any, any, any, any>>();
 
   const breakpoint = useBreakpoint();
 
@@ -72,8 +93,6 @@ export const Graph = ({
   }, [margin, _height]);
 
   useEffect(() => {
-    d3.select(svgRef.current).selectAll("*").remove();
-
     zoom.current = d3
       .zoom()
       .scaleExtent([1, 500])
@@ -87,8 +106,9 @@ export const Graph = ({
       ])
       .on("zoom", zoomed);
 
-    svg.current = d3
-      .select(svgRef.current)
+    parent.current = d3.select(parentRef.current);
+    svg.current = parent.current
+      .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -124,38 +144,61 @@ export const Graph = ({
     yAxis.current = d3.axisLeft(y.current);
 
     color.current = d3
-      .scaleOrdinal()
-      .range([
-        "#e41a1c",
-        "#377eb8",
-        "#4daf4a",
-        "#984ea3",
-        "#ff7f00",
-        "#ffff33",
-        "#a65628",
-        "#f781bf",
-        "#999999",
-      ]);
-
+      .scaleOrdinal<number, string, never>()
+      .range(
+        Array(30)
+          .fill(null)
+          .map((_, i, arr) => interpolateSinebow(i / arr.length))
+      )
+      .domain(allTiers);
     graph.current = svg.current
       .append("g")
       .attr("clip-path", `url(#clip-${id})`)
       .attr("id", "lines");
 
-    if (!isLive) {
-      d3.select(svgRef.current).call(zoom.current);
+    if (showTooltip) {
+      tooltips.current = svg.current
+        .append("g")
+        .attr("class", "tooltip")
+        .style("padding", "2px")
+        .style("background-color", "red");
+
+      xLine.current = tooltips.current
+        .append("line")
+        .style("stroke-width", 1)
+        .style("stroke", "grey");
+
+      toolTip.current = parent.current
+        .append("div")
+        .style("display", null)
+        .style("position", "absolute")
+        .style("pointer-events", "none")
+        .style("padding", "2px")
+        .style("background-color", "lightgray")
+        .style("opacity", 0.8)
+        .style("z-index", 3);
+
+      toolTip.current.append("p").style("font-size", "0.9em");
+      toolTip.current
+        .append("ul")
+        .attr("class", "scoreboard")
+        .style("font-size", "0.75em")
+        .style("list-style-type", "none");
     }
 
-    () => {
-      d3.select(svgRef.current).selectAll("*").remove();
+    return () => {
+      parent.current.selectAll("*").remove();
     };
-  }, [width, height, isLive]);
+  }, [width, height, isLive, showTooltip]);
 
   function zoomed(event: D3ZoomEvent<any, any>) {
     zoomTransform.current = event.transform;
 
     xZoomed.current = zoomTransform.current.rescaleX(x.current);
     xAxis.current = d3.axisBottom(xZoomed.current);
+
+    tooltips.current?.style("opacity", 0);
+    toolTip.current?.style("display", "none");
 
     updateAxes();
 
@@ -170,6 +213,110 @@ export const Graph = ({
         })(d[1]);
     });
   }
+
+  const updateTooltip = useCallback(
+    (event: MouseEvent) => {
+      // recover coordinate we need
+      if (points.length === 0) return;
+      const pos = d3.pointer(event);
+      let x0 = xZoomed.current.invert(pos[0]);
+      let i = bisectX.current(points, x0, 1);
+
+      if (!points[i]) {
+        tooltips.current.style("opacity", 0);
+        toolTip.current.style("display", "none");
+        return;
+      }
+      tooltips.current.style("opacity", 1);
+      toolTip.current.style("display", "block");
+
+      const x = xZoomed.current(isoParse(points[i].date));
+      const groups = d3
+        .groups(points, (d) => d.rank)
+        .sort((a, b) => a[0] - b[0]);
+
+      const latestPoint = groups
+        .map(([tier, points]) => {
+          return [tier, points[bisectX.current(points, x0, 1)]] as [
+            Tier,
+            LeaderboardPoint
+          ];
+        })
+        .filter((p) => !!p[1]);
+
+      xLine.current
+        .attr("y1", 0)
+        .attr("y2", height)
+        .attr("x1", x)
+        .attr("x2", x);
+
+      const divPos = d3.pointer(event, parent.current);
+
+      const tooltip = toolTip.current.selectAll("p");
+      tooltip.text(DateTime.fromJSDate(x0).toFormat("HH:mm:ss DD"));
+
+      toolTip.current.style("left", divPos[0] + 10 + "px");
+      toolTip.current.style("top", divPos[1] + "px");
+
+      const tierList = toolTip.current
+        .select(".scoreboard")
+        .selectAll("li")
+        .data(latestPoint);
+
+      tierList.enter().append("li");
+      tierList.exit().remove();
+      tierList.text((d) => `T${formatPoints(d[0])}: ${d[1].points}`);
+
+      const graphPoint = tooltips.current
+        .selectAll("circle")
+        .data(latestPoint, (k) => k[0]);
+
+      graphPoint
+        .enter()
+        .append("circle")
+        .attr("class", "point")
+        .attr("tier", (d) => d[0])
+        .attr("r", 4);
+
+      graphPoint.exit().remove();
+
+      graphPoint
+        .attr("fill", (d) => color.current(d[0]))
+        .attr("cx", x)
+        .attr("cy", (d) => y.current(d[1].points));
+    },
+    [height, points]
+  );
+
+  function mouseout() {
+    tooltips.current.style("opacity", 0);
+    toolTip.current.style("display", "none");
+  }
+
+  useEffect(() => {
+    hoverBoundary.current = svg.current
+      .append("rect")
+      .style("fill", "none")
+      .style("pointer-events", "all")
+      .attr("width", width)
+      .attr("height", height);
+
+    if (showTooltip) {
+      hoverBoundary.current
+        .on("mousemove", (event) => {
+          updateTooltip(event);
+        })
+        .on("mouseout", mouseout);
+    }
+
+    if (!isLive) {
+      hoverBoundary.current.call(zoom.current);
+    }
+
+    return () => {
+      hoverBoundary.current.remove();
+    };
+  }, [width, height, updateTooltip, showTooltip]);
 
   const updateAxes = useCallback(
     (withTransition: boolean = false) => {
@@ -234,8 +381,6 @@ export const Graph = ({
 
     const bounds = [timeStart, timeEnd];
 
-    color.current = color.current.domain(new Set(points.map((p) => p.rank)));
-
     x.current.domain(bounds);
 
     if (zoomTransform.current) {
@@ -295,8 +440,8 @@ export const Graph = ({
       });
 
     updateAxes(true);
-  }, [points, width, height, isSmall]);
+  }, [points, width, height, isSmall, showTooltip]);
 
   if (width === 0 && height === 0) return <CenteredSpinner />;
-  return <svg ref={svgRef}></svg>;
+  return <Box ref={parentRef}></Box>;
 };
