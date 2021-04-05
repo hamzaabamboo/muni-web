@@ -11,15 +11,20 @@ import { useSize } from "web-api-hooks";
 import { ScoreGraph } from "components/ScoreGraph";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { useLocalStorage } from "hooks/useLocalstorage";
+import { GraphOptions } from "components/GraphOptions";
+import { GraphFlags } from "components/Graph";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
 
   const graphRef = useRef<HTMLDivElement>(null);
   const [width, height] = useSize(graphRef);
-  const [showTooltip, setShowTooltip] = useLocalStorage<boolean>(
-    "showTooltip",
-    false
+  const [graphFlags, setGraphFlags] = useLocalStorage<GraphFlags>(
+    "graphFlags",
+    {
+      showTooltip: false,
+      advancedZoom: false,
+    }
   );
 
   const lastUpdatedText = useMemo(() => {
@@ -38,27 +43,10 @@ export default function GraphPage() {
       <EventInfo />
       <Navigation />
       <Text textAlign="center">Last Updated: {lastUpdatedText}</Text>
-      <Flex alignItems="center">
-        <Switch
-          isChecked={showTooltip}
-          onChange={(c) => setShowTooltip(c.target.checked)}
-        />
-        <Text ml={2}>
-          Show Details on hover
-          <Text
-            ml={1}
-            as="span"
-            color="red.600"
-            fontStyle="italic"
-            textAlign="center"
-          >
-            (This is super experimental, muni may break)
-          </Text>
-        </Text>
-      </Flex>
+      <GraphOptions graphFlags={graphFlags} setGraphFlags={setGraphFlags} />
       <GraphDisplayProvider>
         <Box ref={graphRef} w={"full"} h="600px">
-          <ScoreGraph showTooltip={showTooltip} width={width} height={height} />
+          <ScoreGraph graphFlags={graphFlags} width={width} height={height} />
         </Box>
         <TierSelector />
       </GraphDisplayProvider>

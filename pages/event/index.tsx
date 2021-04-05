@@ -7,6 +7,15 @@ import React, { Fragment, useCallback, useState } from "react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/router";
 
+const base = process.env.NEXT_PUBLIC_BASE_URL || "";
+
+export const getStaticProps = () => {
+  return {
+    props: {
+      isEventPage: false,
+    },
+  };
+};
 const AllEvents = () => {
   const [allEvents, setAllEvents] = useState<Event[]>([]);
   const router = useRouter();
@@ -27,13 +36,14 @@ const AllEvents = () => {
               justifyContent="space-between"
               alignItems="center"
               onClick={() => {
-                router.push(`/event/${p.eventid}`);
+                router.push(`${base}/event/${p.eventid}`);
               }}
             >
               <Box>
                 <Text fontSize="2xl" fontWeight="bold">
                   {p.name}
                 </Text>
+                <Text fontSize="xl">{p.type}</Text>
                 <Text>
                   {DateTime.fromISO(p.startdate).toFormat("dd/MM/yyyy HH:mm")} -{" "}
                   {DateTime.fromISO(p.enddate).toFormat("dd/MM/yyyy HH:mm")}

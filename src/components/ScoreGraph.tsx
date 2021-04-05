@@ -2,20 +2,20 @@ import { useContext } from "react";
 import { EventContext } from "src/contexts/EventContext";
 import { GraphContext } from "src/contexts/GraphContext";
 import { GraphDisplayContext } from "src/contexts/GraphDisplayContext";
-import { Graph } from "./Graph";
+import { Graph, GraphFlags } from "./Graph";
 
 export const ScoreGraph = ({
   width,
   height,
   isSmall = false,
   isLive = false,
-  showTooltip = false,
+  graphFlags,
 }: {
   width?: number;
   height?: number;
   isSmall?: boolean;
   isLive?: boolean;
-  showTooltip?: boolean;
+  graphFlags?: GraphFlags;
 }) => {
   const { points } = useContext(GraphDisplayContext);
   const { event } = useContext(EventContext);
@@ -30,7 +30,7 @@ export const ScoreGraph = ({
       height={height}
       isSmall={isSmall}
       isLive={isLive}
-      showTooltip={showTooltip}
+      graphFlags={graphFlags}
     />
   );
 };

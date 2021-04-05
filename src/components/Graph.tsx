@@ -4,6 +4,8 @@ import * as d3 from "d3";
 import {
   Axis,
   D3ZoomEvent,
+  interpolateCool,
+  interpolateRainbow,
   interpolateSinebow,
   isoParse,
   ScaleLinear,
@@ -18,7 +20,10 @@ import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { formatPoints } from "utils/formatPoints";
 import { CenteredSpinner } from "./CenteredSpinner";
-
+export interface GraphFlags {
+  showTooltip?: boolean;
+  advancedZoom?: boolean;
+}
 const ANIMATION_SPEED = 500;
 export const Graph = ({
   id,
@@ -28,7 +33,10 @@ export const Graph = ({
   isLive = false,
   width: _width,
   height: _height = 600,
-  showTooltip = false,
+  graphFlags = {
+    showTooltip: false,
+    advancedZoom: false,
+  },
   ...props
 }: {
   id: string;
@@ -39,8 +47,9 @@ export const Graph = ({
   isSmall?: boolean;
   width?: number;
   height?: number;
-  showTooltip?: boolean;
+  graphFlags?: GraphFlags;
 }) => {
+  const { showTooltip, advancedZoom } = graphFlags;
   const parentRef = useRef<HTMLDivElement>(null);
 
   const parent = useRef<Selection<HTMLDivElement, any, any, any>>();
@@ -57,6 +66,7 @@ export const Graph = ({
 
   const zoom = useRef<ZoomBehavior<any, any>>();
   const xZoomed = useRef<ScaleTime<any, any, any>>();
+  const yZoomed = useRef<ScaleLinear<any, any, any>>();
   const zoomTransform = useRef<ZoomTransform>();
 
   const bisectX = useRef(
@@ -145,7 +155,7 @@ export const Graph = ({
       .range(
         Array(30)
           .fill(null)
-          .map((_, i, arr) => interpolateSinebow(i / arr.length))
+          .map((_, i, arr) => interpolateRainbow((3 * i) / arr.length))
       )
       .domain(allTiers);
     graph.current = svg.current
@@ -186,30 +196,7 @@ export const Graph = ({
     return () => {
       parent.current.selectAll("*").remove();
     };
-  }, [width, height, isLive, showTooltip]);
-
-  function zoomed(event: D3ZoomEvent<any, any>) {
-    zoomTransform.current = event.transform;
-
-    xZoomed.current = zoomTransform.current.rescaleX(x.current);
-    xAxis.current = d3.axisBottom(xZoomed.current);
-
-    tooltips.current?.style("opacity", 0);
-    toolTip.current?.style("display", "none");
-
-    updateAxes();
-
-    graph.current.selectAll("path.line").attr("d", (d: any) => {
-      return d3
-        .line<LeaderboardPoint>()
-        .x(function (d) {
-          return xZoomed.current(isoParse(d.date));
-        })
-        .y(function (d) {
-          return y.current(d.points);
-        })(d[1]);
-    });
-  }
+  }, [width, height, isLive, showTooltip, advancedZoom]);
 
   const updateTooltip = useCallback(
     (event: MouseEvent) => {
@@ -313,7 +300,27 @@ export const Graph = ({
     return () => {
       hoverBoundary.current.remove();
     };
-  }, [width, height, updateTooltip, showTooltip]);
+  }, [width, height, updateTooltip, showTooltip, advancedZoom]);
+
+  const updateZoom = useCallback(() => {
+    xZoomed.current = zoomTransform.current.rescaleX(x.current);
+    xAxis.current = d3.axisBottom(xZoomed.current);
+    if (!advancedZoom) return;
+    const bounds = xZoomed.current.domain();
+    const data = points.filter(
+      (p) =>
+        DateTime.fromISO(p.date).toJSDate() >= bounds[0] &&
+        DateTime.fromISO(p.date).toJSDate() <= bounds[1]
+    );
+
+    const domain = [
+      d3.min(data, (d) => d.points),
+      d3.max(data, (d) => d.points),
+    ];
+
+    yZoomed.current = y.current.domain(domain);
+    yAxis.current = d3.axisLeft(yZoomed.current);
+  }, [points, advancedZoom]);
 
   const updateAxes = useCallback(
     (withTransition: boolean = false) => {
@@ -335,7 +342,7 @@ export const Graph = ({
         .duration(withTransition ? ANIMATION_SPEED : 0)
         .call(
           d3
-            .axisLeft(y.current)
+            .axisLeft(yZoomed.current)
             .tickSize(-width)
             .tickFormat(() => "") as any
         );
@@ -355,6 +362,30 @@ export const Graph = ({
         );
     },
     [height, width, isSmall]
+  );
+
+  const zoomed = useCallback(
+    (event: D3ZoomEvent<any, any>) => {
+      zoomTransform.current = event.transform;
+
+      tooltips.current?.style("opacity", 0);
+      toolTip.current?.style("display", "none");
+
+      updateZoom();
+      updateAxes();
+
+      graph.current.selectAll("path.line").attr("d", (d: any) => {
+        return d3
+          .line<LeaderboardPoint>()
+          .x(function (d) {
+            return xZoomed.current(isoParse(d.date));
+          })
+          .y(function (d) {
+            return yZoomed.current(d.points);
+          })(d[1]);
+      });
+    },
+    [updateZoom, updateAxes]
   );
 
   useEffect(() => {
@@ -382,11 +413,6 @@ export const Graph = ({
 
     x.current.domain(bounds);
 
-    if (zoomTransform.current) {
-      xZoomed.current = zoomTransform.current.rescaleX(x.current);
-      xAxis.current = d3.axisBottom(xZoomed.current);
-    }
-
     const yBounds =
       isLive && eventEnd.diffNow().as("minute") < 0
         ? [0, d3.max(points, (d) => d.points)]
@@ -406,6 +432,19 @@ export const Graph = ({
           ];
 
     y.current.domain(yBounds).nice();
+
+    if (zoomTransform.current) {
+      updateZoom();
+    } else {
+      xZoomed.current = x.current;
+      yZoomed.current = y.current;
+    }
+    if (!advancedZoom) {
+      xZoomed.current = x.current;
+      yZoomed.current = y.current;
+    }
+    xAxis.current = d3.axisBottom(xZoomed.current);
+    yAxis.current = d3.axisLeft(yZoomed.current);
 
     let graphData = d3.groups(points, (d) => d.rank);
 
@@ -437,12 +476,12 @@ export const Graph = ({
             return xZoomed.current(isoParse(d.date));
           })
           .y(function (d) {
-            return y.current(d.points);
+            return yZoomed.current(d.points);
           })(d[1]);
       });
 
     updateAxes(true);
-  }, [points, width, height, isSmall, showTooltip]);
+  }, [points, width, height, isSmall, showTooltip, advancedZoom]);
 
   if (width === 0 && height === 0) return <CenteredSpinner />;
   return <Box ref={parentRef}></Box>;

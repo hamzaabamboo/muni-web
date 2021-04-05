@@ -1,11 +1,12 @@
-import { Box, Flex, Switch, Text } from "@chakra-ui/react";
+import { Box, Flex, Switch, Text, Image } from "@chakra-ui/react";
 import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
 import { EventInfo } from "components/EventInfo";
-import { Leaderboard } from "components/Leaderboard";
+import { GraphFlags } from "components/Graph";
+import { GraphOptions } from "components/GraphOptions";
 import { ScoreGraph } from "components/ScoreGraph";
 import { TierSelector } from "components/TierSelector";
-import { isoParse, max, maxIndex } from "d3";
+import { isoParse, maxIndex } from "d3";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import Head from "next/head";
 import React, { useMemo, useRef } from "react";
@@ -23,9 +24,12 @@ export default function GraphPage(props: {
   const { event, points } = props;
   const graphRef = useRef<HTMLDivElement>(null);
   const [width, height] = useSize(graphRef);
-  const [showTooltip, setShowTooltip] = useLocalStorage<boolean>(
-    "showTooltip",
-    false
+  const [graphFlags, setGraphFlags] = useLocalStorage<GraphFlags>(
+    "graphFlags",
+    {
+      showTooltip: false,
+      advancedZoom: false,
+    }
   );
 
   const leaderboardPoint = useMemo(() => {
@@ -57,29 +61,18 @@ export default function GraphPage(props: {
                   <ScoreGraph
                     width={width}
                     height={height}
-                    showTooltip={showTooltip}
+                    graphFlags={graphFlags}
                     isSmall
                   />
                 </Box>
-                <Flex alignItems="center">
-                  <Switch
-                    isChecked={showTooltip}
-                    onChange={(c) => setShowTooltip(c.target.checked)}
-                  />
-                  <Text ml={2}>
-                    Show Details on hover
-                    <Text
-                      ml={1}
-                      as="span"
-                      color="red.600"
-                      fontStyle="italic"
-                      textAlign="center"
-                    >
-                      (This is super experimental, muni may break)
-                    </Text>
-                  </Text>
-                </Flex>
+                <GraphOptions
+                  graphFlags={graphFlags}
+                  setGraphFlags={setGraphFlags}
+                />
                 <TierSelector />
+                <Image
+                  src={`http://projectdivar.com:8080/event/t20_${event.eventid}.png`}
+                />
               </Flex>
               <Flex flex={1}>
                 <AfterEventLeaderboard />

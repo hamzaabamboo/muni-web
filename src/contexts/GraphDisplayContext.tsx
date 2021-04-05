@@ -1,3 +1,4 @@
+import { isoParse } from "d3-time-format";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import {
   createContext,
@@ -41,7 +42,9 @@ export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
 
   const points = useMemo(() => {
     if (!displayTier) return data;
-    return data.filter((f) => displayTier.includes(f.rank as Tier));
+    return data
+      .filter((f) => displayTier.includes(f.rank as Tier))
+      .sort((b, a) => (isoParse(b.date) > isoParse(a.date) ? 0 : 1));
   }, [data, displayTier]);
 
   return (

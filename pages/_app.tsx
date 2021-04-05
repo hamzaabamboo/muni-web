@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }) {
             py={4}
             bg="gray.100"
           >
-            <Link href="/" as="a" _hover={{ textDecor: "none" }}>
+            <Link href={`${base}`} as="a" _hover={{ textDecor: "none" }}>
               <Text fontSize="2xl" fontWeight="bold">
                 <Text as="span" textDecor="line-through" color="red.400">
                   Muni
@@ -45,7 +45,7 @@ function MyApp({ Component, pageProps }) {
                 Towa Web (Please give me a proper name)
               </Text>
             </Link>
-            <Link href="/event" _hover={{ textDecor: "none" }} as="a">
+            <Link href={`${base}/event`} _hover={{ textDecor: "none" }} as="a">
               <Text fontSize="lg">View all events</Text>
             </Link>
           </Flex>
