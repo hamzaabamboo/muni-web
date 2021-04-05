@@ -1,16 +1,21 @@
-import { getEventData } from "api/getEventData";
+import { getEventData } from "api/events";
 import { usePromiseEffect } from "hooks/usePromiseEffect";
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 import { Event } from "types/Event";
 
 export const EventContext = createContext<{ event?: Event }>({});
 
-export const EventProvider = ({ children }) => {
-  const [event, setEvent] = useState<Event>();
+export const EventProvider: React.FC<{ event?: Event }> = ({
+  event,
+  children,
+}) => {
+  const [_event, setEvent] = useState<Event>(event);
 
-  usePromiseEffect(getEventData, setEvent);
+  if (!event) usePromiseEffect(getEventData, setEvent);
 
   return (
-    <EventContext.Provider value={{ event }}>{children}</EventContext.Provider>
+    <EventContext.Provider value={{ event: _event || event }}>
+      {children}
+    </EventContext.Provider>
   );
 };

@@ -50,3 +50,11 @@ export type Tier =
   | 20000
   | 30000
   | 50000;
+
+export interface PastChangeEntry {
+  event: number;
+  rank: Tier;
+  points: number;
+  change: number;
+  date: number;
+}

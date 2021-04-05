@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { Box, useBreakpoint } from "@chakra-ui/react";
+import { allTiers } from "constants/tierborder";
 import * as d3 from "d3";
 import {
   Axis,
-  Bisector,
   D3ZoomEvent,
-  interpolateRainbow,
   interpolateSinebow,
-  interpolateTurbo,
   isoParse,
   ScaleLinear,
   ScaleOrdinal,
@@ -15,12 +13,11 @@ import {
   ZoomBehavior,
   ZoomTransform,
 } from "d3";
-import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { DateTime } from "luxon";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { formatPoints } from "utils/formatPoints";
-import { Box, useBreakpoint } from "@chakra-ui/react";
 import { CenteredSpinner } from "./CenteredSpinner";
-import { allTiers, tierBorders } from "constants/tierborder";
 
 const ANIMATION_SPEED = 500;
 export const Graph = ({
@@ -373,13 +370,15 @@ export const Graph = ({
       ? eventStart.toJSDate()
       : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date));
 
-    const timeEnd = isLive
-      ? DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0
+    const timeEnd =
+      DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0
         ? eventEnd
-        : afterMax
-      : afterMax;
+        : afterMax;
 
-    const bounds = [timeStart, timeEnd];
+    const bounds =
+      isLive && eventEnd.diffNow().as("minute") < 0
+        ? [eventStart, eventEnd]
+        : [timeStart, timeEnd];
 
     x.current.domain(bounds);
 
@@ -388,22 +387,25 @@ export const Graph = ({
       xAxis.current = d3.axisBottom(xZoomed.current);
     }
 
-    y.current
-      .domain([
-        isLive
-          ? d3.min(
-              points.filter(
-                (d) =>
-                  DateTime.fromISO(d.date)
-                    .diff(DateTime.fromJSDate(timeStart))
-                    .as("seconds") > 0
-              ),
-              (d) => d.points
-            )
-          : 0,
-        d3.max(points, (d) => d.points),
-      ])
-      .nice();
+    const yBounds =
+      isLive && eventEnd.diffNow().as("minute") < 0
+        ? [0, d3.max(points, (d) => d.points)]
+        : [
+            isLive
+              ? d3.min(
+                  points.filter(
+                    (d) =>
+                      DateTime.fromISO(d.date)
+                        .diff(DateTime.fromJSDate(timeStart))
+                        .as("seconds") > 0
+                  ),
+                  (d) => d.points
+                )
+              : 0,
+            d3.max(points, (d) => d.points),
+          ];
+
+    y.current.domain(yBounds).nice();
 
     let graphData = d3.groups(points, (d) => d.rank);
 

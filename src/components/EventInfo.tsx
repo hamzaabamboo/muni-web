@@ -1,5 +1,5 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { getEventData } from "api/getEventData";
+import { getEventData } from "api/events";
 import { DateTime } from "luxon";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { EventContext } from "src/contexts/EventContext";
@@ -11,15 +11,17 @@ export const EventInfo = () => {
   if (!event) return null;
 
   return (
-    <Flex flexDirection="column">
-      <Text fontWeight="bold" fontSize="3xl" textAlign="center">
+    <Flex flexDirection="column" py={2}>
+      <Text fontWeight="bold" fontSize="3xl" textAlign={["center", "start"]}>
         {event.name}
       </Text>
-      <CountdownTimer
-        startTime={event.startdate}
-        rankEndTime={event.rank_end}
-        resultsTime={event.rank_end}
-      />
+      {DateTime.fromISO(event.enddate).diffNow().as("second") > 0 && (
+        <CountdownTimer
+          startTime={event.startdate}
+          rankEndTime={event.enddate}
+          resultsTime={event.enddate}
+        />
+      )}
     </Flex>
   );
 };

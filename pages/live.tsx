@@ -29,6 +29,7 @@ export default function LivePage() {
         flex="1"
         w="full"
         flexDirection={["column", null, "row"]}
+        alignItems="stretch"
         minH="500px"
       >
         <Box flex="1">
@@ -63,7 +64,7 @@ export default function LivePage() {
             <TierSelector />
           </GraphDisplayProvider>
         </Box>
-        <Box px="8" flex="1">
+        <Box px="8">
           <Leaderboard isSmall onTierSelected={(t) => setCurrentTier(t)} />
           <GraphDisplayProvider>
             <RankDetailModal

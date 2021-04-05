@@ -7,7 +7,7 @@ import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContex
 import { Tier } from "types/Leaderboard";
 
 export const ChangesTable = ({ tier }: { tier: Tier }) => {
-  const { pastUpdates, changes } = useContext(LeaderboardChangesContext);
+  const { pastUpdates } = useContext(LeaderboardChangesContext);
   const { event } = useContext(EventContext);
   const threshold = useMemo(() => {
     return event && thresholds[event.type];
@@ -15,9 +15,13 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
 
   const list = useMemo(
     () =>
-      pastUpdates[tier]?.sort((a, b) =>
-        DateTime.fromISO(b.date).diff(DateTime.fromISO(a.date)).as("minutes")
-      ),
+      pastUpdates
+        ?.filter((u) => u.rank === tier)
+        .sort((a, b) =>
+          DateTime.fromSeconds(b.date)
+            .diff(DateTime.fromSeconds(a.date))
+            .as("minutes")
+        ),
     [pastUpdates, threshold, tier]
   );
   return (
@@ -31,24 +35,28 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {list?.map((t) => {
-            return (
-              <Tr
-                key={t.date}
-                bg={
-                  threshold && t.change > threshold.maxPerGame
-                    ? "red.200"
-                    : "unset"
-                }
-              >
-                <Td>+{t.change}</Td>
-                <Td>{t.point}</Td>
-                <Td>
-                  {DateTime.fromISO(t.date).toFormat("HH:mm:ss dd/MM/yyyy")}
-                </Td>
-              </Tr>
-            );
-          }) ?? (
+          {list?.length > 0 ? (
+            list.map((t) => {
+              return (
+                <Tr
+                  key={t.date}
+                  bg={
+                    threshold && t.change > threshold.maxPerGame
+                      ? "red.200"
+                      : "unset"
+                  }
+                >
+                  <Td>+{t.change}</Td>
+                  <Td>{t.points}</Td>
+                  <Td>
+                    {DateTime.fromSeconds(t.date).toFormat(
+                      "HH:mm:ss dd/MM/yyyy"
+                    )}
+                  </Td>
+                </Tr>
+              );
+            })
+          ) : (
             <Tr>
               <Td colSpan={3}>
                 <Text textAlign="center">No data yet, Collecting Data...</Text>

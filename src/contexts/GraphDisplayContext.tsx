@@ -1,21 +1,16 @@
-import { getAllLeaderboard } from "api/getAllLeaderboard";
 import { useLocalStorage } from "hooks/useLocalstorage";
-import { usePromiseEffect } from "hooks/usePromiseEffect";
-import { DateTime } from "luxon";
 import {
   createContext,
   Dispatch,
+  FC,
   SetStateAction,
-  useCallback,
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { GraphContext } from "./GraphContext";
-import { LeaderboardContext } from "./LeaderboardContext";
 
 export const GraphDisplayContext = createContext<{
   points?: LeaderboardPoint[];
@@ -24,7 +19,10 @@ export const GraphDisplayContext = createContext<{
   allTiers?: Tier[];
 }>({});
 
-export const GraphDisplayProvider = ({ children }) => {
+export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
+  points: staticPoints,
+  children,
+}) => {
   const { points: _points } = useContext(GraphContext);
   const [displayTier, setDisplayTier] = useLocalStorage<Tier[]>(
     "displayTier",
@@ -32,15 +30,19 @@ export const GraphDisplayProvider = ({ children }) => {
   );
   const [allTiers, setAllTiers] = useState<Tier[]>([]);
 
+  const data = useMemo(() => {
+    return staticPoints || _points;
+  }, [staticPoints, _points]);
+
   useEffect(() => {
     if (allTiers.length === 0)
-      setAllTiers(Array.from(new Set(_points.map((d) => d.rank as Tier))));
-  }, [_points]);
+      setAllTiers(Array.from(new Set(data.map((d) => d.rank as Tier))));
+  }, [data]);
 
   const points = useMemo(() => {
-    if (!displayTier) return _points;
-    return _points.filter((f) => displayTier.includes(f.rank as Tier));
-  }, [_points, displayTier]);
+    if (!displayTier) return data;
+    return data.filter((f) => displayTier.includes(f.rank as Tier));
+  }, [data, displayTier]);
 
   return (
     <GraphDisplayContext.Provider

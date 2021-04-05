@@ -24,8 +24,8 @@ export default function Home() {
     <>
       <EventInfo />
       <Navigation />
-      <Box px={2} maxW={["100%", null, "80%"]} mx="auto">
-        <Leaderboard interval={10000} onTierSelected={showTierDetail} />
+      <Box px={2} w="full">
+        <Leaderboard onTierSelected={showTierDetail} />
         <GraphDisplayProvider>
           {currentTier && (
             <RankDetailModal tier={currentTier} onClose={handleCloseModal} />

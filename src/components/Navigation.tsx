@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 export const Navigation = () => {
   const router = useRouter();
   return (
-    <Flex p={2} justifyContent="center">
+    <Flex py={2} justifyContent={["center", "start"]}>
       <Box
         mx={4}
         p={2}

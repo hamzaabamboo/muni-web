@@ -1,19 +1,16 @@
 import { getAllLeaderboard } from "api/getAllLeaderboard";
-import { useLocalStorage } from "hooks/useLocalstorage";
 import { usePromiseEffect } from "hooks/usePromiseEffect";
 import { DateTime } from "luxon";
 import {
   createContext,
-  Dispatch,
-  SetStateAction,
   useCallback,
   useContext,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
-import { LeaderboardPoint, Tier } from "types/Leaderboard";
+import { LeaderboardPoint } from "types/Leaderboard";
+import { EventContext } from "./EventContext";
 import { LeaderboardContext } from "./LeaderboardContext";
 
 export const GraphContext = createContext<{
@@ -22,10 +19,16 @@ export const GraphContext = createContext<{
 
 export const GraphProvider = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
+  const { event } = useContext(EventContext);
   const [points, setPoints] = useState<LeaderboardPoint[]>([]);
   const lastUpdated = useRef<Record<string, DateTime>>({});
 
-  usePromiseEffect(getAllLeaderboard, setPoints);
+  const getData = useCallback(() => {
+    if (!event) return Promise.resolve([]);
+    return getAllLeaderboard(event.eventid);
+  }, [event]);
+
+  usePromiseEffect(getData, setPoints);
 
   useEffect(() => {
     if (!lbData) return;

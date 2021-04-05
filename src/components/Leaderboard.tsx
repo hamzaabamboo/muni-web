@@ -1,26 +1,18 @@
-import React, { FC, memo, useContext, useMemo } from "react";
-import { LeaderboardEntry, Tier as ITier } from "types/Leaderboard";
-import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
-import {
-  Td,
-  Th,
-  Tr,
-  Text,
-  TextProps,
-  Flex,
-  useBreakpoint,
-} from "@chakra-ui/react";
-import { DateTime, Duration } from "luxon";
+import { Flex, Td, Text, Th, Tr, useBreakpoint } from "@chakra-ui/react";
+import { Table, Tbody, Thead } from "@chakra-ui/table";
 import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
-import { EventType } from "types/Event";
+import { DateTime } from "luxon";
+import React, { FC, useContext, useMemo } from "react";
 import { EventContext } from "src/contexts/EventContext";
-import { thresholds } from "constants/threshold";
+import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
+import { Tier as ITier } from "types/Leaderboard";
+import { formatPoints } from "utils/formatPoints";
+import { getIsPlayingStyles, getToBoatTime } from "utils/leaderboard";
 import { getLastUpdatedTime } from "utils/time";
 import { CenteredSpinner } from "./CenteredSpinner";
-import { formatPoints } from "utils/formatPoints";
-import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
+import { Tier } from "./Tier";
 
 interface LeaderboardProps {
   interval?: number;
@@ -57,7 +49,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   return (
     <Flex flexDir="column">
       <Flex flexDir="column">
-        <Text fontSize="4xl" fontWeight="bold">
+        <Text fontSize="2xl" fontWeight="bold">
           Muniboard
         </Text>
         <Text fontSize="sm" as="span" fontWeight="normal">
@@ -143,48 +135,3 @@ export const Leaderboard: FC<LeaderboardProps> = ({
     </Flex>
   );
 };
-
-export const getIsPlayingStyles = (
-  data: LeaderboardEntry,
-  lastUpdated: number,
-  eventType: EventType
-) => {
-  if (lastUpdated > thresholds[eventType]?.maxPerGame ?? 3000)
-    return { bg: "red.100" };
-  if (DateTime.fromISO(data.date).diffNow().as("minutes") < -10) return {};
-  return {
-    bg: "gray.100",
-  };
-};
-
-const getToBoatTime = (ms: number): string => {
-  if (isNaN(ms) || ms < 0) return "--:--";
-  return Duration.fromMillis(ms).toFormat("hh:mm");
-};
-const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
-  const styles: Partial<TextProps> = useMemo(() => {
-    switch (tier) {
-      case 1:
-        return { fontSize: "xl", fontWeight: "bold", color: "yellow.400" };
-      case 2:
-        return { fontSize: "xl", fontWeight: "bold", color: "gray.400" };
-      case 3:
-        return { fontSize: "xl", fontWeight: "bold", color: "red.800" };
-      case 10:
-      case 50:
-      case 100:
-      case 500:
-      case 1000:
-      case 2000:
-      case 5000:
-      case 10000:
-      case 20000:
-      case 30000:
-      case 50000:
-        return { fontSize: "xl", fontWeight: "bold" };
-      default:
-        return {};
-    }
-  }, [tier]);
-  return <Text {...styles}>{children || tier}</Text>;
-});

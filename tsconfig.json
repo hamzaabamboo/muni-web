@@ -19,7 +19,8 @@
       "utils/*": ["./src/utils/*"],
       "api/*": ["./src/api/*"],
       "constants/*": ["./src/constants/*"],
-      "hooks/*": ["./src/hooks/*"]
+      "hooks/*": ["./src/hooks/*"],
+      "db/*": ["./src/db/*"]
     },
     "baseUrl": "."
   },
