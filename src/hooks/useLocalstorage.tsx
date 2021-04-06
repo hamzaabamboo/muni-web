@@ -1,18 +1,18 @@
-import { useState, useEffect, Dispatch, SetStateAction } from "react";
+import { useState, useEffect, Dispatch, SetStateAction, useRef } from "react";
 import { LocalStorage } from "./localStorage";
 
 export const useLocalStorage = function <T>(
   key: string,
   initial: T | null = null
 ): [T | null, Dispatch<SetStateAction<T | null>>] {
-  const storage = new LocalStorage<T>(key);
-  const [data, setData] = useState<T | null>(storage.value || initial);
+  const storage = useRef(new LocalStorage<T>(key));
+  const [data, setData] = useState<T | null>(initial);
 
   const setNewData: Dispatch<SetStateAction<T | null>> = (
     s: SetStateAction<T | null>
   ) => {
     const newData = typeof s === "function" ? s.call(this, data) : s;
-    storage.value = newData;
+    storage.current.value = newData;
     setData(newData);
   };
 
@@ -21,6 +21,10 @@ export const useLocalStorage = function <T>(
       setData(JSON.parse(storageEvent.newValue || ""));
     }
   };
+
+  useEffect(() => {
+    setData(storage.current.value);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("storage", updateValue(key));
