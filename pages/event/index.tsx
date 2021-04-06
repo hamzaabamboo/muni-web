@@ -1,31 +1,23 @@
-import { Box, Divider, Text, Flex } from "@chakra-ui/react";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { getAllEvents } from "api/events";
-import { Event } from "types/Event";
-import { usePromiseEffect } from "hooks/usePromiseEffect";
-import React, { Fragment, useCallback, useState } from "react";
+import { Box, Divider, Flex, Text } from "@chakra-ui/react";
+import axios from "axios";
 import { DateTime } from "luxon";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import React, { FC } from "react";
+import { Event } from "types/Event";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL || "";
-
-export const getStaticProps = () => {
+export const getStaticProps = async () => {
+  const allEvents = (
+    await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
+  ).data;
   return {
     props: {
-      isEventPage: false,
+      allEvents,
+      isEventPage: true,
     },
   };
 };
-const AllEvents = () => {
-  const [allEvents, setAllEvents] = useState<Event[]>([]);
-  const router = useRouter();
-
-  const getEvents = useCallback(async () => {
-    return getAllEvents();
-  }, []);
-  usePromiseEffect(getEvents, setAllEvents);
-
+const AllEvents: FC<{ allEvents: Event[] }> = ({ allEvents }) => {
   return (
     <Box pt={10} px={2} width={["100%", "80%"]} mx="auto">
       {allEvents?.map((p) => {
