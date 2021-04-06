@@ -21,4 +21,5 @@ export interface D4DBEvent {
     _value_: string;
   };
 }
-export type EventType = "Poker" | "Medley" | "Bingo" | "Raid" | string;
+export type D4DBEventResponse = Record<string, D4DBEvent>;
+export type EventType = "Poker" | "Medley" | "Bingo" | "Raid" | string | number;

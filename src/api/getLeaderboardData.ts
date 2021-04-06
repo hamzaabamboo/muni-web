@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Leaderboard } from "types/Leaderboard";
-import { getProxiedUrl } from "./utils";
+import { fixWeirdNumbering, getProxiedUrl } from "./utils";
 
 export const getLeaderboardData = async (): Promise<Leaderboard> => {
   const res = await Promise.all([
@@ -14,5 +14,6 @@ export const getLeaderboardData = async (): Promise<Leaderboard> => {
   return res
     .map((e) => e.data)
     .reduce((acc, curr) => [...acc, ...curr])
-    .sort((a, b) => a.rank - b.rank);
+    .sort((a, b) => a.rank - b.rank)
+    .map(fixWeirdNumbering);
 };

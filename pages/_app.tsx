@@ -17,7 +17,7 @@ import { LeaderboardChangesProvider } from "src/contexts/LeaderboardChangesConte
 
 const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 function MyApp({ Component, pageProps }) {
-  const { isEventPage } = pageProps;
+  const { isEventPage, title } = pageProps;
 
   const content = (
     <Flex flexDirection="column" w="full" minH="100vh" alignItems="stretch">
@@ -67,11 +67,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>Create むに App</title>
+        <title>{title || "Create むに App"}</title>
         <link rel="icon" href={`${base}/favicon.ico`} />
+        <meta property="og:title" content={title || "Create むに App"} />
         {!isEventPage && (
           <>
-            <meta property="og:title" content="Muni Web" />
             <meta
               property="og:url"
               content="https://hamzaabamboo.github.io/muni-web"

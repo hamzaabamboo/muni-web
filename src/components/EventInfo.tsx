@@ -11,17 +11,20 @@ export const EventInfo = () => {
 
   return (
     <Flex flexDirection="column" py={2}>
-      <Text fontWeight="bold" fontSize="3xl" textAlign={["center", "start"]}>
+      <Text
+        fontWeight="bold"
+        fontSize="3xl"
+        textAlign={["center", null, "start"]}
+      >
         {event.name}
       </Text>
-      {DateTime.fromISO(event.enddate).diffNow().as("second") > 0 ? (
+      <EventDetails align={["center", null, "start"]} event={event} />
+      {DateTime.fromISO(event.enddate).diffNow().as("second") > 0 && (
         <CountdownTimer
           startTime={event.startdate}
           rankEndTime={event.enddate}
           resultsTime={event.enddate}
         />
-      ) : (
-        <EventDetails event={event} />
       )}
     </Flex>
   );
@@ -51,6 +54,7 @@ const CountdownTimer = ({
   useEffect(() => {
     let canceled = false;
     const f = () => {
+      const diffStart = DateTime.fromISO(startTime).diffNow();
       const diffEnd = DateTime.fromISO(rankEndTime).diffNow();
       const diffResults = DateTime.fromISO(resultsTime).diffNow();
       const timeInEvent = Math.floor(
@@ -58,7 +62,12 @@ const CountdownTimer = ({
       );
 
       if (canceled) return;
-      if (diffEnd.as("hours") > 0) {
+      if (diffStart.as("hours") > 0) {
+        setTimeUntil("Time until start");
+        setTimeLeft(diffStart.toFormat("hh:mm"));
+        setProgress(undefined);
+        return;
+      } else if (diffEnd.as("hours") > 0) {
         setTimeUntil("Time until end");
         setTimeLeft(diffEnd.toFormat("hh:mm"));
       } else if (diffResults.as("hours") > 0) {
@@ -87,11 +96,19 @@ const CountdownTimer = ({
     };
   }, [totalHours]);
   return (
-    <Flex flexDirection="column" justifyContent="center">
-      <Text textAlign="center">Progress: {progress}</Text>
-      <Text textAlign="center">{timeUntil}</Text>
-      <Text fontSize="lg" fontWeight="bold" textAlign="center">
-        {timeLeft}
+    <Flex
+      flexDirection="column"
+      justifyContent={["center", null, "start"]}
+      py={4}
+    >
+      {progress && (
+        <Text textAlign={["center", null, "start"]}>Progress: {progress}</Text>
+      )}
+      <Text textAlign={["center", null, "start"]}>
+        {timeUntil}:
+        <Text fontSize="lg" fontWeight="bold" as="span" ml="2">
+          {timeLeft}
+        </Text>
       </Text>
     </Flex>
   );

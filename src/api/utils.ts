@@ -13,3 +13,8 @@ export const getProxiedUrl = (url: string) => {
     );
   return url;
 };
+
+export const fixWeirdNumbering = <T extends { eventid: number }>(e: T): T => ({
+  ...e,
+  eventid: e.eventid + 2,
+});
