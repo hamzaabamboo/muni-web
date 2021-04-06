@@ -23,7 +23,7 @@ export const useLocalStorage = function <T>(
   };
 
   useEffect(() => {
-    setData(storage.current.value || initial);
+    setNewData(storage.current.value || initial);
   }, []);
 
   useEffect(() => {
