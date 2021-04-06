@@ -6,6 +6,7 @@ import { usePromiseEffect } from "hooks/usePromiseEffect";
 import React, { Fragment, useCallback, useState } from "react";
 import { DateTime } from "luxon";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 
@@ -27,34 +28,33 @@ const AllEvents = () => {
 
   return (
     <Box pt={10} px={2} width={["100%", "80%"]} mx="auto">
-      {allEvents.map((p) => {
+      {allEvents?.map((p) => {
         return (
-          <Fragment key={p.id}>
-            <Flex
-              px={2}
-              py={4}
-              justifyContent="space-between"
-              alignItems="center"
-              onClick={() => {
-                router.push(`${base}/event/${p.eventid}`);
-              }}
-            >
-              <Box>
-                <Text fontSize="2xl" fontWeight="bold">
-                  {p.name}
-                </Text>
-                <Text fontSize="xl">{p.type}</Text>
-                <Text>
-                  {DateTime.fromISO(p.startdate).toFormat("dd/MM/yyyy HH:mm")} -{" "}
-                  {DateTime.fromISO(p.enddate).toFormat("dd/MM/yyyy HH:mm")}
-                </Text>
-              </Box>
-              <Box>
-                <ChevronRightIcon boxSize={8} />
-              </Box>
+          <Link href={`/event/${p.eventid}`} key={p.id}>
+            <Flex flexDirection="column">
+              <Flex
+                px={2}
+                py={4}
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Box>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    {p.name}
+                  </Text>
+                  <Text fontSize="xl">{p.type}</Text>
+                  <Text>
+                    {DateTime.fromISO(p.startdate).toFormat("dd/MM/yyyy HH:mm")}{" "}
+                    - {DateTime.fromISO(p.enddate).toFormat("dd/MM/yyyy HH:mm")}
+                  </Text>
+                </Box>
+                <Box>
+                  <ChevronRightIcon boxSize={8} />
+                </Box>
+              </Flex>
+              <Divider color="gray.200" />
             </Flex>
-            <Divider color="gray.200" />
-          </Fragment>
+          </Link>
         );
       })}
     </Box>
