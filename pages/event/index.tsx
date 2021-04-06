@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Divider, Flex, Text } from "@chakra-ui/react";
 import axios from "axios";
-import { DateTime } from "luxon";
+import { EventDetails } from "components/EventDetails";
 import Link from "next/link";
 import React, { FC } from "react";
 import { Event } from "types/Event";
@@ -34,11 +34,7 @@ const AllEvents: FC<{ allEvents: Event[] }> = ({ allEvents }) => {
                   <Text fontSize="2xl" fontWeight="bold">
                     {p.name}
                   </Text>
-                  <Text fontSize="xl">{p.type}</Text>
-                  <Text>
-                    {DateTime.fromISO(p.startdate).toFormat("dd/MM/yyyy HH:mm")}{" "}
-                    - {DateTime.fromISO(p.enddate).toFormat("dd/MM/yyyy HH:mm")}
-                  </Text>
+                  <EventDetails event={p} />
                 </Box>
                 <Box>
                   <ChevronRightIcon boxSize={8} />

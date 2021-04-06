@@ -69,13 +69,20 @@ function MyApp({ Component, pageProps }) {
       <Head>
         <title>Create むに App</title>
         <link rel="icon" href={`${base}/favicon.ico`} />
-        <meta property="og:title" content="Muni Web" />
-        <meta
-          property="og:url"
-          content="https://hamzaabamboo.github.io/muni-web"
-        />
-        <meta property="og:image" content={`${base}/images/munihappy.png`} />
-        <meta property="og:description" content="Munimunimunimunimuni" />
+        {!isEventPage && (
+          <>
+            <meta property="og:title" content="Muni Web" />
+            <meta
+              property="og:url"
+              content="https://hamzaabamboo.github.io/muni-web"
+            />
+            <meta
+              property="og:image"
+              content={`${base}/images/munihappy.png`}
+            />
+            <meta property="og:description" content="Munimunimunimunimuni" />
+          </>
+        )}
       </Head>
       <ChakraProvider>
         {!isEventPage ? (

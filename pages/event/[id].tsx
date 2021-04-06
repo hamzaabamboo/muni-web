@@ -16,9 +16,9 @@ import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 import { Event } from "types/Event";
 import { LeaderboardEntry, LeaderboardPoint } from "types/Leaderboard";
 import { useSize } from "web-api-hooks";
-import Image from "next/image";
 import { getProxiedUrl } from "api/utils";
 
+const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 export default function GraphPage(props: {
   event: Event;
   points: LeaderboardPoint[];
@@ -52,6 +52,13 @@ export default function GraphPage(props: {
     <>
       <Head>
         <title>Create むに web | {event.name}</title>
+        <meta property="og:title" content={`Create むに web | ${event.name}`} />
+        <meta
+          property="og:url"
+          content={`https://hamzaabamboo.github.io/muni-web/event/${event.eventid}`}
+        />
+        <meta property="og:image" content={`${base}/images/munihappy.png`} />
+        <meta property="og:description" content="Munimunimunimunimuni" />
       </Head>
       <EventProvider event={event}>
         <GraphDisplayProvider points={points}>
