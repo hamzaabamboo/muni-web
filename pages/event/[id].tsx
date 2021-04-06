@@ -144,6 +144,7 @@ export async function getStaticProps({ params }) {
     props: {
       event,
       points,
+      title: `Create むに web | ${event.name}`,
       isEventPage: true,
     },
   };
