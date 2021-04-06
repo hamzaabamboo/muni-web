@@ -18,7 +18,7 @@ export const GraphOptions: FC<{
         fontStyle="italic"
         textAlign="center"
       >
-        (These settings are experminetal, muni may break or becomes very slow)
+        (These settings are experimental, muni may break or becomes very slow)
       </Text>
       <Flex flexDir="column">
         <Flex>
