@@ -1,4 +1,5 @@
 import { Text, TypographyProps } from "@chakra-ui/react";
+import { getEventType } from "api/utils";
 import { DateTime } from "luxon";
 import { memo, useMemo } from "react";
 import { Event } from "types/Event";
@@ -12,20 +13,7 @@ export const EventDetails = memo(
     event: Event;
   }) => {
     const eventType = useMemo(() => {
-      if (typeof event.type === "string") return event.type;
-
-      switch (event.type) {
-        case 0:
-          return "Poker";
-        case 1:
-          return "Bingo";
-        case 2:
-          return "Medley";
-        case 3:
-          return "Raid";
-        default:
-          return event.type;
-      }
+      return getEventType(event);
     }, [event]);
     return (
       <Text textAlign={align || "start"}>

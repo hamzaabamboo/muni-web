@@ -1,5 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { fixWeirdNumbering, getProxiedUrl } from "api/utils";
+import { fixWeirdNumbering, getEventType, getProxiedUrl } from "api/utils";
 import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
 import { EventInfo } from "components/EventInfo";
@@ -58,7 +58,7 @@ export default function GraphPage(props: {
       DateTime.fromISO(event.enddate)
         .diff(DateTime.fromISO(event.startdate))
         .as("hours")
-    )} hours | ${event.type}`;
+    )} hours | ${getEventType(event)}`;
   }, [event]);
   return (
     <>
