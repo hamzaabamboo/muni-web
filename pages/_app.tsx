@@ -37,7 +37,7 @@ function MyApp({ Component, pageProps }) {
             py={4}
             bg="gray.100"
           >
-            <Link href={`${base}`} as="a" _hover={{ textDecor: "none" }}>
+            <Link href={`${base}/`} as="a" _hover={{ textDecor: "none" }}>
               <Text fontSize="2xl" fontWeight="bold">
                 <Text as="span" textDecor="line-through" color="red.400">
                   Muni

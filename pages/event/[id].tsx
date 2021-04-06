@@ -1,4 +1,4 @@
-import { Box, Flex, Switch, Text, Image } from "@chakra-ui/react";
+import { Box, Flex, Switch, Text } from "@chakra-ui/react";
 import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
 import { EventInfo } from "components/EventInfo";
@@ -16,6 +16,8 @@ import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 import { Event } from "types/Event";
 import { LeaderboardEntry, LeaderboardPoint } from "types/Leaderboard";
 import { useSize } from "web-api-hooks";
+import Image from "next/image";
+import { getProxiedUrl } from "api/utils";
 
 export default function GraphPage(props: {
   event: Event;
@@ -70,9 +72,13 @@ export default function GraphPage(props: {
                   setGraphFlags={setGraphFlags}
                 />
                 <TierSelector />
-                <Image
-                  src={`http://projectdivar.com:8080/event/t20_${event.eventid}.png`}
-                />
+                <Box w="full" position="relative">
+                  <img
+                    src={getProxiedUrl(
+                      `http://projectdivar.com:8080/event/t20_${event.eventid}.png`
+                    )}
+                  />
+                </Box>
               </Flex>
               <Flex flex={1}>
                 <AfterEventLeaderboard />
