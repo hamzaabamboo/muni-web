@@ -45,6 +45,7 @@ export const LeaderboardChangesProvider = ({ children }) => {
       let newUpdates: PastChangeEntry[] = [];
       const newChanges = lbData.map((d) => {
         const old = oldLb.current.find((olb) => olb.rank === d.rank);
+        if (!old) return [d.rank, d.points];
         const dPoints = d.points - old.points;
         const change =
           dPoints > 0
