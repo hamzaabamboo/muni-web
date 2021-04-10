@@ -1,17 +1,23 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import { fixWeirdNumbering, getEventType, getProxiedUrl } from "api/utils";
 import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
+import { AnalysisOptions } from "components/AnalysisOptions";
 import { EventInfo } from "components/EventInfo";
 import { GraphFlags } from "components/Graph";
 import { GraphOptions } from "components/GraphOptions";
+import { RateGraph } from "components/RateGraph";
 import { ScoreGraph } from "components/ScoreGraph";
 import { TierSelector } from "components/TierSelector";
 import { isoParse, maxIndex } from "d3";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
 import Head from "next/head";
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
+import {
+  AnalysisContext,
+  AnalysisProvider,
+} from "src/contexts/AnalysisContext";
 import { EventProvider } from "src/contexts/EventContext";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
@@ -27,6 +33,7 @@ export default function GraphPage(props: {
   const { event, points } = props;
   const graphRef = useRef<HTMLDivElement>(null);
   const [width, height] = useSize(graphRef);
+  const [graphMode, setGraphMode] = useState<"point" | "rate">("point");
   const [graphFlags, setGraphFlags] = useLocalStorage<GraphFlags>(
     "graphFlags",
     {
@@ -73,26 +80,76 @@ export default function GraphPage(props: {
       <EventProvider event={event}>
         <GraphDisplayProvider points={points}>
           <LeaderboardProvider lbData={leaderboardPoint}>
-            <EventInfo />
-            <Flex flexDir={["column", null, null, "row"]} px={4}>
-              <Flex flexDir="column" flex={1}>
-                <Box ref={graphRef} minH="600px">
-                  <ScoreGraph
-                    width={width}
-                    height={height}
+            <AnalysisProvider>
+              <EventInfo />
+              <Flex flexDir={["column", null, null, "row"]} px={4}>
+                <Flex flexDir="column" flex={1}>
+                  <Flex>
+                    <Button
+                      mx={4}
+                      p={2}
+                      rounded="md"
+                      bg={graphMode === "point" ? "gray.200" : "transparent"}
+                      color={graphMode === "point" ? "blue.400" : "black"}
+                      onClick={() => setGraphMode("point")}
+                      fontSize="lg"
+                    >
+                      Point
+                    </Button>
+                    <Button
+                      mx={4}
+                      p={2}
+                      rounded="md"
+                      bg={graphMode === "rate" ? "gray.200" : "transparent"}
+                      color={graphMode === "rate" ? "blue.400" : "black"}
+                      onClick={() => setGraphMode("rate")}
+                      fontSize="lg"
+                    >
+                      Rate
+                    </Button>
+                  </Flex>
+                  {graphMode === "point" ? (
+                    <Box ref={graphRef} minH="600px">
+                      <ScoreGraph
+                        width={width}
+                        height={height}
+                        graphFlags={graphFlags}
+                        isSmall
+                      />
+                    </Box>
+                  ) : (
+                    <>
+                      <RateGraph graphFlags={graphFlags} />
+                      <AnalysisOptions />
+                    </>
+                  )}
+                  <GraphOptions
                     graphFlags={graphFlags}
-                    isSmall
+                    setGraphFlags={setGraphFlags}
                   />
-                </Box>
-                <GraphOptions
-                  graphFlags={graphFlags}
-                  setGraphFlags={setGraphFlags}
-                />
-                <TierSelector />
+
+                  <TierSelector />
+                  <Box
+                    w="full"
+                    position="relative"
+                    display={["none", null, null, "block"]}
+                  >
+                    <img
+                      src={getProxiedUrl(
+                        `http://projectdivar.com:8080/event/t20_${
+                          event.eventid - 2
+                        }.png`
+                      )}
+                    />
+                  </Box>
+                </Flex>
+                <Flex flex={1}>
+                  <AfterEventLeaderboard />
+                </Flex>
                 <Box
                   w="full"
                   position="relative"
-                  display={["none", null, null, "block"]}
+                  display={["block", null, null, "none"]}
                 >
                   <img
                     src={getProxiedUrl(
@@ -103,23 +160,7 @@ export default function GraphPage(props: {
                   />
                 </Box>
               </Flex>
-              <Flex flex={1}>
-                <AfterEventLeaderboard />
-              </Flex>
-              <Box
-                w="full"
-                position="relative"
-                display={["block", null, null, "none"]}
-              >
-                <img
-                  src={getProxiedUrl(
-                    `http://projectdivar.com:8080/event/t20_${
-                      event.eventid - 2
-                    }.png`
-                  )}
-                />
-              </Box>
-            </Flex>
+            </AnalysisProvider>
           </LeaderboardProvider>
         </GraphDisplayProvider>
       </EventProvider>

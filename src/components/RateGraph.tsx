@@ -22,7 +22,7 @@ export const RateGraph = ({
   const graphData = useMemo(() => rate?.[tier], [rate, tier]);
 
   return (
-    <Box ref={graphRef} minH="300px" w="full">
+    <Box ref={graphRef} minH="600px" w="full">
       <Graph
         id={`Rate`}
         startDate={event?.startdate}
