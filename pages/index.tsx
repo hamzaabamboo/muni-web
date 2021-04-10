@@ -9,6 +9,7 @@ import { RankDetailModal } from "components/RankDetailModal";
 import { Tier } from "types/Leaderboard";
 import { GraphProvider } from "src/contexts/GraphContext";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
+import { AnalysisProvider } from "src/contexts/AnalysisContext";
 
 export default function Home() {
   const [currentTier, setCurrentTier] = useState<Tier>();
@@ -26,11 +27,13 @@ export default function Home() {
       <Navigation />
       <Box px={2} w="full">
         <Leaderboard onTierSelected={showTierDetail} />
-        <GraphDisplayProvider>
-          {currentTier && (
-            <RankDetailModal tier={currentTier} onClose={handleCloseModal} />
-          )}
-        </GraphDisplayProvider>
+        <AnalysisProvider>
+          <GraphDisplayProvider>
+            {currentTier && (
+              <RankDetailModal tier={currentTier} onClose={handleCloseModal} />
+            )}
+          </GraphDisplayProvider>
+        </AnalysisProvider>
       </Box>
     </>
   );

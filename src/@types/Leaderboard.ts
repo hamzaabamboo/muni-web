@@ -14,8 +14,8 @@ export interface LeaderboardPoint {
   eventid: number;
   rank: number;
   date: string;
-  name: string;
-  description: string;
+  name?: string;
+  description?: string;
   points: number;
 }
 

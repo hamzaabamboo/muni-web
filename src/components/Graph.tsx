@@ -37,6 +37,7 @@ export const Graph = ({
     showTooltip: false,
     advancedZoom: false,
   },
+  renderTooltip,
   ...props
 }: {
   id: string;
@@ -47,6 +48,9 @@ export const Graph = ({
   isSmall?: boolean;
   width?: number;
   height?: number;
+  renderTooltip?: (
+    selector: Selection<d3.BaseType, [Tier, LeaderboardPoint], d3.BaseType, any>
+  ) => void;
   graphFlags?: GraphFlags;
 }) => {
   const { showTooltip, advancedZoom } = graphFlags;
@@ -246,10 +250,12 @@ export const Graph = ({
         .select(".scoreboard")
         .selectAll("li")
         .data(latestPoint);
-
-      tierList.enter().append("li");
-      tierList.exit().remove();
-      tierList.text((d) => `T${formatPoints(d[0])}: ${d[1].points}`);
+      if (renderTooltip) renderTooltip(tierList);
+      else {
+        tierList.enter().append("li");
+        tierList.exit().remove();
+        tierList.text((d) => `T${formatPoints(d[0])}: ${d[1].points}`);
+      }
 
       const graphPoint = tooltips.current
         .selectAll("circle")

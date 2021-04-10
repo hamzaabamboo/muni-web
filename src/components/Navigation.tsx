@@ -30,6 +30,16 @@ export const Navigation = () => {
         mx={4}
         p={2}
         rounded="md"
+        bg={router.pathname === "/analyze" ? "gray.200" : "transparent"}
+        color={router.pathname === "/analyze" ? "blue.400" : "black"}
+        fontSize="lg"
+      >
+        <Link href="/analyze">Analyze</Link>
+      </Box>
+      <Box
+        mx={4}
+        p={2}
+        rounded="md"
         bg={router.pathname === "/live" ? "gray.200" : "transparent"}
         color={router.pathname === "/live" ? "blue.400" : "black"}
         fontSize="lg"

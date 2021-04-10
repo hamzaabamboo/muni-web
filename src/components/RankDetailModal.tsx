@@ -13,11 +13,14 @@ import {
 } from "@chakra-ui/react";
 import { DateTime } from "luxon";
 import React, { useContext } from "react";
+import { AnalysisProvider } from "src/contexts/AnalysisContext";
 import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { Tier } from "types/Leaderboard";
+import { AnalysisOptions } from "./AnalysisOptions";
 import { ChangesTable } from "./ChangesTable";
 import { PlayerGraph } from "./PlayerGraph";
+import { RateGraph } from "./RateGraph";
 
 export const RankDetailModal: React.FC<{
   tier?: Tier;
@@ -78,6 +81,10 @@ export const RankDetailModal: React.FC<{
                 )
               </Text>
               <PlayerGraph tier={tier} />
+              <AnalysisProvider all>
+                <RateGraph tier={tier} />
+                <AnalysisOptions />
+              </AnalysisProvider>
             </Flex>
             <Flex minH="600px">
               <ChangesTable tier={tier} />

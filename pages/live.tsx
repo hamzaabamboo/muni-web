@@ -13,6 +13,7 @@ import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { GraphOptions } from "components/GraphOptions";
 import { GraphFlags } from "components/Graph";
+import { AnalysisProvider } from "src/contexts/AnalysisContext";
 
 export default function LivePage() {
   const graphRef = useRef<HTMLDivElement>(null);
@@ -57,12 +58,14 @@ export default function LivePage() {
         </Box>
         <Box px="8">
           <Leaderboard isSmall onTierSelected={(t) => setCurrentTier(t)} />
-          <GraphDisplayProvider>
-            <RankDetailModal
-              tier={currentTier}
-              onClose={() => setCurrentTier(undefined)}
-            />
-          </GraphDisplayProvider>
+          <AnalysisProvider>
+            <GraphDisplayProvider>
+              <RankDetailModal
+                tier={currentTier}
+                onClose={() => setCurrentTier(undefined)}
+              />
+            </GraphDisplayProvider>
+          </AnalysisProvider>
         </Box>
       </Flex>
     </Flex>
