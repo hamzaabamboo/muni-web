@@ -8,12 +8,11 @@ module.exports = {
   images: {
     domains: ["projectdivar.com"],
   },
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-    // Note: we provide webpack above so you should not `require` it
-    // Perform customizations to webpack config
-    // config.plugins.push(new WorkerPlugin());
+  webpack: (config, { isServer, dev }) => {
+    config.output.chunkFilename = isServer
+      ? `${dev ? "[name]" : "[name].[fullhash]"}.js`
+      : `static/chunks/${dev ? "[name]" : "[name].[fullhash]"}.js`;
 
-    // Important: return the modified config
     return config;
   },
 };
