@@ -1,28 +1,25 @@
+import { getEventType } from "api/utils";
+import { forecastConstant } from "constants/forecast";
 import { max, maxIndex, minIndex, sum } from "d3-array";
 import { DateTime } from "luxon";
+import { Event } from "types/Event";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
-import { groupByTime } from "utils/groupByTime";
+import { getPredictedScore } from "utils/getPredictedScore";
+import { generateTimeArray, groupByTime } from "utils/groupByTime";
+import { groupBy, mapValues } from "utils/object";
 
 export default {};
 
 const ctx: Worker = self as any;
 
-const groupBy = <T = any, K extends string | number | symbol = string>(
-  data: T[],
-  getKey: (data: T) => K
-): Record<K, T[]> => {
-  const groups = {} as Record<K, T[]>;
-  data.forEach((p) => {
-    if (!(getKey(p) in groups)) groups[getKey(p)] = [];
-    groups[getKey(p)].push(p);
-  });
-  return groups;
-};
-
 ctx.onmessage = ({
   data,
-}: MessageEvent<{ points: LeaderboardPoint[]; interval?: number }>) => {
-  const { points, interval } = data;
+}: MessageEvent<{
+  points: LeaderboardPoint[];
+  interval?: number;
+  event: Event;
+}>) => {
+  const { points, interval, event } = data;
   const diff = groupBy(points, (p) => p.rank as Tier);
   for (let group in diff) {
     diff[Number(group) as Tier] = diff[Number(group) as Tier]
@@ -50,23 +47,43 @@ ctx.onmessage = ({
     });
   }
 
-  const groups = groupBy(points, (d) => d.rank);
-  const average = {} as Record<Tier, number>;
-  for (let rank in groups) {
-    const maxIdx = maxIndex(groups[rank], (a) => a.points);
-    const minIdx = minIndex(groups[rank], (a) => a.points);
-    const maxPoint = groups[rank][maxIdx];
-    const minPoint = groups[rank][minIdx];
-    average[rank] =
-      maxPoint.points /
-      DateTime.fromISO(maxPoint.date)
-        .diff(DateTime.fromISO(minPoint.date))
+  const forecast: Record<Tier, LeaderboardPoint[]> = mapValues(
+    groupBy(points, (d) => d.rank),
+    (data, rank) => {
+      const maxIdx = maxIndex(data, (a) => a.points);
+      const minIdx = minIndex(data, (a) => a.points);
+      const diffHr = DateTime.fromISO(data[maxIdx].date)
+        .diff(DateTime.fromISO(data[minIdx].date))
         .as("hours");
-  }
-  console.log(average);
+      const avg = data[maxIdx].points / (diffHr > 0 ? diffHr : 1);
+      return [
+        data[maxIdx],
+        ...generateTimeArray(
+          DateTime.fromISO(data[maxIdx].date).toJSDate(),
+          DateTime.fromISO(event.enddate).toJSDate(),
+          3600000
+        ).map((time, i) => {
+          return {
+            eventid: points.find((e) => e.eventid).eventid,
+            rank: Number(rank) as Tier,
+            points: getPredictedScore(
+              Number(rank) as Tier,
+              DateTime.fromMillis(time * 3600000).toJSDate(),
+              event,
+              avg
+            ),
+            date: DateTime.fromMillis(time * 3600000).toISO(),
+          };
+        }),
+      ];
+    }
+  );
 
   ctx.postMessage({
     rate: diff,
-    forecast: [],
+    forecast:
+      points.length > 20 && getEventType(event) in forecastConstant
+        ? forecast
+        : {},
   });
 };

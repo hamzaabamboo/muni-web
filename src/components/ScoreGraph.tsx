@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { AnalysisContext } from "src/contexts/AnalysisContext";
 import { EventContext } from "src/contexts/EventContext";
 import { GraphContext } from "src/contexts/GraphContext";
 import { GraphDisplayContext } from "src/contexts/GraphDisplayContext";
@@ -10,15 +11,18 @@ export const ScoreGraph = ({
   isSmall = false,
   isLive = false,
   graphFlags,
+  showForecast = false,
 }: {
   width?: number;
   height?: number;
   isSmall?: boolean;
   isLive?: boolean;
+  showForecast?: boolean;
   graphFlags?: GraphFlags;
 }) => {
-  const { points } = useContext(GraphDisplayContext);
+  const { points, displayTier } = useContext(GraphDisplayContext);
   const { event } = useContext(EventContext);
+  const { forecast } = useContext(AnalysisContext);
 
   return (
     <Graph
@@ -30,6 +34,13 @@ export const ScoreGraph = ({
       height={height}
       isSmall={isSmall}
       isLive={isLive}
+      forecast={
+        showForecast &&
+        displayTier
+          ?.filter((e) => forecast?.[e])
+          .map((t) => forecast[t])
+          .flatMap((e) => e)
+      }
       graphFlags={graphFlags}
     />
   );

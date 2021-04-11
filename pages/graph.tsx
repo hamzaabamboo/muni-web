@@ -13,6 +13,7 @@ import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { GraphOptions } from "components/GraphOptions";
 import { GraphFlags } from "components/Graph";
+import { AnalysisProvider } from "src/contexts/AnalysisContext";
 
 export default function GraphPage() {
   const { lastUpdated } = useContext(LeaderboardContext);
@@ -24,6 +25,7 @@ export default function GraphPage() {
     {
       showTooltip: false,
       advancedZoom: false,
+      showForecast: false,
     }
   );
 
@@ -43,12 +45,23 @@ export default function GraphPage() {
       <EventInfo />
       <Navigation />
       <Text textAlign="center">Last Updated: {lastUpdatedText}</Text>
-      <GraphOptions graphFlags={graphFlags} setGraphFlags={setGraphFlags} />
+      <GraphOptions
+        graphFlags={graphFlags}
+        setGraphFlags={setGraphFlags}
+        forecastOptions
+      />
       <GraphDisplayProvider>
-        <Box ref={graphRef} w={"full"} h="600px">
-          <ScoreGraph graphFlags={graphFlags} width={width} height={height} />
-        </Box>
-        <TierSelector />
+        <AnalysisProvider>
+          <Box ref={graphRef} w={"full"} h="600px">
+            <ScoreGraph
+              showForecast={graphFlags.showForecast}
+              graphFlags={graphFlags}
+              width={width}
+              height={height}
+            />
+          </Box>
+          <TierSelector />
+        </AnalysisProvider>
       </GraphDisplayProvider>
     </>
   );

@@ -4,9 +4,7 @@ import * as d3 from "d3";
 import {
   Axis,
   D3ZoomEvent,
-  interpolateCool,
   interpolateRainbow,
-  interpolateSinebow,
   isoParse,
   ScaleLinear,
   ScaleOrdinal,
@@ -23,6 +21,7 @@ import { CenteredSpinner } from "./CenteredSpinner";
 export interface GraphFlags {
   showTooltip?: boolean;
   advancedZoom?: boolean;
+  showForecast?: boolean;
 }
 const ANIMATION_SPEED = 500;
 export const Graph = ({
@@ -38,6 +37,7 @@ export const Graph = ({
     advancedZoom: false,
   },
   renderTooltip,
+  forecast,
   ...props
 }: {
   id: string;
@@ -46,7 +46,7 @@ export const Graph = ({
   endDate: string;
   isLive?: boolean;
   isSmall?: boolean;
-  forecast?: boolean;
+  forecast?: LeaderboardPoint[];
   width?: number;
   height?: number;
   renderTooltip?: (
@@ -160,7 +160,7 @@ export const Graph = ({
       .range(
         Array(30)
           .fill(null)
-          .map((_, i, arr) => interpolateRainbow((3 * i) / arr.length))
+          .map((_, i, arr) => interpolateRainbow(((i * 3) % 30) / 30))
       )
       .domain(allTiers);
     graph.current = svg.current
@@ -208,10 +208,11 @@ export const Graph = ({
       // recover coordinate we need
       if (points.length === 0) return;
       const pos = d3.pointer(event);
+      const data = [...points, ...(forecast || [])];
       let x0 = xZoomed.current.invert(pos[0]);
-      let i = bisectX.current(points, x0, 1);
+      let i = bisectX.current(data, x0, 1);
 
-      if (!points[i]) {
+      if (!data[i]) {
         tooltips.current.style("opacity", 0);
         toolTip.current.style("display", "none");
         return;
@@ -219,10 +220,8 @@ export const Graph = ({
       tooltips.current.style("opacity", 1);
       toolTip.current.style("display", "block");
 
-      const x = xZoomed.current(isoParse(points[i].date));
-      const groups = d3
-        .groups(points, (d) => d.rank)
-        .sort((a, b) => a[0] - b[0]);
+      const x = xZoomed.current(isoParse(data[i].date));
+      const groups = d3.groups(data, (d) => d.rank).sort((a, b) => a[0] - b[0]);
 
       const latestPoint = groups
         .map(([tier, points]) => {
@@ -273,10 +272,10 @@ export const Graph = ({
 
       graphPoint
         .attr("fill", (d) => color.current(d[0]))
-        .attr("cx", x)
-        .attr("cy", (d) => y.current(d[1].points));
+        .attr("cx", (d) => xZoomed.current(isoParse(d[1].date)))
+        .attr("cy", (d) => yZoomed.current(d[1].points));
     },
-    [height, points]
+    [height, points, forecast]
   );
 
   function mouseout() {
@@ -391,6 +390,16 @@ export const Graph = ({
             return yZoomed.current(d.points);
           })(d[1]);
       });
+      graph.current.selectAll("path.forecast").attr("d", (d: any) => {
+        return d3
+          .line<LeaderboardPoint>()
+          .x(function (d) {
+            return xZoomed.current(isoParse(d.date));
+          })
+          .y(function (d) {
+            return yZoomed.current(d.points);
+          })(d[1]);
+      });
     },
     [updateZoom, updateAxes]
   );
@@ -409,7 +418,8 @@ export const Graph = ({
       : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date));
 
     const timeEnd =
-      DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0
+      DateTime.now().plus({ minutes: 30 }).diff(eventEnd).as("seconds") > 0 ||
+      forecast
         ? eventEnd
         : afterMax;
 
@@ -420,23 +430,24 @@ export const Graph = ({
 
     x.current.domain(bounds);
 
-    const yBounds =
+    const minY =
       isLive && eventEnd.diffNow().as("minute") < 0
-        ? [0, d3.max(points, (d) => d.points)]
-        : [
-            isLive
-              ? d3.min(
-                  points.filter(
-                    (d) =>
-                      DateTime.fromISO(d.date)
-                        .diff(DateTime.fromJSDate(timeStart))
-                        .as("seconds") > 0
-                  ),
-                  (d) => d.points
-                )
-              : 0,
-            d3.max(points, (d) => d.points),
-          ];
+        ? d3.min(
+            points.filter(
+              (d) =>
+                DateTime.fromISO(d.date)
+                  .diff(DateTime.fromJSDate(timeStart))
+                  .as("seconds") > 0
+            ),
+            (d) => d.points
+          )
+        : 0;
+
+    const maxY = d3.max(
+      forecast?.length > 0 ? forecast : points,
+      (d) => d.points
+    );
+    const yBounds = [minY, maxY];
 
     y.current.domain(yBounds).nice();
 
@@ -472,10 +483,43 @@ export const Graph = ({
 
     graphNode.exit().remove();
 
+    if (points?.length > 50 && forecast) {
+      const forecastData = graph.current.selectAll("path.forecast").data(
+        d3.groups(forecast, (d) => d.rank),
+        (k) => k[0]
+      );
+      forecastData
+        .enter()
+        .append("path")
+        .attr("class", "forecast")
+        .attr("tier", (d) => d[0])
+        .attr("fill", "none")
+        .attr("stroke", function (d) {
+          return color.current(Number(d[0]));
+        })
+        .style("stroke-dasharray", "6 2")
+        .style("opacity", 0.8)
+        .attr("stroke-width", 2);
+      forecastData.exit().remove();
+
+      graph.current
+        .selectAll("path.forecast")
+        .transition()
+        .attr("d", (d: any) => {
+          return d3
+            .line<LeaderboardPoint>()
+            .x(function (d) {
+              return xZoomed.current(isoParse(d.date));
+            })
+            .y(function (d) {
+              return yZoomed.current(d.points);
+            })(d[1]);
+        });
+    }
+
     graph.current
       .selectAll("path.line")
       .transition()
-      .duration(ANIMATION_SPEED)
       .attr("d", (d: any) => {
         return d3
           .line<LeaderboardPoint>()
@@ -488,7 +532,7 @@ export const Graph = ({
       });
 
     updateAxes(true);
-  }, [points, width, height, isSmall, showTooltip, advancedZoom]);
+  }, [points, width, height, isSmall, showTooltip, advancedZoom, forecast]);
 
   if (width === 0 && height === 0) return <CenteredSpinner />;
   return <Box ref={parentRef}></Box>;

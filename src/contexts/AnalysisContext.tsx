@@ -1,5 +1,3 @@
-import { interval } from "d3-timer";
-import { DateTime } from "luxon";
 import {
   createContext,
   Dispatch,
@@ -13,12 +11,13 @@ import {
 } from "react";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { useLocalStorage } from "web-api-hooks";
+import { EventContext } from "./EventContext";
 import { GraphContext } from "./GraphContext";
 import { GraphDisplayContext } from "./GraphDisplayContext";
 
 export const AnalysisContext = createContext<{
   rate?: Record<Tier, LeaderboardPoint[]>;
-  predictions?: Record<Tier, LeaderboardPoint[]>;
+  forecast?: Record<Tier, LeaderboardPoint[]>;
   interval?: number;
   setInterval?: Dispatch<SetStateAction<number>>;
 }>({});
@@ -26,8 +25,10 @@ export const AnalysisContext = createContext<{
 export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
   const { points: allPoints } = useContext(GraphContext);
   const { points: displayPoints } = useContext(GraphDisplayContext);
+  const { event } = useContext(EventContext);
   const worker = useRef<Worker>();
   const [rate, setRate] = useState<Record<Tier, LeaderboardPoint[]>>();
+  const [forecast, setForecast] = useState<Record<Tier, LeaderboardPoint[]>>();
   const [interval, setInterval] = useLocalStorage<number>(
     "groupInterval",
     3600000
@@ -45,6 +46,7 @@ export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
   }>) => {
     const { rate, forecast } = data;
     setRate(rate);
+    setForecast(forecast);
   };
 
   useEffect(() => {
@@ -52,7 +54,7 @@ export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
       new URL("../workers/worker.ts", import.meta.url),
       { type: "module" }
     );
-    worker.current.postMessage({ points, interval });
+    worker.current.postMessage({ points, interval, event });
     worker.current.onmessage = updateData;
     return () => {
       worker.current.removeEventListener("message", updateData);
@@ -61,9 +63,7 @@ export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
   }, [points, interval]);
 
   return (
-    <AnalysisContext.Provider
-      value={{ rate, predictions: {} as any, interval, setInterval }}
-    >
+    <AnalysisContext.Provider value={{ rate, forecast, interval, setInterval }}>
       {children}
     </AnalysisContext.Provider>
   );

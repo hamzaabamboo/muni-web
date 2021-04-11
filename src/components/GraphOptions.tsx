@@ -5,21 +5,13 @@ import { GraphFlags } from "./Graph";
 export const GraphOptions: FC<{
   graphFlags: GraphFlags;
   setGraphFlags: Dispatch<SetStateAction<GraphFlags>>;
-}> = ({ graphFlags, setGraphFlags }) => {
+  forecastOptions?: boolean;
+}> = ({ graphFlags, setGraphFlags, forecastOptions = false }) => {
   const toggleGraphOptions = (key: keyof GraphFlags) => {
     setGraphFlags((d) => ({ ...d, [key]: !d[key] }));
   };
   return (
     <Flex flexDir="column">
-      <Text
-        ml={1}
-        as="span"
-        color="red.600"
-        fontStyle="italic"
-        textAlign="center"
-      >
-        (These settings are experimental, muni may break or becomes very slow)
-      </Text>
       <Flex flexDir="column">
         <Flex>
           <Switch
@@ -35,6 +27,15 @@ export const GraphOptions: FC<{
           />
           <Text ml={2}>Advanced Zoom</Text>
         </Flex>
+        {forecastOptions && (
+          <Flex>
+            <Switch
+              isChecked={graphFlags.showForecast}
+              onChange={() => toggleGraphOptions("showForecast")}
+            />
+            <Text ml={2}>Show Forecast (Muni may break, as usual)</Text>
+          </Flex>
+        )}
       </Flex>
     </Flex>
   );

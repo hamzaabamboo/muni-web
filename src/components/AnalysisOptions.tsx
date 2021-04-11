@@ -4,10 +4,17 @@ import { AnalysisContext } from "src/contexts/AnalysisContext";
 
 const intervals = [
   {
-    label: "1 Minute (Laggy tho)",
+    label: "1 Minute",
     value: 60000,
   },
-
+  {
+    label: "2 Minutes",
+    value: 120000,
+  },
+  {
+    label: "5 Minutes",
+    value: 300000,
+  },
   {
     label: "10 Minutes",
     value: 600000,
@@ -16,12 +23,14 @@ const intervals = [
     label: "30 minutes",
     value: 1800000,
   },
-
   {
     label: "1 Hour",
     value: 3600000,
   },
-
+  {
+    label: "6 Hours",
+    value: 7200000,
+  },
   {
     label: "1 Day",
     value: 86400000,
