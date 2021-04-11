@@ -313,7 +313,7 @@ export const Graph = ({
     xAxis.current = d3.axisBottom(xZoomed.current);
     if (!advancedZoom) return;
     const bounds = xZoomed.current.domain();
-    const data = points.filter(
+    const data = [...points, ...(forecast || [])].filter(
       (p) =>
         DateTime.fromISO(p.date).toJSDate() >= bounds[0] &&
         DateTime.fromISO(p.date).toJSDate() <= bounds[1]
@@ -326,7 +326,7 @@ export const Graph = ({
 
     yZoomed.current = y.current.domain(domain);
     yAxis.current = d3.axisLeft(yZoomed.current);
-  }, [points, advancedZoom]);
+  }, [points, advancedZoom, forecast]);
 
   const updateAxes = useCallback(
     (withTransition: boolean = false) => {

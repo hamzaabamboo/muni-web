@@ -16,6 +16,7 @@ export interface LeaderboardPoint {
   date: string;
   name?: string;
   description?: string;
+  difference?: number;
   points: number;
 }
 
