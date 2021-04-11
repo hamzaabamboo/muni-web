@@ -46,6 +46,7 @@ export const Graph = ({
   endDate: string;
   isLive?: boolean;
   isSmall?: boolean;
+  forecast?: boolean;
   width?: number;
   height?: number;
   renderTooltip?: (

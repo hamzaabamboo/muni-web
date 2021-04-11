@@ -15,7 +15,7 @@ export const groupByTime = <T extends { date: string } = any>(
     DateTime.fromJSDate(max(data, (d) => isoParse(d.date))).toMillis() /
       interval
   );
-  for (let t = minTime; t < maxTime; t += interval) {
+  for (let t = minTime; t < maxTime; t += 1) {
     times[t] = [];
   }
   data.forEach((d) => {

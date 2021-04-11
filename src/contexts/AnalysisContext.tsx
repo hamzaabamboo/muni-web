@@ -39,8 +39,12 @@ export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
 
   const updateData = ({
     data,
-  }: MessageEvent<Record<Tier, LeaderboardPoint[]>>) => {
-    setRate(data);
+  }: MessageEvent<{
+    rate: Record<Tier, LeaderboardPoint[]>;
+    forecast: Record<Tier, LeaderboardPoint[]>;
+  }>) => {
+    const { rate, forecast } = data;
+    setRate(rate);
   };
 
   useEffect(() => {
