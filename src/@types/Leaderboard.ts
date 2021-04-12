@@ -57,5 +57,6 @@ export interface PastChangeEntry {
   rank: Tier;
   points: number;
   change: number;
-  date: number;
+  date: string;
+  name: string;
 }

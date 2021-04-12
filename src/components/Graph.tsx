@@ -206,7 +206,7 @@ export const Graph = ({
   const updateTooltip = useCallback(
     (event: MouseEvent) => {
       // recover coordinate we need
-      if (points.length === 0) return;
+      if (!points || points.length === 0) return;
       const pos = d3.pointer(event);
       const data = [...points, ...(forecast || [])];
       let x0 = xZoomed.current.invert(pos[0]);
@@ -225,7 +225,7 @@ export const Graph = ({
 
       const latestPoint = groups
         .map(([tier, points]) => {
-          return [tier, points[bisectX.current(points, x0, 1)]] as [
+          return [tier, points[bisectX.current(points ?? [], x0, 1)]] as [
             Tier,
             LeaderboardPoint
           ];
@@ -413,7 +413,7 @@ export const Graph = ({
         DateTime.now().minus({ hour: 3 }).diff(eventStart).as("second") < 0
         ? eventStart.toJSDate()
         : DateTime.now().minus({ hour: 3 }).toJSDate()
-      : startDate
+      : startDate || !points
       ? eventStart.toJSDate()
       : d3.min(points, (d: LeaderboardPoint) => isoParse(d.date));
 
@@ -443,10 +443,9 @@ export const Graph = ({
           )
         : 0;
 
-    const maxY = d3.max(
-      forecast?.length > 0 ? forecast : points,
-      (d) => d.points
-    );
+    const maxY = points
+      ? d3.max(forecast?.length > 0 ? forecast : points, (d) => d.points)
+      : 0;
     const yBounds = [minY, maxY];
 
     y.current.domain(yBounds).nice();
@@ -464,7 +463,7 @@ export const Graph = ({
     xAxis.current = d3.axisBottom(xZoomed.current);
     yAxis.current = d3.axisLeft(yZoomed.current);
 
-    let graphData = d3.groups(points, (d) => d.rank);
+    let graphData = d3.groups(points ?? [], (d) => d.rank);
 
     const graphNode = graph.current
       .selectAll("path")

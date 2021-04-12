@@ -13,10 +13,10 @@ export const PlayerGraph = ({ tier }: { tier: Tier }) => {
   const graphRef = useRef<HTMLDivElement>(null);
   const [width, height] = useSize(graphRef);
 
-  const graphData = useMemo(() => points.filter((p) => p.rank === tier), [
-    tier,
-    points,
-  ]);
+  const graphData = useMemo(
+    () => points?.filter((p) => p.rank === tier) ?? [],
+    [tier, points]
+  );
 
   return (
     <Box ref={graphRef} minH="300px" w="full">

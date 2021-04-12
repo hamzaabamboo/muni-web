@@ -88,8 +88,8 @@ function MyApp({ Component, pageProps }) {
         {!isEventPage ? (
           <ComposeProviders
             providers={[
-              LeaderboardProvider,
               EventProvider,
+              LeaderboardProvider,
               GraphProvider,
               LeaderboardChangesProvider,
             ]}

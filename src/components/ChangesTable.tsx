@@ -16,12 +16,12 @@ import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
 import { EventContext } from "src/contexts/EventContext";
 import { GraphContext } from "src/contexts/GraphContext";
-import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
 import { Tier } from "types/Leaderboard";
 import { FixedSizeList } from "react-window";
-import { index } from "d3-array";
+import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
+
 export const ChangesTable = ({ tier }: { tier: Tier }) => {
-  const { points } = useContext(GraphContext);
+  const { pastUpdates } = useContext(LeaderboardChangesContext);
   const { event } = useContext(EventContext);
   const threshold = useMemo(() => {
     return event && thresholds[event.type];
@@ -29,12 +29,12 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
 
   const list = useMemo(
     () =>
-      points
+      pastUpdates
         ?.filter((u) => u.rank === tier)
         .sort((a, b) =>
           DateTime.fromISO(b.date).diff(DateTime.fromISO(a.date)).as("minutes")
         ),
-    [points, threshold, tier]
+    [pastUpdates, threshold, tier]
   );
   return (
     <Flex flexDir="column" alignItems="stretch" w="full">
@@ -69,7 +69,7 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
               templateColumns="1fr 1fr 1fr 1fr"
               style={style}
             >
-              <GridItem>+{-1 * t.difference}</GridItem>
+              <GridItem>+{t.change}</GridItem>
               <GridItem>{t.name}</GridItem>
               <GridItem>{t.points}</GridItem>
               <GridItem>

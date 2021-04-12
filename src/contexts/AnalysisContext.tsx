@@ -35,7 +35,7 @@ export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
   );
 
   const points = useMemo(() => {
-    return all ? allPoints : displayPoints || allPoints;
+    return (all ? allPoints : displayPoints || allPoints) || [];
   }, [allPoints, displayPoints]);
 
   const updateData = ({

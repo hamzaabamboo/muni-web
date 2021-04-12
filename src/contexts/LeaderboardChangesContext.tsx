@@ -1,20 +1,8 @@
-import {
-  getLeaderboardChanges,
-  saveLeaderboardChanges,
-} from "db/leaderboardChanges";
-import { useLocalStorage } from "hooks/useLocalstorage";
-import { usePromiseEffect } from "hooks/usePromiseEffect";
 import { DateTime } from "luxon";
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Leaderboard, PastChangeEntry, Tier } from "types/Leaderboard";
 import { EventContext } from "./EventContext";
+import { GraphContext } from "./GraphContext";
 import { LeaderboardContext } from "./LeaderboardContext";
 
 export const LeaderboardChangesContext = createContext<{
@@ -24,23 +12,32 @@ export const LeaderboardChangesContext = createContext<{
 
 export const LeaderboardChangesProvider = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
+  const { points } = useContext(GraphContext);
   const { event } = useContext(EventContext);
   const [changes, setChanges] = useState<Record<Tier, number>>(
     {} as Record<Tier, number>
   );
-  const [pastUpdates, setPastUpdates] = useState<PastChangeEntry[]>([]);
+  const [pastUpdates, setPastUpdates] = useState<PastChangeEntry[]>();
 
   const oldLb = useRef<Leaderboard>();
 
-  const getPastChanges = useCallback(async () => {
-    if (!event) return Promise.resolve([]);
-    return getLeaderboardChanges(event.eventid);
-  }, [event]);
-
-  usePromiseEffect(getPastChanges, setPastUpdates);
+  useEffect(() => {
+    if (!pastUpdates && points) {
+      setPastUpdates(
+        points.map<PastChangeEntry>((p) => ({
+          event: event.eventid,
+          rank: p.rank as Tier,
+          change: -1 * Number(p.difference),
+          date: p.date,
+          points: p.points,
+          name: p.name,
+        }))
+      );
+    }
+  }, [points]);
 
   useEffect(() => {
-    if (!event) return;
+    if (!event || !pastUpdates) return;
     if (oldLb.current) {
       let newUpdates: PastChangeEntry[] = [];
       const newChanges = lbData.map((d) => {
@@ -59,8 +56,9 @@ export const LeaderboardChangesProvider = ({ children }) => {
             event: event.eventid,
             rank: d.rank,
             change,
-            date: DateTime.fromISO(d.date).toSeconds(),
+            date: d.date,
             points: d.points,
+            name: d.name,
           });
         }
         return [
@@ -70,7 +68,6 @@ export const LeaderboardChangesProvider = ({ children }) => {
         ];
       });
       setPastUpdates((previousUpdate) => [...previousUpdate, ...newUpdates]);
-      saveLeaderboardChanges(newUpdates);
       setChanges(Object.fromEntries(newChanges));
     }
     oldLb.current = lbData;

@@ -1,27 +1,13 @@
-import React, { FC, memo, useContext, useMemo } from "react";
-import { LeaderboardEntry, Tier as ITier } from "types/Leaderboard";
-import { Table, TableRowProps, Tbody, Thead } from "@chakra-ui/table";
-import {
-  Td,
-  Th,
-  Tr,
-  Text,
-  TextProps,
-  Flex,
-  useBreakpoint,
-} from "@chakra-ui/react";
-import { DateTime, Duration } from "luxon";
+import { Flex, Td, Text, Th, Tr, useBreakpoint } from "@chakra-ui/react";
+import { Table, Tbody, Thead } from "@chakra-ui/table";
 import { tierBorders } from "constants/tierborder";
-import humanize from "humanize-duration";
-import { EventType } from "types/Event";
+import { DateTime } from "luxon";
+import React, { FC, useContext, useMemo } from "react";
 import { EventContext } from "src/contexts/EventContext";
-import { thresholds } from "constants/threshold";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
-import { getLastUpdatedTime } from "utils/time";
-import { CenteredSpinner } from "./CenteredSpinner";
+import { Tier as ITier } from "types/Leaderboard";
 import { formatPoints } from "utils/formatPoints";
-import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
-import { getIsPlayingStyles, getToBoatTime } from "utils/leaderboard";
+import { CenteredSpinner } from "./CenteredSpinner";
 import { Tier } from "./Tier";
 
 interface LeaderboardProps {

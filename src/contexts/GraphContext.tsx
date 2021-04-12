@@ -20,18 +20,18 @@ export const GraphContext = createContext<{
 export const GraphProvider = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
   const { event } = useContext(EventContext);
-  const [points, setPoints] = useState<LeaderboardPoint[]>([]);
+  const [points, setPoints] = useState<LeaderboardPoint[]>();
   const lastUpdated = useRef<Record<string, DateTime>>({});
 
   const getData = useCallback(() => {
-    if (!event) return Promise.resolve([]);
+    if (!event) return Promise.resolve(undefined);
     return getAllLeaderboard(event.eventid);
   }, [event]);
 
   usePromiseEffect(getData, setPoints);
 
   useEffect(() => {
-    if (!lbData) return;
+    if (!lbData || !points) return;
     const updated = lbData.filter((d) => {
       if (
         lastUpdated.current[d.rank] &&

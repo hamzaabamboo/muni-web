@@ -36,11 +36,12 @@ export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
   }, [staticPoints, _points]);
 
   useEffect(() => {
-    if (allTiers.length === 0)
+    if (allTiers.length === 0 && data)
       setAllTiers(Array.from(new Set(data.map((d) => d.rank as Tier))));
   }, [data]);
 
   const points = useMemo(() => {
+    if (!data) return;
     if (!displayTier) return data;
     return data
       .filter((f) => displayTier.includes(f.rank as Tier))

@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useRef, useState } from "react";
 
-import { Box, Flex, Switch, Text } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { EventInfo } from "components/EventInfo";
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { DateTime } from "luxon";
