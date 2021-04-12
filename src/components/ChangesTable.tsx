@@ -1,24 +1,11 @@
-import {
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Text,
-  Box,
-  Grid,
-  GridItem,
-  Flex,
-} from "@chakra-ui/react";
+import { Flex, Grid, GridItem } from "@chakra-ui/react";
 import { thresholds } from "constants/threshold";
 import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
-import { EventContext } from "src/contexts/EventContext";
-import { GraphContext } from "src/contexts/GraphContext";
-import { Tier } from "types/Leaderboard";
 import { FixedSizeList } from "react-window";
+import { EventContext } from "src/contexts/EventContext";
 import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
+import { Tier } from "types/Leaderboard";
 
 export const ChangesTable = ({ tier }: { tier: Tier }) => {
   const { pastUpdates } = useContext(LeaderboardChangesContext);
@@ -33,7 +20,7 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
         ?.filter((u) => u.rank === tier)
         .sort((a, b) =>
           DateTime.fromISO(b.date).diff(DateTime.fromISO(a.date)).as("minutes")
-        ),
+        ) ?? [],
     [pastUpdates, threshold, tier]
   );
   return (
