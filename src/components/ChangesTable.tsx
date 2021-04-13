@@ -1,4 +1,4 @@
-import { Flex, Grid, GridItem } from "@chakra-ui/react";
+import { Fade, Flex, Grid, GridItem } from "@chakra-ui/react";
 import { thresholds } from "constants/threshold";
 import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
@@ -46,23 +46,25 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
         {({ index, style, data }) => {
           const t = data[index];
           return (
-            <Grid
-              key={t.date}
-              bg={
-                threshold && t.difference > threshold.maxPerGame
-                  ? "red.200"
-                  : "unset"
-              }
-              templateColumns="1fr 1fr 1fr 1fr"
-              style={style}
-            >
-              <GridItem>+{t.change}</GridItem>
-              <GridItem>{t.name}</GridItem>
-              <GridItem>{t.points}</GridItem>
-              <GridItem>
-                {DateTime.fromISO(t.date).toFormat("HH:mm:ss dd/MM")}
-              </GridItem>
-            </Grid>
+            <Fade key={t.date} in={true}>
+              <Grid
+                bg={
+                  threshold && t.difference > threshold.maxPerGame
+                    ? "red.200"
+                    : "unset"
+                }
+                alignItems="center"
+                templateColumns="1fr 1fr 1fr 1fr"
+                style={style}
+              >
+                <GridItem>+{t.change}</GridItem>
+                <GridItem>{t.name}</GridItem>
+                <GridItem>{t.points}</GridItem>
+                <GridItem>
+                  {DateTime.fromISO(t.date).toFormat("HH:mm:ss dd/MM")}
+                </GridItem>
+              </Grid>
+            </Fade>
           );
         }}
       </FixedSizeList>
