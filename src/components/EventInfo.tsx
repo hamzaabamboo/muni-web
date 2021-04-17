@@ -1,4 +1,4 @@
-import { Flex, Text } from "@chakra-ui/react";
+import { Flex, Text, Image, Box } from "@chakra-ui/react";
 import { DateTime } from "luxon";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { EventContext } from "src/contexts/EventContext";
@@ -11,21 +11,35 @@ export const EventInfo = () => {
 
   return (
     <Flex flexDirection="column" py={2}>
-      <Text
-        fontWeight="bold"
-        fontSize="3xl"
-        textAlign={["center", null, "start"]}
+      <Flex
+        flexDirection={["column", null, "row"]}
+        justifyContent="space-between"
       >
-        {event.name}
-      </Text>
-      <EventDetails align={["center", null, "start"]} event={event} />
-      {DateTime.fromISO(event.enddate).diffNow().as("second") > 0 && (
-        <CountdownTimer
-          startTime={event.startdate}
-          rankEndTime={event.enddate}
-          resultsTime={event.enddate}
-        />
-      )}
+        <Flex flexDirection="column" order={[2, null, 1]}>
+          <Text
+            fontWeight="bold"
+            fontSize="3xl"
+            textAlign={["center", null, "start"]}
+          >
+            {event.name}
+          </Text>
+          <EventDetails align={["center", null, "start"]} event={event} />
+          {DateTime.fromISO(event.enddate).diffNow().as("second") > 0 && (
+            <CountdownTimer
+              startTime={event.startdate}
+              rankEndTime={event.enddate}
+              resultsTime={event.enddate}
+            />
+          )}
+        </Flex>
+        <Box h="120" margin={["0 auto", null, "auto 0"]} order={[1, null, 2]}>
+          <Image
+            src={`/images/events/banner/${event.eventid}.png`}
+            maxH="full"
+            maxW="full"
+          />
+        </Box>
+      </Flex>
     </Flex>
   );
 };

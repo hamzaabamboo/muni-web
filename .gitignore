@@ -32,3 +32,6 @@ yarn-error.log*
 
 # vercel
 .vercel
+
+yankAssets.ts
+/d4dj-dumps

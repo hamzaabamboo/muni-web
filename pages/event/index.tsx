@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, Divider, Flex, Select, Text } from "@chakra-ui/react";
+import { Box, Divider, Flex, Select, Text, Image } from "@chakra-ui/react";
 import { fetchD4DB } from "api/fetchD4DB";
 import { fixWeirdNumbering } from "api/utils";
 import axios from "axios";
@@ -101,12 +101,21 @@ const AllEvents: FC<{
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <Box>
-                      <Text fontSize="2xl" fontWeight="bold">
-                        {p.name}
-                      </Text>
-                      <EventDetails event={p} />
-                    </Box>
+                    <Flex w="full" justifyContent="space-between">
+                      <Box>
+                        <Text fontSize="2xl" fontWeight="bold">
+                          {p.name}
+                        </Text>
+                        <EventDetails event={p} />
+                      </Box>
+                      <Box h="80px" margin={["0 auto", null, "auto 0"]}>
+                        <Image
+                          src={`/images/events/banner/${p.eventid}.png`}
+                          maxH="full"
+                          maxW="full"
+                        />
+                      </Box>
+                    </Flex>
                     <Box>
                       <ChevronRightIcon boxSize={8} />
                     </Box>
@@ -120,7 +129,7 @@ const AllEvents: FC<{
       <Text fontSize="3xl" my={2}>
         Events without tracking
       </Text>
-      <Box px={2}>
+      <Flex px={2} alignItems="stretch" flexDir="column">
         {withoutDataFiltered
           ?.filter(
             (e) => DateTime.fromISO(e.startdate).diffNow().as("second") < 0
@@ -141,13 +150,20 @@ const AllEvents: FC<{
                       </Text>
                       <EventDetails event={p} />
                     </Box>
+                    <Box h="80px" margin={["0 auto", null, "auto 0"]}>
+                      <Image
+                        src={`/images/events/banner/${p.eventid}.png`}
+                        maxH="full"
+                        maxW="full"
+                      />
+                    </Box>
                   </Flex>
-                  <Divider color="gray.200" />
                 </Flex>
+                <Divider color="gray.200" />
               </Fragment>
             );
           })}
-      </Box>
+      </Flex>
     </Box>
   );
 };

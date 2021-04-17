@@ -74,7 +74,10 @@ export default function GraphPage(props: {
           property="og:url"
           content={`https://hamzaabamboo.github.io/muni-web/event/${event.eventid}`}
         />
-        <meta property="og:image" content={`${base}/images/munihappy.png`} />
+        <meta
+          property="og:image"
+          content={`${base}/images/events/banner/${event.eventid}.png`}
+        />
         <meta property="og:description" content={desc} />
       </Head>
       <EventProvider event={event}>
