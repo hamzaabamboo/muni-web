@@ -2,6 +2,7 @@ import { Flex, Text, Image, Box } from "@chakra-ui/react";
 import { DateTime } from "luxon";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { EventContext } from "src/contexts/EventContext";
+import { getAbsolutePath } from "utils/assets";
 import { EventDetails } from "./EventDetails";
 
 export const EventInfo = () => {
@@ -34,7 +35,7 @@ export const EventInfo = () => {
         </Flex>
         <Box h="120" margin={["0 auto", null, "auto 0"]} order={[1, null, 2]}>
           <Image
-            src={`/images/events/banner/${event.eventid}.png`}
+            src={getAbsolutePath(`/images/events/banner/${event.eventid}.png`)}
             maxH="full"
             maxW="full"
           />

@@ -1,21 +1,14 @@
 import Head from "next/head";
 import React from "react";
 
-import {
-  Box,
-  ChakraProvider,
-  Flex,
-  Link,
-  Select,
-  Text,
-} from "@chakra-ui/react";
+import { Box, ChakraProvider, Flex, Link, Text } from "@chakra-ui/react";
 import { EventProvider } from "src/contexts/EventContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 import { GraphProvider } from "src/contexts/GraphContext";
 import { ComposeProviders } from "src/contexts/ComposeProviders";
 import { LeaderboardChangesProvider } from "src/contexts/LeaderboardChangesContext";
+import { getAbsolutePath } from "utils/assets";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 function MyApp({ Component, pageProps }) {
   const { isEventPage, title } = pageProps;
 
@@ -37,7 +30,11 @@ function MyApp({ Component, pageProps }) {
             py={4}
             bg="gray.100"
           >
-            <Link href={`${base}/`} as="a" _hover={{ textDecor: "none" }}>
+            <Link
+              href={getAbsolutePath("/")}
+              as="a"
+              _hover={{ textDecor: "none" }}
+            >
               <Text fontSize="2xl" fontWeight="bold">
                 <Text as="span" textDecor="line-through" color="red.400">
                   Muni
@@ -45,7 +42,11 @@ function MyApp({ Component, pageProps }) {
                 Towa Web (Please give me a proper name)
               </Text>
             </Link>
-            <Link href={`${base}/event`} _hover={{ textDecor: "none" }} as="a">
+            <Link
+              href={getAbsolutePath("/event")}
+              _hover={{ textDecor: "none" }}
+              as="a"
+            >
               <Text fontSize="lg">View all events</Text>
             </Link>
           </Flex>
@@ -68,7 +69,7 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         <title>{title || "Create むに App"}</title>
-        <link rel="icon" href={`${base}/favicon.ico`} />
+        <link rel="icon" href={getAbsolutePath("/favicon.ico")} />
         <meta property="og:title" content={title || "Create むに App"} />
         {!isEventPage && (
           <>
@@ -78,7 +79,7 @@ function MyApp({ Component, pageProps }) {
             />
             <meta
               property="og:image"
-              content={`${base}/images/munihappy.png`}
+              content={getAbsolutePath("/images/munihappy.png")}
             />
             <meta property="og:description" content="Munimunimunimunimuni" />
           </>

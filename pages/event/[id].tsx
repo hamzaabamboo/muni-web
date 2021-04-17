@@ -14,18 +14,15 @@ import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
 import Head from "next/head";
 import React, { useMemo, useRef, useState } from "react";
-import {
-  AnalysisContext,
-  AnalysisProvider,
-} from "src/contexts/AnalysisContext";
+import { AnalysisProvider } from "src/contexts/AnalysisContext";
 import { EventProvider } from "src/contexts/EventContext";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 import { Event } from "types/Event";
 import { LeaderboardEntry, LeaderboardPoint } from "types/Leaderboard";
+import { getAbsolutePath } from "utils/assets";
 import { useSize } from "web-api-hooks";
 
-const base = process.env.NEXT_PUBLIC_BASE_URL || "";
 export default function GraphPage(props: {
   event: Event;
   points: LeaderboardPoint[];
@@ -76,7 +73,9 @@ export default function GraphPage(props: {
         />
         <meta
           property="og:image"
-          content={`${base}/images/events/banner/${event.eventid}.png`}
+          content={getAbsolutePath(
+            `/images/events/banner/${event.eventid}.png`
+          )}
         />
         <meta property="og:description" content={desc} />
       </Head>

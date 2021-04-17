@@ -8,6 +8,7 @@ import { DateTime } from "luxon";
 import Link from "next/link";
 import React, { FC, Fragment, useMemo, useState } from "react";
 import { D4DBEvent, D4DBEventResponse, Event } from "types/Event";
+import { getAbsolutePath } from "utils/assets";
 
 export const getStaticProps = async () => {
   const sigEvents = (
@@ -110,7 +111,9 @@ const AllEvents: FC<{
                       </Box>
                       <Box h="80px" margin={["0 auto", null, "auto 0"]}>
                         <Image
-                          src={`/images/events/banner/${p.eventid}.png`}
+                          src={getAbsolutePath(
+                            "/images/events/banner/${p.eventid}.png"
+                          )}
                           maxH="full"
                           maxW="full"
                         />
@@ -152,7 +155,9 @@ const AllEvents: FC<{
                     </Box>
                     <Box h="80px" margin={["0 auto", null, "auto 0"]}>
                       <Image
-                        src={`/images/events/banner/${p.eventid}.png`}
+                        src={getAbsolutePath(
+                          `/images/events/banner/${p.eventid}.png`
+                        )}
                         maxH="full"
                         maxW="full"
                       />
