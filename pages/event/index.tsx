@@ -103,7 +103,7 @@ const AllEvents: FC<PageProps<AllEventsPageProps>> = ({ allEvents }) => {
           .map((p) => {
             return (
               <Link href={`/event/${p.eventid}`} key={p.id}>
-                <Flex flexDirection="column">
+                <Flex flexDirection="column" cursor="pointer">
                   <Flex
                     px={2}
                     py={4}
