@@ -26,7 +26,7 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
   return (
     <Flex flexDir="column" alignItems="stretch" w="full">
       <Grid
-        templateColumns="1fr 1fr 1fr 1fr"
+        templateColumns="1fr 1.5fr 1fr 1fr"
         pr="20px"
         fontWeight="bold"
         fontSize="lg"
@@ -54,13 +54,13 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
                     : "unset"
                 }
                 alignItems="center"
-                templateColumns="1fr 1fr 1fr 1fr"
+                templateColumns="1fr 1.5fr 1fr 1fr"
                 style={style}
               >
                 <GridItem>+{t.change}</GridItem>
-                <GridItem>{t.name}</GridItem>
+                <GridItem px={1}>{t.name}</GridItem>
                 <GridItem>{t.points}</GridItem>
-                <GridItem>
+                <GridItem px={1}>
                   {DateTime.fromISO(t.date).toFormat("HH:mm:ss dd/MM")}
                 </GridItem>
               </Grid>

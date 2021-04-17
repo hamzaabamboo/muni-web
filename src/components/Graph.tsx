@@ -1,10 +1,12 @@
-import { Box, useBreakpoint } from "@chakra-ui/react";
+import { Box, useBreakpoint, useColorMode } from "@chakra-ui/react";
 import { allTiers } from "constants/tierborder";
 import * as d3 from "d3";
 import {
   Axis,
   D3ZoomEvent,
+  interpolatePlasma,
   interpolateRainbow,
+  interpolateWarm,
   isoParse,
   ScaleLinear,
   ScaleOrdinal,
@@ -55,6 +57,7 @@ export const Graph = ({
   graphFlags?: GraphFlags;
 }) => {
   const { showTooltip, advancedZoom } = graphFlags;
+  const { colorMode } = useColorMode();
   const parentRef = useRef<HTMLDivElement>(null);
 
   const parent = useRef<Selection<HTMLDivElement, any, any, any>>();
@@ -160,7 +163,11 @@ export const Graph = ({
       .range(
         Array(30)
           .fill(null)
-          .map((_, i, arr) => interpolateRainbow(((i * 3) % 30) / 30))
+          .map((_, i) =>
+            colorMode === "light"
+              ? interpolateRainbow(((i * 3) % 30) / 30)
+              : interpolateRainbow(((i * 3) % 30) / 30)
+          )
       )
       .domain(allTiers);
     graph.current = svg.current
@@ -201,7 +208,7 @@ export const Graph = ({
     return () => {
       parent.current.selectAll("*").remove();
     };
-  }, [width, height, isLive, showTooltip, advancedZoom]);
+  }, [width, height, isLive, showTooltip, advancedZoom, colorMode]);
 
   const updateTooltip = useCallback(
     (event: MouseEvent) => {
@@ -531,7 +538,16 @@ export const Graph = ({
       });
 
     updateAxes(true);
-  }, [points, width, height, isSmall, showTooltip, advancedZoom, forecast]);
+  }, [
+    points,
+    width,
+    height,
+    isSmall,
+    showTooltip,
+    advancedZoom,
+    forecast,
+    colorMode,
+  ]);
 
   if (width === 0 && height === 0) return <CenteredSpinner />;
   return <Box ref={parentRef}></Box>;

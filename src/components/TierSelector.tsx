@@ -13,7 +13,7 @@ export const TierSelector = () => {
   const toggleTier = (t: Tier) => {
     if (displayTier?.includes(t))
       return setDisplayTier((dt) => dt.filter((i) => i !== t));
-    setDisplayTier((dt) => [...dt, t]);
+    setDisplayTier((dt) => [...(dt || []), t]);
   };
   const moreTiers = useMemo(
     () => [
@@ -51,7 +51,7 @@ export const TierSelector = () => {
         <Button
           m={2}
           key={t.label}
-          bg="blue.200"
+          colorScheme="blue"
           onClick={() => setDisplayTier(t.tiers)}
         >
           {t.label}
@@ -63,7 +63,7 @@ export const TierSelector = () => {
           <Button
             m={2}
             key={t}
-            bg={displayTier?.includes(t) ? "green.200" : "gray.200"}
+            colorScheme={displayTier?.includes(t) ? "green" : "gray"}
             onClick={() => toggleTier(t)}
           >
             T{t}

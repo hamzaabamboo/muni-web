@@ -68,8 +68,8 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
                     mx={4}
                     p={2}
                     rounded="md"
-                    bg={graphMode === "point" ? "gray.200" : "transparent"}
-                    color={graphMode === "point" ? "blue.400" : "black"}
+                    colorScheme="blue"
+                    variant={graphMode === "point" ? "solid" : "outline"}
                     onClick={() => setGraphMode("point")}
                     fontSize="lg"
                   >
@@ -79,8 +79,8 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
                     mx={4}
                     p={2}
                     rounded="md"
-                    bg={graphMode === "rate" ? "gray.200" : "transparent"}
-                    color={graphMode === "rate" ? "blue.400" : "black"}
+                    colorScheme="blue"
+                    variant={graphMode === "rate" ? "solid" : "outline"}
                     onClick={() => setGraphMode("rate")}
                     fontSize="lg"
                   >
@@ -182,6 +182,9 @@ export async function getStaticProps({
         description: desc,
         title: `Create むに web | ${event.name}`,
       },
+      backgroundImage: getAbsolutePath(
+        `/images/events/background/${event.eventid}.jpg`
+      ),
     },
   };
 }

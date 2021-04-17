@@ -1,4 +1,12 @@
-import { Flex, Td, Text, Th, Tr, useBreakpoint } from "@chakra-ui/react";
+import {
+  Flex,
+  Td,
+  Text,
+  Th,
+  Tr,
+  useBreakpoint,
+  useColorMode,
+} from "@chakra-ui/react";
 import { Table, Tbody, Thead } from "@chakra-ui/table";
 import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
@@ -30,6 +38,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
   const { lbData, lastUpdated } = useContext(LeaderboardContext);
   const { changes } = useContext(LeaderboardChangesContext);
   const { event } = useContext(EventContext);
+  const { colorMode } = useColorMode();
   const breakpoint = useBreakpoint();
   const lastUpdatedText = useMemo(() => {
     const ms = DateTime.fromJSDate(lastUpdated).diffNow().as("milliseconds");
@@ -79,7 +88,12 @@ export const Leaderboard: FC<LeaderboardProps> = ({
             <Tr
               key={entry.rank}
               {...(showIsPlaying
-                ? getIsPlayingStyles(entry, changes?.[entry.rank], event?.type)
+                ? getIsPlayingStyles(
+                    entry,
+                    changes?.[entry.rank],
+                    event?.type,
+                    colorMode
+                  )
                 : {})}
               borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
               borderBottomColor="gray.400"

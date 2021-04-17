@@ -56,7 +56,7 @@ export default function LivePage() {
             <TierSelector />
           </GraphDisplayProvider>
         </Box>
-        <Box px="8">
+        <Box px="8" flex="1">
           <Leaderboard isSmall onTierSelected={(t) => setCurrentTier(t)} />
           <AnalysisProvider>
             <GraphDisplayProvider>

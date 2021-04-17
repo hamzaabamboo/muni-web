@@ -86,7 +86,7 @@ export const RankDetailModal: React.FC<{
                 <AnalysisOptions />
               </AnalysisProvider>
             </Flex>
-            <Flex minH="600px" flexGrow={0}>
+            <Flex minH="600px" flexGrow={0} px={[4, null, 2]}>
               <ChangesTable tier={tier} />
             </Flex>
           </Flex>

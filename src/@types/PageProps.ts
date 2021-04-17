@@ -7,6 +7,7 @@ interface CommonPageProps {
     image?: string;
     url?: string;
   };
+  backgroundImage?: string;
   isStatic?: boolean;
 }
 
