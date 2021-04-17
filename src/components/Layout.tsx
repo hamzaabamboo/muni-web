@@ -25,6 +25,7 @@ export const Layout: FC = ({ children }) => {
       backgroundSize="cover"
       backgroundPosition="center"
       backgroundAttachment="fixed"
+      backgroundBlendMode={colorMode === "light" ? "lighten" : "darken"}
     >
       <Flex
         as="main"
