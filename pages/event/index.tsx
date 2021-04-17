@@ -8,8 +8,15 @@ import { DateTime } from "luxon";
 import Link from "next/link";
 import React, { FC, Fragment, useMemo, useState } from "react";
 import { D4DBEvent, D4DBEventResponse, Event } from "types/Event";
+import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
 
+interface AllEventsPageProps {
+  allEvents: {
+    withData: Event[];
+    withoutData: Event[];
+  };
+}
 export const getStaticProps = async () => {
   const sigEvents = (
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
@@ -41,14 +48,15 @@ export const getStaticProps = async () => {
         withData: d4dbEvents.filter((e) => sigEvents.includes(e.id)),
         withoutData: d4dbEvents.filter((e) => !sigEvents.includes(e.id)),
       },
-      isEventPage: true,
-    },
+      isStatic: true,
+      head: {
+        title: `Create むに web | All Events`,
+      },
+    } as PageProps<AllEventsPageProps>,
   };
 };
 const allEventTypes = ["Medley", "Poker", "Bingo", "Raid"];
-const AllEvents: FC<{
-  allEvents: { withData: Event[]; withoutData: Event[] };
-}> = ({ allEvents }) => {
+const AllEvents: FC<PageProps<AllEventsPageProps>> = ({ allEvents }) => {
   const { withData, withoutData } = allEvents;
   const [eventType, selectEventType] = useState<string>("All");
 

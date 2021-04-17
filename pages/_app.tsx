@@ -8,9 +8,17 @@ import { GraphProvider } from "src/contexts/GraphContext";
 import { ComposeProviders } from "src/contexts/ComposeProviders";
 import { LeaderboardChangesProvider } from "src/contexts/LeaderboardChangesContext";
 import { getAbsolutePath } from "utils/assets";
+import { PageProps } from "types/PageProps";
 
-function MyApp({ Component, pageProps }) {
-  const { isEventPage, title } = pageProps;
+function MyApp({
+  Component,
+  pageProps,
+}: {
+  Component: React.FC<PageProps>;
+  pageProps: PageProps;
+}) {
+  const { isStatic, head } = pageProps;
+  const { title, image, description, url } = head || {};
 
   const content = (
     <Flex flexDirection="column" w="full" minH="100vh" alignItems="stretch">
@@ -71,22 +79,21 @@ function MyApp({ Component, pageProps }) {
         <title>{title || "Create むに App"}</title>
         <link rel="icon" href={getAbsolutePath("/favicon.ico")} />
         <meta property="og:title" content={title || "Create むに App"} />
-        {!isEventPage && (
-          <>
-            <meta
-              property="og:url"
-              content="https://hamzaabamboo.github.io/muni-web"
-            />
-            <meta
-              property="og:image"
-              content={getAbsolutePath("/images/munihappy.png")}
-            />
-            <meta property="og:description" content="Munimunimunimunimuni" />
-          </>
-        )}
+        <meta
+          property="og:url"
+          content={url || "https://hamzaabamboo.github.io/muni-web"}
+        />
+        <meta
+          property="og:image"
+          content={image || getAbsolutePath("/images/munihappy.png")}
+        />
+        <meta
+          property="og:description"
+          content={description || "Munimunimunimunimuni"}
+        />
       </Head>
       <ChakraProvider>
-        {!isEventPage ? (
+        {!isStatic ? (
           <ComposeProviders
             providers={[
               EventProvider,

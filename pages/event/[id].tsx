@@ -20,13 +20,15 @@ import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 import { Event } from "types/Event";
 import { LeaderboardEntry, LeaderboardPoint } from "types/Leaderboard";
+import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
 import { useSize } from "web-api-hooks";
 
-export default function GraphPage(props: {
+interface EventPageProps {
   event: Event;
   points: LeaderboardPoint[];
-}) {
+}
+export default function GraphPage(props: PageProps<EventPageProps>) {
   const { event, points } = props;
   const graphRef = useRef<HTMLDivElement>(null);
   const [width, height] = useSize(graphRef);
@@ -53,105 +55,63 @@ export default function GraphPage(props: {
     return tiers;
   }, [points]);
 
-  const desc = useMemo(() => {
-    return `${DateTime.fromISO(event.startdate)
-      .setZone("Asia/Tokyo")
-      .toFormat("dd/MM/yyyy HH:mm")}JST - ${DateTime.fromISO(event.enddate)
-      .setZone("Asia/Tokyo")
-      .toFormat("dd/MM/yyyy HH:mm")}JST | ${Math.round(
-      DateTime.fromISO(event.enddate)
-        .diff(DateTime.fromISO(event.startdate))
-        .as("hours")
-    )} hours | ${getEventType(event)}`;
-  }, [event]);
   return (
-    <>
-      <Head>
-        <meta
-          property="og:url"
-          content={`https://hamzaabamboo.github.io/muni-web/event/${event.eventid}`}
-        />
-        <meta
-          property="og:image"
-          content={getAbsolutePath(
-            `/images/events/banner/${event.eventid}.png`
-          )}
-        />
-        <meta property="og:description" content={desc} />
-      </Head>
-      <EventProvider event={event}>
-        <GraphDisplayProvider points={points}>
-          <LeaderboardProvider lbData={leaderboardPoint}>
-            <AnalysisProvider>
-              <EventInfo />
-              <Flex flexDir={["column", null, null, "row"]} px={4}>
-                <Flex flexDir="column" flex={1}>
-                  <Flex>
-                    <Button
-                      mx={4}
-                      p={2}
-                      rounded="md"
-                      bg={graphMode === "point" ? "gray.200" : "transparent"}
-                      color={graphMode === "point" ? "blue.400" : "black"}
-                      onClick={() => setGraphMode("point")}
-                      fontSize="lg"
-                    >
-                      Point
-                    </Button>
-                    <Button
-                      mx={4}
-                      p={2}
-                      rounded="md"
-                      bg={graphMode === "rate" ? "gray.200" : "transparent"}
-                      color={graphMode === "rate" ? "blue.400" : "black"}
-                      onClick={() => setGraphMode("rate")}
-                      fontSize="lg"
-                    >
-                      Rate
-                    </Button>
-                  </Flex>
-                  {graphMode === "point" ? (
-                    <Box ref={graphRef} minH="600px">
-                      <ScoreGraph
-                        width={width}
-                        height={height}
-                        graphFlags={graphFlags}
-                        isSmall
-                      />
-                    </Box>
-                  ) : (
-                    <>
-                      <RateGraph graphFlags={graphFlags} />
-                      <AnalysisOptions />
-                    </>
-                  )}
-                  <GraphOptions
-                    graphFlags={graphFlags}
-                    setGraphFlags={setGraphFlags}
-                  />
-
-                  <TierSelector />
-                  <Box
-                    w="full"
-                    position="relative"
-                    display={["none", null, null, "block"]}
+    <EventProvider event={event}>
+      <GraphDisplayProvider points={points}>
+        <LeaderboardProvider lbData={leaderboardPoint}>
+          <AnalysisProvider>
+            <EventInfo />
+            <Flex flexDir={["column", null, null, "row"]} px={4}>
+              <Flex flexDir="column" flex={1}>
+                <Flex>
+                  <Button
+                    mx={4}
+                    p={2}
+                    rounded="md"
+                    bg={graphMode === "point" ? "gray.200" : "transparent"}
+                    color={graphMode === "point" ? "blue.400" : "black"}
+                    onClick={() => setGraphMode("point")}
+                    fontSize="lg"
                   >
-                    <img
-                      src={getProxiedUrl(
-                        `http://projectdivar.com:8080/event/t20_${
-                          event.eventid - 2
-                        }.png`
-                      )}
+                    Point
+                  </Button>
+                  <Button
+                    mx={4}
+                    p={2}
+                    rounded="md"
+                    bg={graphMode === "rate" ? "gray.200" : "transparent"}
+                    color={graphMode === "rate" ? "blue.400" : "black"}
+                    onClick={() => setGraphMode("rate")}
+                    fontSize="lg"
+                  >
+                    Rate
+                  </Button>
+                </Flex>
+                {graphMode === "point" ? (
+                  <Box ref={graphRef} minH="600px">
+                    <ScoreGraph
+                      width={width}
+                      height={height}
+                      graphFlags={graphFlags}
+                      isSmall
                     />
                   </Box>
-                </Flex>
-                <Flex flex={1}>
-                  <AfterEventLeaderboard />
-                </Flex>
+                ) : (
+                  <>
+                    <RateGraph graphFlags={graphFlags} />
+                    <AnalysisOptions />
+                  </>
+                )}
+                <GraphOptions
+                  graphFlags={graphFlags}
+                  setGraphFlags={setGraphFlags}
+                />
+
+                <TierSelector />
                 <Box
                   w="full"
                   position="relative"
-                  display={["block", null, null, "none"]}
+                  display={["none", null, null, "block"]}
                 >
                   <img
                     src={getProxiedUrl(
@@ -162,14 +122,32 @@ export default function GraphPage(props: {
                   />
                 </Box>
               </Flex>
-            </AnalysisProvider>
-          </LeaderboardProvider>
-        </GraphDisplayProvider>
-      </EventProvider>
-    </>
+              <Flex flex={1}>
+                <AfterEventLeaderboard />
+              </Flex>
+              <Box
+                w="full"
+                position="relative"
+                display={["block", null, null, "none"]}
+              >
+                <img
+                  src={getProxiedUrl(
+                    `http://projectdivar.com:8080/event/t20_${
+                      event.eventid - 2
+                    }.png`
+                  )}
+                />
+              </Box>
+            </Flex>
+          </AnalysisProvider>
+        </LeaderboardProvider>
+      </GraphDisplayProvider>
+    </EventProvider>
   );
 }
-export async function getStaticProps({ params }) {
+export async function getStaticProps({
+  params,
+}): Promise<{ props: PageProps<EventPageProps> }> {
   const { id } = params;
   const event = (
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
@@ -183,12 +161,27 @@ export async function getStaticProps({ params }) {
     )
   ).data;
 
+  const desc = `${DateTime.fromISO(event.startdate)
+    .setZone("Asia/Tokyo")
+    .toFormat("dd/MM/yyyy HH:mm")}JST - ${DateTime.fromISO(event.enddate)
+    .setZone("Asia/Tokyo")
+    .toFormat("dd/MM/yyyy HH:mm")}JST | ${Math.round(
+    DateTime.fromISO(event.enddate)
+      .diff(DateTime.fromISO(event.startdate))
+      .as("hours")
+  )} hours | ${getEventType(event)}`;
+
   return {
     props: {
       event,
       points,
-      title: `Create むに web | ${event.name}`,
-      isEventPage: true,
+      isStatic: true,
+      head: {
+        url: `https://hamzaabamboo.github.io/muni-web/event/${event.eventid}`,
+        image: getAbsolutePath(`/images/events/banner/${event.eventid}.png`),
+        description: desc,
+        title: `Create むに web | ${event.name}`,
+      },
     },
   };
 }
