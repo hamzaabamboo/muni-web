@@ -112,7 +112,7 @@ const AllEvents: FC<{
                       <Box h="80px" margin={["0 auto", null, "auto 0"]}>
                         <Image
                           src={getAbsolutePath(
-                            "/images/events/banner/${p.eventid}.png"
+                            `/images/events/banner/${p.eventid}.png`
                           )}
                           maxH="full"
                           maxW="full"
