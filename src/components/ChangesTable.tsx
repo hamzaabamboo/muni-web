@@ -1,4 +1,5 @@
-import { Fade, Flex, Grid, GridItem } from "@chakra-ui/react";
+import { Fade, Flex, Grid, GridItem, useColorMode } from "@chakra-ui/react";
+import { getEventType } from "api/utils";
 import { thresholds } from "constants/threshold";
 import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
@@ -6,10 +7,12 @@ import { FixedSizeList } from "react-window";
 import { EventContext } from "src/contexts/EventContext";
 import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
 import { Tier } from "types/Leaderboard";
+import { getIsPlayingStyles } from "utils/leaderboard";
 
 export const ChangesTable = ({ tier }: { tier: Tier }) => {
   const { pastUpdates } = useContext(LeaderboardChangesContext);
   const { event } = useContext(EventContext);
+  const { colorMode } = useColorMode();
   const threshold = useMemo(() => {
     return event && thresholds[event.type];
   }, [event]);
@@ -48,11 +51,13 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
           return (
             <Fade key={t.date} in={true}>
               <Grid
-                bg={
-                  threshold && t.difference > threshold.maxPerGame
-                    ? "red.200"
-                    : "unset"
-                }
+                {...getIsPlayingStyles(
+                  t,
+                  t.change,
+                  getEventType(event),
+                  colorMode,
+                  false
+                )}
                 alignItems="center"
                 templateColumns="1fr 1.5fr 1fr 1fr"
                 style={style}

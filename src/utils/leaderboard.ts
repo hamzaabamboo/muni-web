@@ -9,10 +9,15 @@ export const getIsPlayingStyles = (
   data: LeaderboardEntry,
   lastUpdated: number,
   eventType: EventType,
-  colorMode: ColorMode
+  colorMode: ColorMode,
+  showRecentlyUpdated: boolean = true
 ) => {
   const threshold = thresholds[eventType]?.sort((a, b) => b.value - a.value);
-  if (DateTime.fromISO(data.date).diffNow().as("minutes") < -10) return {};
+  if (
+    showRecentlyUpdated &&
+    DateTime.fromISO(data.date).diffNow().as("minutes") < -10
+  )
+    return {};
   if (lastUpdated > threshold[0].value ?? 3000)
     return { bg: colorMode === "light" ? "red.100" : "red.800" };
   if (threshold[1] && lastUpdated > threshold[1].value)
