@@ -18,12 +18,13 @@ export const Layout: FC = ({ children }) => {
         bgImage &&
         `${
           colorMode === "light"
-            ? "linear-gradient(to bottom, rgba(255,255, 255, .8), rgba(255,255, 255, .8))"
+            ? "linear-gradient(to bottom, rgba(255,255, 255, .85), rgba(255,255, 255, .85))"
             : "linear-gradient(to bottom, rgba(0,0, 0, .75), rgba(0,0, 0, .75))"
         }, url(${bgImage})`
       }
       backgroundSize="cover"
       backgroundPosition="center"
+      backgroundAttachment="fixed"
     >
       <Flex
         as="main"

@@ -185,7 +185,7 @@ export const Graph = ({
       xLine.current = tooltips.current
         .append("line")
         .style("stroke-width", 1)
-        .style("stroke", "grey");
+        .style("stroke", colorMode === "light" ? "black" : "white");
 
       toolTip.current = parent.current
         .append("div")
@@ -194,7 +194,8 @@ export const Graph = ({
         .style("pointer-events", "none")
         .style("padding", "2px")
         .style("background-color", "lightgray")
-        .style("opacity", 0.8)
+        .style("opacity", 0.9)
+        .style("color", "black")
         .style("z-index", 3);
 
       toolTip.current.append("p").style("font-size", "0.9em");
@@ -282,7 +283,7 @@ export const Graph = ({
         .attr("cx", (d) => xZoomed.current(isoParse(d[1].date)))
         .attr("cy", (d) => yZoomed.current(d[1].points));
     },
-    [height, points, forecast]
+    [height, points, forecast, colorMode]
   );
 
   function mouseout() {
@@ -339,7 +340,7 @@ export const Graph = ({
     (withTransition: boolean = false) => {
       svg.current
         .select(".xGrid")
-        .attr("color", "lightgray")
+        .attr("color", colorMode === "light" ? "gray" : "white")
         .transition()
         .duration(withTransition ? ANIMATION_SPEED : 0)
         .call(
@@ -350,7 +351,7 @@ export const Graph = ({
         );
       svg.current
         .select(".yGrid")
-        .attr("color", "lightgray")
+        .attr("color", colorMode === "light" ? "gray" : "white")
         .transition()
         .duration(withTransition ? ANIMATION_SPEED : 0)
         .call(
@@ -374,7 +375,7 @@ export const Graph = ({
             : (yAxis.current as any)
         );
     },
-    [height, width, isSmall]
+    [height, width, isSmall, colorMode]
   );
 
   const zoomed = useCallback(
