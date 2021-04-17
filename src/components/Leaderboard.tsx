@@ -8,6 +8,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { Table, Tbody, Thead } from "@chakra-ui/table";
+import { getEventType } from "api/utils";
 import { tierBorders } from "constants/tierborder";
 import humanize from "humanize-duration";
 import { DateTime } from "luxon";
@@ -91,7 +92,7 @@ export const Leaderboard: FC<LeaderboardProps> = ({
                 ? getIsPlayingStyles(
                     entry,
                     changes?.[entry.rank],
-                    event?.type,
+                    getEventType(event),
                     colorMode
                   )
                 : {})}

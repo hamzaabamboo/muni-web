@@ -1,5 +1,6 @@
 import { ColorMode } from "@chakra-ui/color-mode";
 import { thresholds } from "constants/threshold";
+import { max } from "d3-array";
 import { DateTime, Duration } from "luxon";
 import { EventType } from "types/Event";
 import { LeaderboardEntry } from "types/Leaderboard";
@@ -10,9 +11,12 @@ export const getIsPlayingStyles = (
   eventType: EventType,
   colorMode: ColorMode
 ) => {
-  if (lastUpdated > thresholds[eventType]?.maxPerGame ?? 3000)
-    return { bg: colorMode === "light" ? "red.100" : "red.800" };
+  const threshold = thresholds[eventType]?.sort((a, b) => b.value - a.value);
   if (DateTime.fromISO(data.date).diffNow().as("minutes") < -10) return {};
+  if (lastUpdated > threshold[0].value ?? 3000)
+    return { bg: colorMode === "light" ? "red.100" : "red.800" };
+  if (threshold[1] && lastUpdated > threshold[1].value)
+    return { bg: colorMode === "light" ? "yellow.100" : "yellow.800" };
   return {
     bg: colorMode === "light" ? "gray.100" : "gray.700",
   };
