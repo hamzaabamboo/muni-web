@@ -1,12 +1,10 @@
-import { Flex } from "@chakra-ui/layout";
-import { useEffect, useRef } from "react";
-import { Application } from "pixi.js";
-import * as PIXI from "pixi.js";
-import { useSize } from "web-api-hooks";
-//@ts-ignore
+const PIXI = require("pixi.js");
 (window as any).PIXI = PIXI;
 require("pixi-spine");
-import type "pixi-spine";
+import { Flex } from "@chakra-ui/layout";
+import { useEffect, useRef } from "react";
+import { Application, Sprite } from "pixi.js";
+import { useSize } from "web-api-hooks";
 
 export const Towaland = () => {
   const pixi = useRef<Application>();
@@ -22,15 +20,15 @@ export const Towaland = () => {
       .add("towa", "spine/spine_chara_0330001.json")
       .add("muni", "spine/spine_chara_0130001.json")
       .load((loader, resources) => {
-        const towa = new (PIXI as any).spine.Spine(
-          resources.towa.spineData
-        ) as PIXI.Sprite | any;
-        const muni = new (PIXI as any).spine.Spine(
-          resources.muni.spineData
-        ) as PIXI.Sprite | any;
+        const towa = new (PIXI as any).spine.Spine(resources.towa.spineData) as
+          | Sprite
+          | any;
+        const muni = new (PIXI as any).spine.Spine(resources.muni.spineData) as
+          | Sprite
+          | any;
         towa.skeleton.setSkinByName("normal");
         muni.skeleton.setSkinByName("reverse");
-        const scaleT = 0.3 * app.renderer.width / towa.width ;
+        const scaleT = (0.3 * app.renderer.width) / towa.width;
         towa.scale.x = scaleT;
         towa.scale.y = scaleT;
         muni.scale.x = -1 * scaleT;
