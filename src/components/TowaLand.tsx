@@ -1,4 +1,3 @@
-import * as PIXI from "pixi.js";
 import "pixi-spine";
 import { Flex } from "@chakra-ui/layout";
 import { useEffect, useRef } from "react";
@@ -11,7 +10,7 @@ export const Towaland = () => {
   const [width, height] = useSize(parentRef);
 
   useEffect(() => {
-    pixi.current = new PIXI.Application({ backgroundAlpha: 0, width, height });
+    pixi.current = new Application({ backgroundAlpha: 0, width, height });
     const { current: app } = pixi;
     parentRef.current.appendChild(app.view);
 
