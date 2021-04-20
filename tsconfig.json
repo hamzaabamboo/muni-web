@@ -24,6 +24,12 @@
     },
     "baseUrl": "."
   },
-  "include": ["next-env.d.ts", "**/*.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "./node_modules/pixi.js/**/*.d.ts",
+    "./node_modules/pixi-spine/**/*.d.ts"
+  ],
   "exclude": ["node_modules"]
 }

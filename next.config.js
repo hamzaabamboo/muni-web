@@ -8,10 +8,15 @@ module.exports = {
   images: {
     domains: ["projectdivar.com"],
   },
-  webpack: (config, { isServer, dev }) => {
+  webpack: (config, { isServer, dev, webpack }) => {
     config.output.chunkFilename = isServer
       ? `${dev ? "[name]" : "[name].[fullhash]"}.js`
       : `static/chunks/${dev ? "[name]" : "[name].[fullhash]"}.js`;
+    config.plugins.push(
+      new webpack.ProvidePlugin({
+        PIXI: "pixi.js",
+      })
+    );
 
     return config;
   },

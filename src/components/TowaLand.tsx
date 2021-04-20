@@ -1,6 +1,5 @@
-const PIXI = require("pixi.js");
-(window as any).PIXI = PIXI;
-require("pixi-spine");
+import * as PIXI from "pixi.js";
+import "pixi-spine";
 import { Flex } from "@chakra-ui/layout";
 import { useEffect, useRef } from "react";
 import { Application, Sprite } from "pixi.js";
