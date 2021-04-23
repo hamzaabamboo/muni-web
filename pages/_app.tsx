@@ -32,10 +32,18 @@ function MyApp({
           property="og:url"
           content={url || "https://hamzaabamboo.github.io/muni-web"}
         />
-        <meta
-          property="og:image"
-          content={image || getAbsolutePath("/images/munihappy.png")}
-        />
+        {typeof image === "string" || !image ? (
+          <meta
+            property="og:image"
+            content={
+              (image as string) || getAbsolutePath("/images/munihappy.png")
+            }
+          />
+        ) : (
+          image.map((i, idx) => {
+            return <meta key={idx} property="og:image" content={i} />;
+          })
+        )}
         <meta
           property="og:description"
           content={description || "Munimunimunimunimuni"}

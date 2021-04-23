@@ -4,7 +4,7 @@ interface CommonPageProps {
   head?: {
     title?: string;
     description?: string;
-    image?: string;
+    image?: string | string[];
     url?: string;
   };
   backgroundImage?: string;
