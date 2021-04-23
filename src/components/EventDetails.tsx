@@ -18,8 +18,8 @@ export const EventDetails = memo(
     return (
       <Text textAlign={align || "start"}>
         <Text as="span" mr={2}>
-          {DateTime.fromISO(event.startdate).toFormat("dd/MM/yyyy HH:mm")} -{" "}
-          {DateTime.fromISO(event.enddate).toFormat("dd/MM/yyyy HH:mm")}
+          {DateTime.fromISO(event.startdate).toFormat("yyyy/MM/dd  HH:mm")} -{" "}
+          {DateTime.fromISO(event.enddate).toFormat("yyyy/MM/dd HH:mm")}
         </Text>{" "}
         |
         <Text as="span" ml={2}>

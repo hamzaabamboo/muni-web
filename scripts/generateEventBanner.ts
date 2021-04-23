@@ -45,9 +45,9 @@ export const generateEventBanner = async (event: Event) => {
   );
   const desc = `${DateTime.fromISO(event.startdate)
     .setZone("Asia/Tokyo")
-    .toFormat("dd/MM/yyyy")} - ${DateTime.fromISO(event.enddate)
+    .toFormat("yyyy/MM/dd")} - ${DateTime.fromISO(event.enddate)
     .setZone("Asia/Tokyo")
-    .toFormat("dd/MM/yyyy")} | ${Math.round(
+    .toFormat("yyyy/MM/dd")} | ${Math.round(
     DateTime.fromISO(event.enddate)
       .diff(DateTime.fromISO(event.startdate))
       .as("hours")

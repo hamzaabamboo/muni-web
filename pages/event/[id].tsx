@@ -162,9 +162,9 @@ export async function getStaticProps({
 
   const desc = `${DateTime.fromISO(event.startdate)
     .setZone("Asia/Tokyo")
-    .toFormat("dd/MM/yyyy HH:mm")}JST - ${DateTime.fromISO(event.enddate)
+    .toFormat("yyyy/MM/dd HH:mm")}JST - ${DateTime.fromISO(event.enddate)
     .setZone("Asia/Tokyo")
-    .toFormat("dd/MM/yyyy HH:mm")}JST | ${Math.round(
+    .toFormat("yyyy/MM/dd HH:mm")}JST | ${Math.round(
     DateTime.fromISO(event.enddate)
       .diff(DateTime.fromISO(event.startdate))
       .as("hours")
