@@ -50,6 +50,21 @@ function MyApp({
           property="og:description"
           content={description || "Munimunimunimunimuni"}
         />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@HamP_punipuni" />
+        <meta
+          name="twitter:image:src"
+          content={
+            (typeof image === "string" ? image : image?.[0]) ||
+            getAbsolutePath("/images/munihappy.png")
+          }
+        />
+        <meta name="twitter:title" content={title || "Create むに App"} />
+        <meta
+          name="twitter:description"
+          content={description || "Munimunimunimunimuni"}
+        />
       </Head>
       <ThemeProvider defaultImage={backgroundImage}>
         <ChakraProvider theme={theme}>
