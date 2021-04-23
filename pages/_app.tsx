@@ -27,7 +27,9 @@ function MyApp({
       <Head>
         <title>{title || "Create むに App"}</title>
         <link rel="icon" href={getAbsolutePath("/favicon.ico")} />
+        <meta property="og:type" content={"website"} />
         <meta property="og:title" content={title || "Create むに App"} />
+        <meta property="og:site_name" content={"Create むに App"} />
         <meta
           property="og:url"
           content={url || "https://hamzaabamboo.github.io/muni-web"}

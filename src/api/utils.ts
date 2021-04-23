@@ -1,4 +1,5 @@
-import { Event } from "types/Event";
+import { DateTime } from "luxon";
+import { D4DBEvent, Event } from "types/Event";
 
 export const getProxiedUrl = (url: string) => {
   if (process.env.NODE_ENV === "development")
@@ -37,3 +38,13 @@ export const getEventType = (event: Event) => {
       return event.type;
   }
 };
+
+export const mapD4DBevent = (e: D4DBEvent) => ({
+  id: e.Id,
+  eventid: e.Id,
+  name: e.Name,
+  startdate: DateTime.fromSeconds(e.StartDate).toISO(),
+  enddate: DateTime.fromSeconds(e.ReceptionCloseDate).toISO(),
+  rank_end: DateTime.fromSeconds(e.EndDate).toISO(),
+  type: e.Type._name_,
+});

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getProxiedUrl } from "./utils";
 
 export const fetchD4DB = async <T>(
   dbs: string[]

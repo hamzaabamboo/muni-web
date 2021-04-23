@@ -12,7 +12,6 @@ import { TierSelector } from "components/TierSelector";
 import { isoParse, maxIndex } from "d3";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
-import Head from "next/head";
 import React, { useMemo, useRef, useState } from "react";
 import { AnalysisProvider } from "src/contexts/AnalysisContext";
 import { EventProvider } from "src/contexts/EventContext";
@@ -179,6 +178,7 @@ export async function getStaticProps({
       head: {
         url: `https://hamzaabamboo.github.io/muni-web/event/${event.eventid}`,
         image: [
+          getAbsolutePath(`/images/events/og_banner/${event.eventid}.png`),
           getAbsolutePath(`/images/events/banner/${event.eventid}.png`),
           getAbsolutePath(`/images/events/logo/${event.eventid}.png`),
         ],

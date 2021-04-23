@@ -1,7 +1,7 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Divider, Flex, Select, Text, Image } from "@chakra-ui/react";
 import { fetchD4DB } from "api/fetchD4DB";
-import { fixWeirdNumbering } from "api/utils";
+import { fixWeirdNumbering, mapD4DBevent } from "api/utils";
 import axios from "axios";
 import { EventDetails } from "components/EventDetails";
 import { DateTime } from "luxon";
@@ -32,15 +32,7 @@ export const getStaticProps = async () => {
     .sort((b, a) => {
       return a.EndDate - b.EndDate;
     })
-    .map<Event>((e) => ({
-      id: e.Id,
-      eventid: e.Id,
-      name: e.Name,
-      startdate: DateTime.fromSeconds(e.StartDate).toISO(),
-      enddate: DateTime.fromSeconds(e.ReceptionCloseDate).toISO(),
-      rank_end: DateTime.fromSeconds(e.EndDate).toISO(),
-      type: e.Type._name_,
-    }));
+    .map(mapD4DBevent);
 
   return {
     props: {
