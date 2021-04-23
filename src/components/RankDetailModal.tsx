@@ -73,7 +73,7 @@ export const RankDetailModal: React.FC<{
                 <Text fontWeight="bold" as="span">
                   Last Updated
                 </Text>
-                : {DateTime.fromISO(data.date).toFormat("HH:mm:ss dd/MM/yyyy")}{" "}
+                : {DateTime.fromISO(data.date).toFormat("HH:mm:ss yyyy/MM/dd")}{" "}
                 (
                 {DateTime.now()
                   .diff(DateTime.fromISO(data.date))
