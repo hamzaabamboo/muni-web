@@ -35,7 +35,7 @@ export const EventInfo = () => {
         </Flex>
         <Box h="120" margin={["0 auto", null, "auto 0"]} order={[1, null, 2]}>
           <Image
-            src={getAbsolutePath(`/images/events/banner/${event.eventid}.png`)}
+            src={getAbsolutePath(`/images/events/logo/${event.eventid}.png`)}
             maxH="full"
             maxW="full"
           />

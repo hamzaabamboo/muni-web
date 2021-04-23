@@ -18,6 +18,13 @@ module.exports = {
       })
     );
 
+    config.output.hotUpdateMainFilename =
+      "static/webpack/[fullhash].[runtime].hot-update.json";
+
+    if (!isServer) {
+      config.resolve.fallback.fs = false;
+    }
+
     return config;
   },
 };

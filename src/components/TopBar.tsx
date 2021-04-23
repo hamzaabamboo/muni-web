@@ -29,6 +29,7 @@ export const TopBar = () => {
             textAlign={["center", null, "start"]}
             fontSize="2xl"
             fontWeight="bold"
+            px={2}
           >
             <Text as="span" textDecor="line-through" color="red.400">
               Muni

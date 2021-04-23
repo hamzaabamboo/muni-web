@@ -81,8 +81,8 @@ const AllEvents: FC<PageProps<AllEventsPageProps>> = ({ allEvents }) => {
   }, [eventType, withoutData]);
 
   return (
-    <Box pt={10} px={2} width={["100%", null, "80%"]} mx="auto">
-      <Flex flexDir="column" width={["100%", null, "50%"]}>
+    <Box pt={8} width={["100%", null, "90%"]} mx="auto">
+      <Flex flexDir="column" py={4} px={2} width={["100%", null, "50%"]}>
         <Text>Filter by Event Type</Text>
         <Select
           value={eventType}
@@ -110,19 +110,29 @@ const AllEvents: FC<PageProps<AllEventsPageProps>> = ({ allEvents }) => {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <Flex w="full" justifyContent="space-between">
-                      <Box>
+                    <Flex
+                      w="full"
+                      flexDirection={["column", null, "row"]}
+                      justifyContent="space-between"
+                    >
+                      <Box order={[1, null, 0]}>
                         <Text fontSize="2xl" fontWeight="bold">
                           {p.name}
                         </Text>
                         <EventDetails event={p} />
                       </Box>
-                      <Box h="80px" margin={["0 auto", null, "auto 0"]}>
+                      <Box
+                        h={["unset", null, "80px"]}
+                        order={[0, null, 1]}
+                        margin={["0 auto", null, "auto 0"]}
+                      >
                         <Image
                           src={getAbsolutePath(
                             `/images/events/banner/${p.eventid}.png`
                           )}
-                          maxH="full"
+                          w={["full", null, "unset"]}
+                          h="auto"
+                          maxH={["unset", null, "full"]}
                           maxW="full"
                         />
                       </Box>
@@ -152,21 +162,27 @@ const AllEvents: FC<PageProps<AllEventsPageProps>> = ({ allEvents }) => {
                   <Flex
                     px={2}
                     py={4}
+                    flexDirection={["column", null, "row"]}
                     justifyContent="space-between"
-                    alignItems="center"
                   >
-                    <Box>
+                    <Box order={[1, null, 0]}>
                       <Text fontSize="2xl" fontWeight="bold">
                         {p.name}
                       </Text>
                       <EventDetails event={p} />
                     </Box>
-                    <Box h="80px" margin={["0 auto", null, "auto 0"]}>
+                    <Box
+                      h={["unset", null, "80px"]}
+                      order={[0, null, 1]}
+                      margin={["0 auto", null, "auto 0"]}
+                    >
                       <Image
                         src={getAbsolutePath(
                           `/images/events/banner/${p.eventid}.png`
                         )}
-                        maxH="full"
+                        w={["full", null, "unset"]}
+                        h="auto"
+                        maxH={["unset", null, "full"]}
                         maxW="full"
                       />
                     </Box>

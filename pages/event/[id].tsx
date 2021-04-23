@@ -178,7 +178,7 @@ export async function getStaticProps({
       isStatic: true,
       head: {
         url: `https://hamzaabamboo.github.io/muni-web/event/${event.eventid}`,
-        image: getAbsolutePath(`/images/events/banner/${event.eventid}.png`),
+        image: getAbsolutePath(`/images/events/logo/${event.eventid}.png`),
         description: desc,
         title: `Create むに web | ${event.name}`,
       },
