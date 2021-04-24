@@ -26,7 +26,7 @@
     "baseUrl": ".",
     "types": ["pixi.js"]
   },
-  "files": ["./src/@types/pixi-spine.d.ts"],
+  "files": ["src/@types/pixi-spine.ts"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules", "node_modules/pixi-spine/bin/pixi-spine.d.ts"]
 }
