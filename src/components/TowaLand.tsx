@@ -1,9 +1,9 @@
-import "pixi-spine";
 import { Flex } from "@chakra-ui/layout";
 import { useEffect, useRef } from "react";
 import { Application, Sprite } from "pixi.js";
 import { useSize } from "web-api-hooks";
-
+import { PIXI } from "types/pixi-spine";
+// / <reference types="../@types/pixi-spine.d.ts"/
 export const Towaland = () => {
   const pixi = useRef<Application>();
   const parentRef = useRef<HTMLDivElement>(null);
@@ -18,12 +18,8 @@ export const Towaland = () => {
       .add("towa", "spine/spine_chara_0330001.json")
       .add("muni", "spine/spine_chara_0130001.json")
       .load((loader, resources) => {
-        const towa = new (PIXI as any).spine.Spine(resources.towa.spineData) as
-          | Sprite
-          | any;
-        const muni = new (PIXI as any).spine.Spine(resources.muni.spineData) as
-          | Sprite
-          | any;
+        const towa = new PIXI.spine.Spine(resources.towa.spineData);
+        const muni = new PIXI.spine.Spine(resources.muni.spineData);
         towa.skeleton.setSkinByName("normal");
         muni.skeleton.setSkinByName("reverse");
         const scaleT = (0.3 * app.renderer.width) / towa.width;

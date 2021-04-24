@@ -12,6 +12,7 @@ import { TierSelector } from "components/TierSelector";
 import { isoParse, maxIndex } from "d3";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
+import { GetStaticPropsContext } from "next";
 import React, { useMemo, useRef, useState } from "react";
 import { AnalysisProvider } from "src/contexts/AnalysisContext";
 import { EventProvider } from "src/contexts/EventContext";
@@ -146,8 +147,9 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
 }
 export async function getStaticProps({
   params,
-}): Promise<{ props: PageProps<EventPageProps> }> {
+}: GetStaticPropsContext): Promise<{ props: PageProps<EventPageProps> }> {
   const { id } = params;
+  if (typeof id !== "string" && isNaN(Number(id))) return;
   const event = (
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
   ).data
@@ -156,7 +158,9 @@ export async function getStaticProps({
 
   const points = (
     await axios.get<LeaderboardPoint[]>(
-      `http://www.projectdivar.com/eventdata/t20?all=true&event=${id - 2}`
+      `http://www.projectdivar.com/eventdata/t20?all=true&event=${
+        Number(id) - 2
+      }`
     )
   ).data;
 

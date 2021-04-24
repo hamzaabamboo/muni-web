@@ -12,9 +12,10 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noImplicitAny": true,
     "jsx": "preserve",
     "paths": {
-      "types/*": ["src/@types/*"],
+      "types/*": ["./src/@types/*"],
       "components/*": ["./src/components/*"],
       "utils/*": ["./src/utils/*"],
       "api/*": ["./src/api/*"],
@@ -22,14 +23,10 @@
       "hooks/*": ["./src/hooks/*"],
       "db/*": ["./src/db/*"]
     },
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["pixi.js"]
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "./node_modules/pixi.js/**/*.d.ts",
-    "./node_modules/pixi-spine/**/*.d.ts"
-  ],
-  "exclude": ["node_modules"]
+  "files": ["./src/@types/pixi-spine.d.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "node_modules/pixi-spine/bin/pixi-spine.d.ts"]
 }

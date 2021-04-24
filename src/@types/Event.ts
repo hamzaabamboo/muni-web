@@ -5,6 +5,7 @@ export interface Event {
   name: string;
   startdate: string;
   enddate: string;
+  // eslint-disable-next-line
   rank_end: string;
 }
 

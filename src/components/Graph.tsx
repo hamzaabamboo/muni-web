@@ -217,8 +217,8 @@ export const Graph = ({
       if (!points || points.length === 0) return;
       const pos = d3.pointer(event);
       const data = [...points, ...(forecast || [])];
-      let x0 = xZoomed.current.invert(pos[0]);
-      let i = bisectX.current(data, x0, 1);
+      const x0 = xZoomed.current.invert(pos[0]);
+      const i = bisectX.current(data, x0, 1);
 
       if (!data[i]) {
         tooltips.current.style("opacity", 0);
@@ -471,7 +471,7 @@ export const Graph = ({
     xAxis.current = d3.axisBottom(xZoomed.current);
     yAxis.current = d3.axisLeft(yZoomed.current);
 
-    let graphData = d3.groups(points ?? [], (d) => d.rank);
+    const graphData = d3.groups(points ?? [], (d) => d.rank);
 
     const graphNode = graph.current
       .selectAll("path")

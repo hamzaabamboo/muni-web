@@ -1,6 +1,5 @@
 import { ColorMode } from "@chakra-ui/color-mode";
 import { thresholds } from "constants/threshold";
-import { max } from "d3-array";
 import { DateTime, Duration } from "luxon";
 import { EventType } from "types/Event";
 import { LeaderboardEntry } from "types/Leaderboard";

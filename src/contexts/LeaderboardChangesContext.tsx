@@ -39,7 +39,7 @@ export const LeaderboardChangesProvider = ({ children }) => {
   useEffect(() => {
     if (!event || !pastUpdates) return;
     if (oldLb.current) {
-      let newUpdates: PastChangeEntry[] = [];
+      const newUpdates: PastChangeEntry[] = [];
       const newChanges = lbData.map((d) => {
         const old = oldLb.current.find((olb) => olb.rank === d.rank);
         if (!old) return [d.rank, d.points];

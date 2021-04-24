@@ -2,7 +2,7 @@ import { TextProps, Text } from "@chakra-ui/react";
 import { memo, useMemo } from "react";
 import { Tier as ITier } from "types/Leaderboard";
 
-export const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
+const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
   const styles: Partial<TextProps> = useMemo(() => {
     switch (tier) {
       case 1:
@@ -29,3 +29,7 @@ export const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
   }, [tier]);
   return <Text {...styles}>{children || tier}</Text>;
 });
+
+Tier.displayName = "Tier";
+
+export default Tier;

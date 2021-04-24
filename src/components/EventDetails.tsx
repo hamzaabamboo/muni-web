@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 import { memo, useMemo } from "react";
 import { Event } from "types/Event";
 
-export const EventDetails = memo(
+const EventDetails = memo(
   ({
     align,
     event,
@@ -38,3 +38,6 @@ export const EventDetails = memo(
     );
   }
 );
+
+EventDetails.displayName = "EventDetails";
+export default EventDetails;

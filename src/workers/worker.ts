@@ -1,6 +1,7 @@
 import { getEventType } from "api/utils";
 import { forecastConstant } from "constants/forecast";
-import { max, maxIndex, minIndex, sum } from "d3-array";
+import { allTiers } from "constants/tierborder";
+import { maxIndex, minIndex, sum } from "d3-array";
 import { DateTime } from "luxon";
 import { Event } from "types/Event";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
@@ -21,7 +22,8 @@ ctx.onmessage = ({
 }>) => {
   const { points, interval, event } = data;
   const diff = groupBy(points, (p) => p.rank as Tier);
-  for (let group in diff) {
+  for (const group in diff) {
+    if (!(group in allTiers)) continue;
     diff[Number(group) as Tier] = diff[Number(group) as Tier]
       .sort(
         (a, b) =>
