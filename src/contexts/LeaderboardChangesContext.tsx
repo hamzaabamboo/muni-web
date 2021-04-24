@@ -1,5 +1,12 @@
 import { DateTime } from "luxon";
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Leaderboard, PastChangeEntry, Tier } from "types/Leaderboard";
 import { EventContext } from "./EventContext";
 import { GraphContext } from "./GraphContext";
@@ -10,7 +17,7 @@ export const LeaderboardChangesContext = createContext<{
   pastUpdates?: PastChangeEntry[];
 }>({});
 
-export const LeaderboardChangesProvider = ({ children }) => {
+export const LeaderboardChangesProvider: FC<{}> = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
   const { points } = useContext(GraphContext);
   const { event } = useContext(EventContext);

@@ -32,4 +32,4 @@ const Tier: React.FC<{ tier: ITier }> = memo(({ tier, children }) => {
 
 Tier.displayName = "Tier";
 
-export default Tier;
+export { Tier };

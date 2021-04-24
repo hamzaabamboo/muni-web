@@ -3,6 +3,7 @@ import { usePromiseEffect } from "hooks/usePromiseEffect";
 import { DateTime } from "luxon";
 import {
   createContext,
+  FC,
   useCallback,
   useContext,
   useEffect,
@@ -17,7 +18,7 @@ export const GraphContext = createContext<{
   points?: LeaderboardPoint[];
 }>({});
 
-export const GraphProvider = ({ children }) => {
+export const GraphProvider: FC<{}> = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
   const { event } = useContext(EventContext);
   const [points, setPoints] = useState<LeaderboardPoint[]>();

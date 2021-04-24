@@ -40,4 +40,4 @@ const EventDetails = memo(
 );
 
 EventDetails.displayName = "EventDetails";
-export default EventDetails;
+export { EventDetails };

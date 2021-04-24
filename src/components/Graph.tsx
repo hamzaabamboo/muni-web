@@ -267,7 +267,7 @@ export const Graph = ({
 
       const graphPoint = tooltips.current
         .selectAll("circle")
-        .data(latestPoint, (k) => k[0]);
+        .data(latestPoint, (k: [Tier, number]) => k[0]);
 
       graphPoint
         .enter()
@@ -475,7 +475,7 @@ export const Graph = ({
 
     const graphNode = graph.current
       .selectAll("path")
-      .data(graphData, (k) => k[0]);
+      .data(graphData, (k: [number, LeaderboardPoint]) => k[0]);
 
     graphNode
       .enter()
@@ -493,7 +493,7 @@ export const Graph = ({
     if (points?.length > 50 && forecast) {
       const forecastData = graph.current.selectAll("path.forecast").data(
         d3.groups(forecast, (d) => d.rank),
-        (k) => k[0]
+        (k: [number, LeaderboardPoint]) => k[0]
       );
       forecastData
         .enter()
