@@ -39,4 +39,38 @@ export const forecastConstant: Record<
       accleration: 15,
     },
   },
+  Poker: {
+    500: {
+      hoursBeforeEnd: 7,
+      accleration: 2000,
+    },
+    1000: {
+      hoursBeforeEnd: 6,
+      accleration: 2000,
+    },
+    2000: {
+      hoursBeforeEnd: 4,
+      accleration: 2000,
+    },
+    5000: {
+      hoursBeforeEnd: 4,
+      accleration: 800,
+    },
+    10000: {
+      hoursBeforeEnd: 4,
+      accleration: 500,
+    },
+    20000: {
+      hoursBeforeEnd: 4,
+      accleration: 80,
+    },
+    30000: {
+      hoursBeforeEnd: 4,
+      accleration: 25,
+    },
+    50000: {
+      hoursBeforeEnd: 4,
+      accleration: 15,
+    },
+  },
 };
