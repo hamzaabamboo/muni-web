@@ -53,7 +53,7 @@ export const Towaland = () => {
         muni.skeleton.findSlot("Rabbit ears_R(for)").setAttachment(null);
         const scaleT =
           towa.width * 2 > app.renderer.width
-            ? app.renderer.width / 2 / towa.width
+            ? app.renderer.width / 3 / towa.width
             : towa.height > app.renderer.height
             ? app.renderer.height / towa.height
             : 1;
@@ -79,18 +79,25 @@ export const Towaland = () => {
           getAbsolutePath("live2d/muni/resources.model3.json")
         );
         // transforms
+        const scale =
+          towaLive2d.current.height / 2 > app.renderer.height
+            ? (app.renderer.height * 3) / towaLive2d.current.height
+            : towaLive2d.current.width > (app.renderer.width * 3) / 4
+            ? app.renderer.width / towaLive2d.current.width
+            : 1;
+
         towaLive2d.current.x = 0.25 * app.renderer.width;
         towaLive2d.current.y = (9 * app.renderer.height) / 10;
         towaLive2d.current.rotation = Math.PI;
         towaLive2d.current.skew.x = Math.PI;
-        towaLive2d.current.scale.set(0.5, 0.5);
+        towaLive2d.current.scale.set(scale, scale);
         towaLive2d.current.anchor.set(0.5, 0.5);
 
         muniLive2d.current.x = 0.75 * app.renderer.width;
         muniLive2d.current.y = (9 * app.renderer.height) / 10;
         muniLive2d.current.rotation = Math.PI;
         muniLive2d.current.skew.x = Math.PI;
-        muniLive2d.current.scale.set(0.5, 0.5);
+        muniLive2d.current.scale.set(scale, scale);
         muniLive2d.current.anchor.set(0.5, 0.5);
 
         towaLive2d.current.internalModel.motionManager.startRandomMotion("");
@@ -168,7 +175,7 @@ export const Towaland = () => {
           </Flex>
         )}
       </Flex>
-      <Flex w="full" flex="1" ref={parentRef}></Flex>
+      <Flex minH="500px" w="full" flex="1" ref={parentRef}></Flex>
     </>
   );
 };
