@@ -21,7 +21,7 @@ export default function Home() {
       event &&
       DateTime.fromISO(event.enddate).diffNow("seconds").seconds < 0
     ) {
-      router.push(getAbsolutePath("/towaland"));
+      router.push("/towaland");
     }
   }, [event]);
 
