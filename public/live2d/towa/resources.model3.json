@@ -1,0 +1,253 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "resources.moc3",
+    "Textures": [
+      "textures/texture_00.png"
+    ],
+    "Physics": "resources.physics3.json",
+    "Motions": {
+      "": [
+        {
+          "File": "motions/sad_01.motion3.json"
+        },
+        {
+          "File": "motions/surprise_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_left_01.motion3.json"
+        },
+        {
+          "File": "motions/hello_01.motion3.json"
+        },
+        {
+          "File": "motions/dance_01.motion3.json"
+        },
+        {
+          "File": "motions/happy_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_08.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_07_E.motion3.json"
+        },
+        {
+          "File": "motions/shame_01.motion3.json"
+        },
+        {
+          "File": "motions/00_no_02_E.motion3.json"
+        },
+        {
+          "File": "motions/idle_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_02.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_03.motion3.json"
+        },
+        {
+          "File": "motions/panic_01.motion3.json"
+        },
+        {
+          "File": "motions/00_left_02_E.motion3.json"
+        },
+        {
+          "File": "motions/angry_02.motion3.json"
+        },
+        {
+          "File": "motions/00_waver_01.motion3.json"
+        },
+        {
+          "File": "motions/sad_01_E.motion3.json"
+        },
+        {
+          "File": "motions/happy_02.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_01.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_06.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_09_E.motion3.json"
+        },
+        {
+          "File": "motions/idle_01.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_05.motion3.json"
+        },
+        {
+          "File": "motions/00_waver_02_E.motion3.json"
+        },
+        {
+          "File": "motions/00_right_02.motion3.json"
+        },
+        {
+          "File": "motions/shame_01_E.motion3.json"
+        },
+        {
+          "File": "motions/happy_01.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_02_E.motion3.json"
+        },
+        {
+          "File": "motions/angry_01.motion3.json"
+        },
+        {
+          "File": "motions/think_01.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_04.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_04_E.motion3.json"
+        },
+        {
+          "File": "motions/00_no_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_09.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_01_E.motion3.json"
+        },
+        {
+          "File": "motions/amazed_01.motion3.json"
+        },
+        {
+          "File": "motions/cry_01_E.motion3.json"
+        },
+        {
+          "File": "motions/amazed_01_E.motion3.json"
+        },
+        {
+          "File": "motions/performance_01.motion3.json"
+        },
+        {
+          "File": "motions/angry_01_E.motion3.json"
+        },
+        {
+          "File": "motions/think_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_yes_01.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_06_E.motion3.json"
+        },
+        {
+          "File": "motions/angry_02_E.motion3.json"
+        },
+        {
+          "File": "motions/happy_02_E.motion3.json"
+        },
+        {
+          "File": "motions/00_left_02.motion3.json"
+        },
+        {
+          "File": "motions/00_right_03.motion3.json"
+        },
+        {
+          "File": "motions/00_yes_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_right_02_E.motion3.json"
+        },
+        {
+          "File": "motions/00_right_03_E.motion3.json"
+        },
+        {
+          "File": "motions/panic_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_right_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_yes_02.motion3.json"
+        },
+        {
+          "File": "motions/hello_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_right_01.motion3.json"
+        },
+        {
+          "File": "motions/00_no_02.motion3.json"
+        },
+        {
+          "File": "motions/00_left_03.motion3.json"
+        },
+        {
+          "File": "motions/00_left_03_E.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_03_E.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_07.motion3.json"
+        },
+        {
+          "File": "motions/00_left_01_E.motion3.json"
+        },
+        {
+          "File": "motions/cry_01.motion3.json"
+        },
+        {
+          "File": "motions/00_waver_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_no_01.motion3.json"
+        },
+        {
+          "File": "motions/surprise_01.motion3.json"
+        },
+        {
+          "File": "motions/00_waver_02.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_05_E.motion3.json"
+        },
+        {
+          "File": "motions/00_yes_02_E.motion3.json"
+        },
+        {
+          "File": "motions/performance_01_E.motion3.json"
+        },
+        {
+          "File": "motions/question_01_E.motion3.json"
+        },
+        {
+          "File": "motions/00_normal_08_E.motion3.json"
+        },
+        {
+          "File": "motions/question_01.motion3.json"
+        },
+        {
+          "File": "motions/dance_01_E.motion3.json"
+        }
+      ]
+    }
+  },
+  "Groups": [
+    {
+      "Target": "Parameter",
+      "Name": "EyeBlink",
+      "Ids": [
+        "ParamEyeLOpen",
+        "ParamEyeROpen"
+      ]
+    },
+    {
+      "Target": "Parameter",
+      "Name": "LipSync",
+      "Ids": [
+        "ParamMouthOpenY"
+      ]
+    }
+  ]
+}

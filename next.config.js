@@ -15,7 +15,7 @@ module.exports = {
     config.plugins.push(
       new webpack.ProvidePlugin({
         PIXI: "pixi.js",
-        "pixi-spine": "pixi-spine",
+        spine: "pixi-spine",
       })
     );
 

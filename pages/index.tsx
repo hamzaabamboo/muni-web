@@ -10,7 +10,6 @@ import { AnalysisProvider } from "src/contexts/AnalysisContext";
 import { EventContext } from "src/contexts/EventContext";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { Tier } from "types/Leaderboard";
-import { getAbsolutePath } from "utils/assets";
 
 export default function Home() {
   const [currentTier, setCurrentTier] = useState<Tier>();
