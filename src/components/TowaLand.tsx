@@ -11,6 +11,7 @@ import {
   Select,
   Text,
 } from "@chakra-ui/react";
+import { getAbsolutePath } from "utils/assets";
 
 export const Towaland = () => {
   const pixi = useRef<Application>();
@@ -36,8 +37,8 @@ export const Towaland = () => {
     const init = async () => {
       const resources: any = await new Promise((resolve) =>
         app.loader
-          .add("towa", "spine/spine_chara_0330001.json")
-          .add("muni", "spine/spine_chara_0130001.json")
+          .add("towa", getAbsolutePath("spine/spine_chara_0330001.json"))
+          .add("muni", getAbsolutePath("spine/spine_chara_0130001.json"))
           .load((loader, resources) => {
             resolve(resources);
           })
@@ -72,10 +73,10 @@ export const Towaland = () => {
         app.stage.addChild(muni);
       } else {
         towaLive2d.current = await Live2DModel.from(
-          "live2d/towa/resources.model3.json"
+          getAbsolutePath("live2d/towa/resources.model3.json")
         );
         muniLive2d.current = await Live2DModel.from(
-          "live2d/muni/resources.model3.json"
+          getAbsolutePath("live2d/muni/resources.model3.json")
         );
         // transforms
         towaLive2d.current.x = 0.25 * app.renderer.width;

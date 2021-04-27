@@ -17,10 +17,12 @@ export const getIsPlayingStyles = (
     DateTime.fromISO(data.date).diffNow().as("minutes") < -10
   )
     return {};
-  if (lastUpdated > threshold[0].value ?? 3000)
-    return { bg: colorMode === "light" ? "red.100" : "red.800" };
-  if (threshold[1] && lastUpdated > threshold[1].value)
-    return { bg: colorMode === "light" ? "yellow.100" : "yellow.800" };
+  if (threshold) {
+    if (lastUpdated > threshold[0].value ?? 3000)
+      return { bg: colorMode === "light" ? "red.100" : "red.800" };
+    if (threshold[1] && lastUpdated > threshold[1].value)
+      return { bg: colorMode === "light" ? "yellow.100" : "yellow.800" };
+  }
   return {
     bg: colorMode === "light" ? "gray.100" : "gray.700",
   };

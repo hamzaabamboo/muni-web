@@ -23,6 +23,7 @@ export const fixWeirdNumbering = <T extends { eventid: number }>(e: T): T => ({
 });
 
 export const getEventType = (event: Event) => {
+  if (!event) return;
   if (typeof event.type === "string") return event.type;
 
   switch (event.type) {
