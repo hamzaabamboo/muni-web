@@ -1,18 +1,29 @@
-import React, { useState } from "react";
-import Link from "next/link";
-
-import { Leaderboard } from "components/Leaderboard";
 import { Box } from "@chakra-ui/react";
 import { EventInfo } from "components/EventInfo";
+import { Leaderboard } from "components/Leaderboard";
 import { Navigation } from "components/Navigation";
 import { RankDetailModal } from "components/RankDetailModal";
-import { Tier } from "types/Leaderboard";
-import { GraphProvider } from "src/contexts/GraphContext";
-import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
+import { DateTime } from "luxon";
+import router from "next/router";
+import React, { useContext, useEffect, useState } from "react";
 import { AnalysisProvider } from "src/contexts/AnalysisContext";
+import { EventContext } from "src/contexts/EventContext";
+import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
+import { Tier } from "types/Leaderboard";
+import { getAbsolutePath } from "utils/assets";
 
 export default function Home() {
   const [currentTier, setCurrentTier] = useState<Tier>();
+  const { event } = useContext(EventContext);
+
+  useEffect(() => {
+    if (
+      event &&
+      DateTime.fromISO(event.enddate).diffNow("seconds").seconds < 0
+    ) {
+      router.push(getAbsolutePath("/towaland"));
+    }
+  }, [event]);
 
   const showTierDetail = (tier: Tier) => {
     setCurrentTier(tier);
@@ -21,6 +32,7 @@ export default function Home() {
   const handleCloseModal = () => {
     setCurrentTier(undefined);
   };
+
   return (
     <>
       <EventInfo />

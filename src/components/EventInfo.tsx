@@ -1,5 +1,6 @@
 import { Flex, Text, Image, Box } from "@chakra-ui/react";
 import { DateTime } from "luxon";
+import { useRouter } from "next/router";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import { EventContext } from "src/contexts/EventContext";
 import { getAbsolutePath } from "utils/assets";

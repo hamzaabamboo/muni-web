@@ -33,14 +33,19 @@ export const Layout: FC = ({ children }) => {
         alignItems="stretch"
         justifyContent="stretch"
         flex={1}
-        mb={20}
       >
         <Flex justifyContent="center" w="full">
           <TopBar />
         </Flex>
-        <Box maxW={["100%", null, "90%"]} w="full" mx="auto">
+        <Flex
+          maxW={["100%", null, "90%"]}
+          flexDirection="column"
+          flex="1"
+          w="full"
+          mx="auto"
+        >
           {children}
-        </Box>
+        </Flex>
       </Flex>
       <Footer />
     </Flex>

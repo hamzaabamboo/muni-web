@@ -24,7 +24,7 @@
       "db/*": ["./src/db/*"]
     },
     "baseUrl": ".",
-    "types": ["pixi.js"]
+    "types": ["pixi.js", "node"]
   },
   "files": ["src/@types/pixi-spine.ts"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

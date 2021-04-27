@@ -6,8 +6,6 @@ import { Spine } from "types/pixi-spine";
 require("pixi.js");
 require("pixi-spine");
 
-console.log(PIXI);
-
 export const Towaland = () => {
   const pixi = useRef<Application>();
   const parentRef = useRef<HTMLDivElement>(null);
@@ -30,15 +28,23 @@ export const Towaland = () => {
         ) as unknown) as Spine;
         towa.skeleton.setSkinByName("normal");
         muni.skeleton.setSkinByName("reverse");
-        const scaleT = (0.3 * app.renderer.width) / towa.width;
+        muni.skeleton.findSlot("nose").setAttachment(null);
+        muni.skeleton.findSlot("Rabbit ears_L(for)").setAttachment(null);
+        muni.skeleton.findSlot("Rabbit ears_R(for)").setAttachment(null);
+        const scaleT =
+          towa.width * 2 > app.renderer.width
+            ? 0.5
+            : towa.height > app.renderer.height
+            ? 0.8
+            : 1;
         towa.scale.x = scaleT;
         towa.scale.y = scaleT;
         muni.scale.x = -1 * scaleT;
         muni.scale.y = scaleT;
         towa.x = 0.2 * app.renderer.width;
-        towa.y = 1.2 * app.renderer.height;
+        towa.y = app.renderer.height;
         muni.x = 0.8 * app.renderer.width;
-        muni.y = 1.2 * app.renderer.height;
+        muni.y = app.renderer.height;
         towa.state.setAnimation(0, "06_talk_A", true);
         muni.state.setAnimation(0, "07_talk_B", true);
         app.stage.addChild(towa);
@@ -49,16 +55,7 @@ export const Towaland = () => {
       //   app.destroy();
     };
   }, [width, height]);
-  return (
-    <Flex
-      bgColor="white.200"
-      minW="500"
-      minH="800"
-      w="full"
-      h="full"
-      ref={parentRef}
-    ></Flex>
-  );
+  return <Flex w="full" flex="1" ref={parentRef}></Flex>;
 };
 
 export default Towaland;
