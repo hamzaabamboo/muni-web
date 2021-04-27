@@ -33,9 +33,9 @@ export const Towaland = () => {
         muni.skeleton.findSlot("Rabbit ears_R(for)").setAttachment(null);
         const scaleT =
           towa.width * 2 > app.renderer.width
-            ? 0.5
+            ? app.renderer.width / 2 / towa.width
             : towa.height > app.renderer.height
-            ? 0.8
+            ? app.renderer.height / towa.height
             : 1;
         towa.scale.x = scaleT;
         towa.scale.y = scaleT;

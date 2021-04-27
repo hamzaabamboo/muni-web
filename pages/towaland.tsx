@@ -1,8 +1,20 @@
 import { Flex, Text } from "@chakra-ui/react";
+import { GetStaticPropsContext } from "next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import React from "react";
+import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
+
+export async function getStaticProps({
+  params,
+}: GetStaticPropsContext): Promise<{ props: PageProps }> {
+  return {
+    props: {
+      backgroundImage: getAbsolutePath(`/images/background/school.jpg`),
+    },
+  };
+}
 
 const TowaLandDynamic = dynamic(() => import("components/TowaLand"), {
   ssr: false,
