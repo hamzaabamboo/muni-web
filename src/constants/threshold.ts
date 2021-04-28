@@ -14,4 +14,8 @@ export const thresholds: EventThesholds = {
     { name: "Rooming Rate", value: 2100 },
   ],
   Raid: [{ name: "Max", value: 2200 }],
+  Bingo: [
+    { name: "Winning", value: 3000 },
+    { name: "Playing", value: 2500 },
+  ],
 };
