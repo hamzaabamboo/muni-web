@@ -1,3 +1,4 @@
+import { tierBorders } from "constants/tierborder";
 import { isoParse } from "d3-time-format";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import {
@@ -27,7 +28,7 @@ export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
   const { points: _points } = useContext(GraphContext);
   const [displayTier, setDisplayTier] = useLocalStorage<Tier[]>(
     "displayTier",
-    null
+    tierBorders
   );
   const [allTiers, setAllTiers] = useState<Tier[]>([]);
 
