@@ -7,7 +7,7 @@ export const Footer = () => {
   return (
     <Flex as="footer" py="20px" justifyContent="center" bg={bg}>
       <Text textAlign="center">
-        Powered by{" "}
+        Data by{" "}
         <Link href="https://www.youtube.com/watch?v=M2wZs7eHHVo">
           <Text as="span" colorScheme="blue" cursor="pointer" mx="2">
             むに

@@ -3,8 +3,6 @@ import { Box, Divider, Flex, Select, Text, Image } from "@chakra-ui/react";
 import { fixWeirdNumbering, mapEvent } from "api/utils";
 import axios from "axios";
 import { EventDetails } from "components/EventDetails";
-import { createDecipheriv, createHash } from "crypto";
-import { readFile } from "fs/promises";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import { join } from "path";
@@ -12,6 +10,7 @@ import React, { FC, Fragment, useMemo, useState } from "react";
 import { RawEvent, Event } from "types/Event";
 import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
+import { decrypt } from "utils/encryption";
 
 interface AllEventsPageProps {
   allEvents: {
@@ -26,24 +25,8 @@ export const getStaticProps = async () => {
     .map(fixWeirdNumbering)
     .map((d) => d.eventid);
 
-  const encrypted = await readFile(
-    join(__dirname, "../../../data/events"),
-    "utf-8"
-  );
-
-  const textParts = encrypted.split(":");
-  const iv = Buffer.from(textParts.shift(), "hex");
-  const encryptedText = Buffer.from(textParts.join(":"), "hex");
-  const key = createHash("sha256")
-    .update(String(process.env.MAGIC))
-    .digest("base64")
-    .substr(0, 32);
-  const decipher = createDecipheriv("aes-256-cbc", Buffer.from(key), iv);
-  let decrypted = decipher.update(encryptedText);
-
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-  const events = (JSON.parse(decrypted.toString()) as RawEvent[]).map(mapEvent);
+  const decrypted = await decrypt(join(__dirname, "../../../data/events"));
+  const events = (JSON.parse(decrypted) as RawEvent[]).map(mapEvent);
 
   return {
     props: {

@@ -1,5 +1,10 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { fixWeirdNumbering, getWeirdEventType, getProxiedUrl } from "api/utils";
+import {
+  fixWeirdNumbering,
+  getWeirdEventType,
+  getProxiedUrl,
+  mapEvent,
+} from "api/utils";
 import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
 import { AnalysisOptions } from "components/AnalysisOptions";
@@ -13,15 +18,17 @@ import { isoParse, maxIndex } from "d3";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
 import { GetStaticPropsContext } from "next";
+import { join } from "path";
 import React, { useMemo, useRef, useState } from "react";
 import { AnalysisProvider } from "src/contexts/AnalysisContext";
 import { EventProvider } from "src/contexts/EventContext";
 import { GraphDisplayProvider } from "src/contexts/GraphDisplayContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
-import { Event } from "types/Event";
+import { Event, RawEvent } from "types/Event";
 import { LeaderboardEntry, LeaderboardPoint } from "types/Leaderboard";
 import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
+import { decrypt } from "utils/encryption";
 import { useSize } from "web-api-hooks";
 
 interface EventPageProps {
@@ -148,21 +155,27 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext): Promise<{ props: PageProps<EventPageProps> }> {
+  const { stat } = require("fs/promises");
   const { id } = params;
-  if (typeof id !== "string" && isNaN(Number(id))) return;
-  const event = (
-    await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
-  ).data
-    .map(fixWeirdNumbering)
-    .find((e) => e.eventid === Number(id));
+  if (typeof id !== "string" || isNaN(Number(id))) return;
 
-  const points = (
-    await axios.get<LeaderboardPoint[]>(
-      `http://www.projectdivar.com/eventdata/t20?all=true&event=${
-        Number(id) - 2
-      }`
-    )
-  ).data;
+  const event = (JSON.parse(
+    await decrypt(join(__dirname, "../../../../data/events"))
+  ) as RawEvent[])
+    .map(mapEvent)
+    .find((e) => {
+      return e.eventid === Number(id);
+    });
+
+  try {
+    await stat(join(__dirname, "../../../../data/results/" + id));
+  } catch {
+    return;
+  }
+
+  const points = JSON.parse(
+    await decrypt(join(__dirname, "../../../../data/results/" + id))
+  );
 
   const desc = `${DateTime.fromISO(event.startdate)
     .setZone("Asia/Tokyo")
