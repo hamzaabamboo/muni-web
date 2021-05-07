@@ -1,4 +1,4 @@
-import { getEventType } from "api/utils";
+import { getWeirdEventType } from "api/utils";
 import { forecastConstant } from "constants/forecast";
 import { DateTime } from "luxon";
 import { Event } from "types/Event";
@@ -14,7 +14,7 @@ export const getPredictedScore = (
   const startdate = DateTime.fromISO(event.startdate);
   const enddate = DateTime.fromISO(event.enddate);
   const hoursIn = DateTime.fromJSDate(time).diff(startdate).as("hours");
-  const type = getEventType(event);
+  const type = getWeirdEventType(event);
   if (forecastConstant[type] && rank in forecastConstant[type]) {
     const { hoursBeforeEnd, accleration } = forecastConstant[type][rank];
     const timeLeft = enddate.diff(DateTime.fromJSDate(time)).as("hours");

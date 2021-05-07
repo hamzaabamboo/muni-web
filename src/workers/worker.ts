@@ -1,4 +1,4 @@
-import { getEventType } from "api/utils";
+import { getWeirdEventType } from "api/utils";
 import { forecastConstant } from "constants/forecast";
 import { allTiers } from "constants/tierborder";
 import { maxIndex, minIndex, sum } from "d3-array";
@@ -84,7 +84,7 @@ ctx.onmessage = ({
   ctx.postMessage({
     rate: diff,
     forecast:
-      points.length > 20 && getEventType(event) in forecastConstant
+      points.length > 20 && getWeirdEventType(event) in forecastConstant
         ? forecast
         : {},
   });

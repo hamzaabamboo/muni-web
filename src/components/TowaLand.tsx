@@ -4,13 +4,7 @@ import { Application, Ticker } from "pixi.js";
 import { useSize } from "web-api-hooks";
 import { Cubism4ModelSettings, Live2DModel } from "pixi-live2d-display";
 import "pixi-spine";
-import {
-  ButtonGroup,
-  Button,
-  IconButton,
-  Select,
-  Text,
-} from "@chakra-ui/react";
+import { ButtonGroup, Button, Select, Text } from "@chakra-ui/react";
 import { getAbsolutePath } from "utils/assets";
 
 export const Towaland = () => {
@@ -48,7 +42,18 @@ export const Towaland = () => {
         const muni = new PIXI.spine.Spine(resources.muni.spineData);
         towa.skeleton.setSkinByName("normal");
         muni.skeleton.setSkinByName("reverse");
-        muni.skeleton.findSlot("nose").setAttachment(null);
+        // muni.skeleton.findSlot("nose").setAttachment(null);
+        // muni.skeleton.slots
+        //   .filter(
+        //     (s) =>
+        //       s.data.attachmentName?.match("hair") ||
+        //       s.data.attachmentName?.match("ribbon") ||
+        //       s.currentSpriteName?.match("hair")
+        //   )
+        //   .forEach((s) => {
+        //     s?.setAttachment(null);
+        //   });
+        console.log(muni.skeleton.slots.map((s) => s));
         muni.skeleton.findSlot("Rabbit ears_L(for)").setAttachment(null);
         muni.skeleton.findSlot("Rabbit ears_R(for)").setAttachment(null);
         const scaleT =
@@ -90,7 +95,7 @@ export const Towaland = () => {
         towaLive2d.current.y = (9 * app.renderer.height) / 10;
         towaLive2d.current.rotation = Math.PI;
         towaLive2d.current.skew.x = Math.PI;
-        towaLive2d.current.scale.set(scale, scale);
+        towaLive2d.current.scale.set(-1 * scale, scale);
         towaLive2d.current.anchor.set(0.5, 0.5);
 
         muniLive2d.current.x = 0.75 * app.renderer.width;
@@ -175,7 +180,7 @@ export const Towaland = () => {
           </Flex>
         )}
       </Flex>
-      <Flex minH="500px" w="full" flex="1" ref={parentRef}></Flex>
+      <Flex minH="990px" w="full" flex="1" ref={parentRef}></Flex>
     </>
   );
 };

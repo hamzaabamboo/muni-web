@@ -1,5 +1,5 @@
 import { Fade, Flex, Grid, GridItem, useColorMode } from "@chakra-ui/react";
-import { getEventType } from "api/utils";
+import { getWeirdEventType } from "api/utils";
 import { thresholds } from "constants/threshold";
 import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
@@ -54,7 +54,7 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
                 {...getIsPlayingStyles(
                   t,
                   t.change,
-                  getEventType(event),
+                  getWeirdEventType(event),
                   colorMode,
                   false
                 )}

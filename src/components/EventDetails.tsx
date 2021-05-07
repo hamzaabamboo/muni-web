@@ -1,5 +1,5 @@
 import { Text, TypographyProps } from "@chakra-ui/react";
-import { getEventType } from "api/utils";
+import { getWeirdEventType } from "api/utils";
 import { DateTime } from "luxon";
 import { memo, useMemo } from "react";
 import { Event } from "types/Event";
@@ -13,7 +13,7 @@ const EventDetails = memo(
     event: Event;
   }) => {
     const eventType = useMemo(() => {
-      return getEventType(event);
+      return getWeirdEventType(event);
     }, [event]);
     return (
       <Text textAlign={align || "start"}>

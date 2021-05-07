@@ -29,6 +29,7 @@ jobs:
           DEPLOY_TARGET: "gh-pages"
           NEXT_PUBLIC_BASE_URL: "/muni-web"
           CI: false
+          MAGIC: ${{ secrets.MAGIC }}
 
       - run: touch out/.nojekyll
 

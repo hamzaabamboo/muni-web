@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { D4DBEvent, Event } from "types/Event";
+import { RawEvent, Event, EventType } from "types/Event";
 
 export const getProxiedUrl = (url: string) => {
   if (process.env.NODE_ENV === "development")
@@ -22,7 +22,9 @@ export const fixWeirdNumbering = <T extends { eventid: number }>(e: T): T => ({
   eventid: e.eventid + 2,
 });
 
-export const getEventType = (event: Event) => {
+export const getWeirdEventType = <T extends { type?: string | EventType }>(
+  event: T
+): string | number => {
   if (!event) return;
   if (typeof event.type === "string") return event.type;
 
@@ -40,12 +42,27 @@ export const getEventType = (event: Event) => {
   }
 };
 
-export const mapD4DBevent = (e: D4DBEvent) => ({
-  id: e.Id,
-  eventid: e.Id,
-  name: e.Name,
-  startdate: DateTime.fromSeconds(e.StartDate).toISO(),
-  enddate: DateTime.fromSeconds(e.ReceptionCloseDate).toISO(),
-  rank_end: DateTime.fromSeconds(e.EndDate).toISO(),
-  type: e.Type._name_,
+export const getRawEventType = (type: number): string | number => {
+  switch (type) {
+    case 1:
+      return "Bingo";
+    case 2:
+      return "Medley";
+    case 3:
+      return "Poker";
+    case 4:
+      return "Raid";
+    default:
+      return type;
+  }
+};
+
+export const mapEvent = (e: RawEvent) => ({
+  id: e.id,
+  eventid: e.id,
+  name: e.name,
+  startdate: DateTime.fromSeconds(e.startDate).toISO(),
+  enddate: DateTime.fromSeconds(e.receptionCloseDate).toISO(),
+  rank_end: DateTime.fromSeconds(e.endDate).toISO(),
+  type: getRawEventType(e.type),
 });

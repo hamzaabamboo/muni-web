@@ -1,5 +1,5 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
-import { fixWeirdNumbering, getEventType, getProxiedUrl } from "api/utils";
+import { fixWeirdNumbering, getWeirdEventType, getProxiedUrl } from "api/utils";
 import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
 import { AnalysisOptions } from "components/AnalysisOptions";
@@ -172,7 +172,7 @@ export async function getStaticProps({
     DateTime.fromISO(event.enddate)
       .diff(DateTime.fromISO(event.startdate))
       .as("hours")
-  )} hours | ${getEventType(event)}`;
+  )} hours | ${getWeirdEventType(event)}`;
 
   return {
     props: {

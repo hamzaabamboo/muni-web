@@ -1,13 +1,15 @@
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { Box, Divider, Flex, Select, Text, Image } from "@chakra-ui/react";
-import { fetchD4DB } from "api/fetchD4DB";
-import { fixWeirdNumbering, mapD4DBevent } from "api/utils";
+import { fixWeirdNumbering, mapEvent } from "api/utils";
 import axios from "axios";
 import { EventDetails } from "components/EventDetails";
+import { createDecipheriv, createHash } from "crypto";
+import { readFile } from "fs/promises";
 import { DateTime } from "luxon";
 import Link from "next/link";
+import { join } from "path";
 import React, { FC, Fragment, useMemo, useState } from "react";
-import { D4DBEvent, D4DBEventResponse, Event } from "types/Event";
+import { RawEvent, Event } from "types/Event";
 import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
 
@@ -24,21 +26,30 @@ export const getStaticProps = async () => {
     .map(fixWeirdNumbering)
     .map((d) => d.eventid);
 
-  const res: D4DBEventResponse = (
-    await fetchD4DB<D4DBEvent>(["EventMaster"])
-  )[0];
+  const encrypted = await readFile(
+    join(__dirname, "../../../data/events"),
+    "utf-8"
+  );
 
-  const d4dbEvents = Object.values(res)
-    .sort((b, a) => {
-      return a.EndDate - b.EndDate;
-    })
-    .map(mapD4DBevent);
+  const textParts = encrypted.split(":");
+  const iv = Buffer.from(textParts.shift(), "hex");
+  const encryptedText = Buffer.from(textParts.join(":"), "hex");
+  const key = createHash("sha256")
+    .update(String(process.env.MAGIC))
+    .digest("base64")
+    .substr(0, 32);
+  const decipher = createDecipheriv("aes-256-cbc", Buffer.from(key), iv);
+  let decrypted = decipher.update(encryptedText);
+
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+  const events = (JSON.parse(decrypted.toString()) as RawEvent[]).map(mapEvent);
 
   return {
     props: {
       allEvents: {
-        withData: d4dbEvents.filter((e) => sigEvents.includes(e.id)),
-        withoutData: d4dbEvents.filter((e) => !sigEvents.includes(e.id)),
+        withData: events.filter((e) => sigEvents.includes(e.id)),
+        withoutData: events.filter((e) => !sigEvents.includes(e.id)),
       },
       isStatic: true,
       head: {

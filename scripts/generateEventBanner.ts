@@ -1,4 +1,4 @@
-import { fixWeirdNumbering, getEventType } from "../src/api/utils";
+import { fixWeirdNumbering, getWeirdEventType } from "../src/api/utils";
 import axios from "axios";
 import { createCanvas, loadImage } from "canvas";
 import { max } from "d3-array";
@@ -36,7 +36,7 @@ export const generateEventBanner = async (event: Event) => {
   );
   ctx.font = "bold 30px Impact";
   const text = event.name;
-  var textSize = ctx.measureText(text);
+  const textSize = ctx.measureText(text);
   ctx.fillStyle = "white";
   ctx.fillText(
     text,
@@ -51,10 +51,10 @@ export const generateEventBanner = async (event: Event) => {
     DateTime.fromISO(event.enddate)
       .diff(DateTime.fromISO(event.startdate))
       .as("hours")
-  )} hours | ${getEventType(event)}`;
+  )} hours | ${getWeirdEventType(event)}`;
   ctx.font = "24px Impact";
   ctx.fillStyle = "white";
-  var descSize = ctx.measureText(desc);
+  const descSize = ctx.measureText(desc);
   ctx.fillText(
     desc,
     getCenter([0, descSize.width], [0, width]),
@@ -76,9 +76,9 @@ const darken = <T extends { data: Uint8ClampedArray }>(
 ) => {
   const data = id.data;
   for (let i = 0; i < data.length; i += 4) {
-    let r = data[i];
-    let g = data[i + 1];
-    let b = data[i + 2];
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
     data[i] = r * amount;
     data[i + 1] = g * amount;
     data[i + 2] = b * amount;
