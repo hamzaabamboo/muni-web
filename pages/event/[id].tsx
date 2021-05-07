@@ -15,6 +15,7 @@ import { RateGraph } from "components/RateGraph";
 import { ScoreGraph } from "components/ScoreGraph";
 import { TierSelector } from "components/TierSelector";
 import { isoParse, maxIndex } from "d3";
+import { stat } from "fs/promises";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
 import { GetStaticPropsContext } from "next";
@@ -155,7 +156,6 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
 export async function getStaticProps({
   params,
 }: GetStaticPropsContext): Promise<{ props: PageProps<EventPageProps> }> {
-  const { stat } = require("fs/promises");
   const { id } = params;
   if (typeof id !== "string" || isNaN(Number(id))) return;
 
