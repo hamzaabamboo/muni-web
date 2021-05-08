@@ -15,7 +15,7 @@ import { RateGraph } from "components/RateGraph";
 import { ScoreGraph } from "components/ScoreGraph";
 import { TierSelector } from "components/TierSelector";
 import { isoParse, maxIndex } from "d3";
-import { stat } from "fs/promises";
+import { readdir, stat } from "fs/promises";
 import { useLocalStorage } from "hooks/useLocalstorage";
 import { DateTime } from "luxon";
 import { GetStaticPropsContext } from "next";
@@ -210,14 +210,9 @@ export async function getStaticProps({
 }
 
 export async function getStaticPaths() {
-  const allEvents = await axios.get<Event[]>(
-    `http://www.projectdivar.com/ev?all=true`
-  );
-
+  const allEvents = await readdir(join(__dirname, "../../../../data/results"));
   return {
-    paths:
-      allEvents.data.map(fixWeirdNumbering).map((e) => `/event/${e.eventid}`) ||
-      [],
+    paths: allEvents.map((e) => `/event/${e}`) || [],
     fallback: false,
   };
 }

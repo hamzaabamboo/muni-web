@@ -88,7 +88,14 @@ const AllEvents: FC<PageProps<AllEventsPageProps>> = ({ allEvents }) => {
           )
           .map((p) => {
             return (
-              <Link href={`/event/${p.eventid}`} key={p.id}>
+              <Link
+                href={
+                  DateTime.fromISO(p.enddate).diffNow().as("second") > 0
+                    ? `/`
+                    : `/event/${p.eventid}`
+                }
+                key={p.id}
+              >
                 <Flex flexDirection="column" cursor="pointer">
                   <Flex
                     px={2}
