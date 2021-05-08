@@ -8,7 +8,7 @@ interface Threshold {
 type EventThesholds = Record<EventType, Threshold[]>;
 
 export const thresholds: EventThesholds = {
-  Medley: [{ name: "Max Per Game", value: 2700 }],
+  Medley: [{ name: "Max Per Game", value: 3200 }],
   Poker: [
     { name: "Manual Rate", value: 1800 },
     { name: "Rooming Rate", value: 2100 },
