@@ -5,12 +5,14 @@ import { DateTime } from "luxon";
 import React, { useContext, useMemo } from "react";
 import { FixedSizeList } from "react-window";
 import { EventContext } from "src/contexts/EventContext";
-import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
-import { Tier } from "types/Leaderboard";
+import { PastChangeEntry } from "types/Leaderboard";
 import { getIsPlayingStyles } from "utils/leaderboard";
 
-export const ChangesTable = ({ tier }: { tier: Tier }) => {
-  const { pastUpdates } = useContext(LeaderboardChangesContext);
+export const ChangesTable = ({
+  pastUpdates,
+}: {
+  pastUpdates: PastChangeEntry[];
+}) => {
   const { event } = useContext(EventContext);
   const { colorMode } = useColorMode();
   const threshold = useMemo(() => {
@@ -19,12 +21,10 @@ export const ChangesTable = ({ tier }: { tier: Tier }) => {
 
   const list = useMemo(
     () =>
-      pastUpdates
-        ?.filter((u) => u.rank === tier)
-        .sort((a, b) =>
-          DateTime.fromISO(b.date).diff(DateTime.fromISO(a.date)).as("minutes")
-        ) ?? [],
-    [pastUpdates, threshold, tier]
+      pastUpdates?.sort((a, b) =>
+        DateTime.fromISO(b.date).diff(DateTime.fromISO(a.date)).as("minutes")
+      ) ?? [],
+    [pastUpdates, threshold]
   );
   return (
     <Flex flexDir="column" alignItems="stretch" w="full">

@@ -18,8 +18,8 @@ import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContex
 import { LeaderboardContext } from "src/contexts/LeaderboardContext";
 import { Tier } from "types/Leaderboard";
 import { AnalysisOptions } from "./AnalysisOptions";
-import { ChangesTable } from "./ChangesTable";
 import { PlayerGraph } from "./PlayerGraph";
+import { RankChangesTable } from "./RankChangesTable";
 import { RateGraph } from "./RateGraph";
 
 export const RankDetailModal: React.FC<{
@@ -87,7 +87,7 @@ export const RankDetailModal: React.FC<{
               </AnalysisProvider>
             </Flex>
             <Flex minH="600px" flexGrow={0} px={[4, null, 2]}>
-              <ChangesTable tier={tier} />
+              <RankChangesTable tier={tier} />
             </Flex>
           </Flex>
         </ModalBody>

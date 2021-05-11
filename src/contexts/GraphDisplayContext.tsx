@@ -11,14 +11,19 @@ import {
   useMemo,
   useState,
 } from "react";
+import { compareTwoStrings } from "string-similarity";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { GraphContext } from "./GraphContext";
+
+const THRESHOLD = 0.69;
 
 export const GraphDisplayContext = createContext<{
   points?: LeaderboardPoint[];
   displayTier?: Tier[];
   setDisplayTier?: Dispatch<SetStateAction<Tier[]>>;
   allTiers?: Tier[];
+  playerFilters?: string[];
+  setPlayerFilters?: Dispatch<SetStateAction<string[]>>;
 }>({});
 
 export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
@@ -26,6 +31,7 @@ export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
   children,
 }) => {
   const { points: _points } = useContext(GraphContext);
+  const [playerFilters, setPlayerFilters] = useState<string[]>([]);
   const [displayTier, setDisplayTier] = useLocalStorage<Tier[]>(
     "displayTier",
     tierBorders
@@ -44,14 +50,31 @@ export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
   const points = useMemo(() => {
     if (!data) return;
     if (!displayTier) return data;
+    if (playerFilters.length > 0)
+      return data
+        .filter((p) =>
+          playerFilters.some(
+            (f) =>
+              (p.name && compareTwoStrings(f, p.name) > THRESHOLD) ||
+              (p.description && compareTwoStrings(f, p.description) > THRESHOLD)
+          )
+        )
+        .sort((b, a) => (isoParse(b.date) > isoParse(a.date) ? 0 : 1));
     return data
       .filter((f) => displayTier.includes(f.rank as Tier))
       .sort((b, a) => (isoParse(b.date) > isoParse(a.date) ? 0 : 1));
-  }, [data, displayTier]);
+  }, [data, displayTier, playerFilters]);
 
   return (
     <GraphDisplayContext.Provider
-      value={{ points, displayTier, setDisplayTier, allTiers }}
+      value={{
+        points,
+        displayTier,
+        setDisplayTier,
+        allTiers,
+        playerFilters,
+        setPlayerFilters,
+      }}
     >
       {children}
     </GraphDisplayContext.Provider>

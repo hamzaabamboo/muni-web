@@ -8,8 +8,10 @@ import {
   useState,
 } from "react";
 import { Leaderboard, PastChangeEntry, Tier } from "types/Leaderboard";
+import { mapPointsToChanges } from "utils/mapPoints";
 import { EventContext } from "./EventContext";
 import { GraphContext } from "./GraphContext";
+import { GraphDisplayContext } from "./GraphDisplayContext";
 import { LeaderboardContext } from "./LeaderboardContext";
 
 export const LeaderboardChangesContext = createContext<{
@@ -24,22 +26,15 @@ export const LeaderboardChangesProvider: FC<{}> = ({ children }) => {
   const [changes, setChanges] = useState<Record<Tier, number>>(
     {} as Record<Tier, number>
   );
-  const [pastUpdates, setPastUpdates] = useState<PastChangeEntry[]>();
+  const [pastUpdates, setPastUpdates] = useState<
+    PastChangeEntry[] | undefined
+  >();
 
   const oldLb = useRef<Leaderboard>();
 
   useEffect(() => {
     if (!pastUpdates && points) {
-      setPastUpdates(
-        points.map<PastChangeEntry>((p) => ({
-          event: event.eventid,
-          rank: p.rank as Tier,
-          change: -1 * Number(p.difference),
-          date: p.date,
-          points: p.points,
-          name: p.name,
-        }))
-      );
+      setPastUpdates(points.map<PastChangeEntry>(mapPointsToChanges));
     }
   }, [points]);
 

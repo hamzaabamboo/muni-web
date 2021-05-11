@@ -229,7 +229,9 @@ export const Graph = ({
       toolTip.current.style("display", "block");
 
       const x = xZoomed.current(isoParse(data[i].date));
-      const groups = d3.groups(data, (d) => d.rank).sort((a, b) => a[0] - b[0]);
+      const groups = d3
+        .groups(data, (d) => d.rank ?? 0)
+        .sort((a, b) => a[0] - b[0]);
 
       const latestPoint = groups
         .map(([tier, points]) => {
@@ -239,7 +241,6 @@ export const Graph = ({
           ];
         })
         .filter((p) => !!p[1]);
-
       xLine.current
         .attr("y1", 0)
         .attr("y2", height)
@@ -471,7 +472,7 @@ export const Graph = ({
     xAxis.current = d3.axisBottom(xZoomed.current);
     yAxis.current = d3.axisLeft(yZoomed.current);
 
-    const graphData = d3.groups(points ?? [], (d) => d.rank);
+    const graphData = d3.groups(points ?? [], (d) => d.rank ?? 0);
 
     const graphNode = graph.current
       .selectAll("path")
@@ -492,7 +493,7 @@ export const Graph = ({
 
     if (points?.length > 50 && forecast) {
       const forecastData = graph.current.selectAll("path.forecast").data(
-        d3.groups(forecast, (d) => d.rank),
+        d3.groups(forecast, (d) => d.rank ?? 0),
         (k: [number, LeaderboardPoint]) => k[0]
       );
       forecastData

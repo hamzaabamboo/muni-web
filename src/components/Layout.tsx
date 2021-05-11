@@ -42,6 +42,7 @@ export const Layout: FC = ({ children }) => {
           flexDirection="column"
           flex="1"
           w="full"
+          px={4}
           mx="auto"
         >
           {children}

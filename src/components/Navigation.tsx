@@ -9,6 +9,10 @@ const paths = [
     url: "/",
   },
   {
+    label: "Player (Beta :kek:)",
+    url: "/player",
+  },
+  {
     label: "Graph",
     url: "/graph",
   },
