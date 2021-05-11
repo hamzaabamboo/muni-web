@@ -9,6 +9,7 @@ import { LeaderboardChangesProvider } from "src/contexts/LeaderboardChangesConte
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
 import { ThemeProvider } from "src/contexts/ThemeContext";
 import theme from "src/theme";
+import { Fonts } from "src/theme/Fonts";
 import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
 
@@ -68,6 +69,7 @@ function MyApp({
       </Head>
       <ThemeProvider defaultImage={backgroundImage}>
         <ChakraProvider theme={theme}>
+          <Fonts />
           {!isStatic ? (
             <ComposeProviders
               providers={[

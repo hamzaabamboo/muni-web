@@ -28,7 +28,7 @@ const paths = [
 export const Navigation = () => {
   const router = useRouter();
   return (
-    <Flex py={2} justifyContent={["center", "start"]}>
+    <Flex py={2} mb={2} justifyContent={["center", "start"]} flexWrap="wrap">
       {paths.map((p) => (
         <Button
           mx={2}

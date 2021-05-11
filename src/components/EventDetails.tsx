@@ -20,8 +20,8 @@ const EventDetails = memo(
         <Text as="span" mr={2}>
           {DateTime.fromISO(event.startdate).toFormat("yyyy/MM/dd  HH:mm")} -{" "}
           {DateTime.fromISO(event.enddate).toFormat("yyyy/MM/dd HH:mm")}
-        </Text>{" "}
-        |
+        </Text>
+        /
         <Text as="span" ml={2}>
           {Math.round(
             DateTime.fromISO(event.enddate)
@@ -30,7 +30,7 @@ const EventDetails = memo(
           )}{" "}
           hours
         </Text>{" "}
-        |
+        /
         <Text as="span" ml={2}>
           {eventType}
         </Text>

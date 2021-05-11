@@ -5,6 +5,12 @@ const config: Partial<ThemeConfig> = {
   useSystemColorMode: false,
 };
 // 3. extend the theme
-const theme = extendTheme({ config });
+const theme = extendTheme({
+  fonts: {
+    body: "Rodin Pro, sans-serif",
+    heading: "Rodin Pro, sans-serif",
+  },
+  config,
+});
 
 export default theme;
