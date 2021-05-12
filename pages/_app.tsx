@@ -66,6 +66,21 @@ function MyApp({
           name="twitter:description"
           content={description || "Munimunimunimunimuni"}
         />
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-30SD4N2YY8"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', 'G-30SD4N2YY8')
+          `,
+          }}
+        />
       </Head>
       <ThemeProvider defaultImage={backgroundImage}>
         <ChakraProvider theme={theme}>
