@@ -44,7 +44,7 @@ const TowaLandPage = () => {
           </Text>
           <Text fontSize="lg">
             While you wait, you can also browse old events too!{" "}
-            <Link href={getAbsolutePath("/event")}>
+            <Link href={"/event"}>
               <Text
                 as="span"
                 fontStyle="underline"
@@ -57,7 +57,7 @@ const TowaLandPage = () => {
           </Text>
           <Text fontSize="lg">
             If there is an event, just go back to home page{" "}
-            <Link href={getAbsolutePath("/")}>
+            <Link href={"/"}>
               <Text
                 as="span"
                 fontStyle="underline"
