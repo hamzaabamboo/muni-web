@@ -2,7 +2,7 @@
 
 import { request } from "gaxios";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Readable } from "node:stream";
+import { Readable } from "node";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (typeof req.query.url !== "string") return;
