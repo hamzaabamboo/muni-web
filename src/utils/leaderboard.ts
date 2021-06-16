@@ -2,10 +2,10 @@ import { ColorMode } from "@chakra-ui/color-mode";
 import { thresholds } from "constants/threshold";
 import { DateTime, Duration } from "luxon";
 import { EventType } from "types/Event";
-import { LeaderboardEntry } from "types/Leaderboard";
+import { LeaderboardEntry, PastChangeEntry } from "types/Leaderboard";
 
 export const getIsPlayingStyles = (
-  data: LeaderboardEntry,
+  data: LeaderboardEntry | PastChangeEntry,
   lastUpdated: number,
   eventType: EventType,
   colorMode: ColorMode,

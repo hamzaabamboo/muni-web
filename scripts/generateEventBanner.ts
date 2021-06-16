@@ -41,7 +41,7 @@ export const generateEventBanner = async (event: Event) => {
   ctx.fillText(
     text,
     getCenter([0, textSize.width], [0, width]),
-    mt + imgHeight + textSize.emHeightAscent + 20
+    mt + imgHeight + textSize.actualBoundingBoxAscent + 20
   );
   const desc = `${DateTime.fromISO(event.startdate)
     .setZone("Asia/Tokyo")
@@ -58,7 +58,12 @@ export const generateEventBanner = async (event: Event) => {
   ctx.fillText(
     desc,
     getCenter([0, descSize.width], [0, width]),
-    mt + imgHeight + textSize.emHeightAscent + 20 + descSize.emHeightAscent + 20
+    mt +
+      imgHeight +
+      textSize.actualBoundingBoxAscent +
+      20 +
+      descSize.actualBoundingBoxAscent +
+      20
   );
   return canvas.createPNGStream();
 };
