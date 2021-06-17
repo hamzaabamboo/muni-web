@@ -29,6 +29,7 @@
     "japanese-kana": "^0.1.2",
     "luxon": "^1.27.0",
     "next": "11.0.0",
+    "next-transpile-modules": "^8.0.0",
     "pixi-live2d-display": "^0.3.1",
     "pixi-spine": "^2.1.14",
     "pixi.js": "^5.3.9",
