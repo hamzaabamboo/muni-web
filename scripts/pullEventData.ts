@@ -10,6 +10,8 @@ import { Event, RawEvent } from "../src/@types/Event";
 import { fixWeirdNumbering, mapEvent } from "../src/api/utils";
 import { encrypt } from "../src/utils/encryption";
 
+require("dotenv").config();
+
 async function getEventData() {
   const event = (
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
