@@ -1,7 +1,7 @@
 import { decode } from "@msgpack/msgpack";
 import axios from "axios";
 import { createWriteStream, readFileSync, statSync } from "fs";
-import { copyFile, mkdir, writeFile } from "fs/promises";
+import { copyFile, stat, writeFile } from "fs/promises";
 import { DateTime } from "luxon";
 import { join } from "path";
 import { LeaderboardPoint } from "types/Leaderboard";
@@ -17,6 +17,11 @@ async function getEventData() {
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
   ).data.map(fixWeirdNumbering);
   const p = event.map(async (e) => {
+    try {
+      await stat(join(__dirname, "../data/results/" + e.eventid));
+      console.log("skipping", e.eventid);
+      return;
+    } catch {}
     const points = (
       await axios.get<LeaderboardPoint[]>(
         `http://www.projectdivar.com/eventdata/t20?all=true&event=${
@@ -24,6 +29,7 @@ async function getEventData() {
         }`
       )
     ).data;
+    console.log("fetching", e.eventid);
     const encryptedTxt = await encrypt(JSON.stringify(points));
     await writeFile(
       join(__dirname, "../data/results/" + e.eventid),
