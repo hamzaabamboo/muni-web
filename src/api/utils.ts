@@ -37,6 +37,8 @@ export const getWeirdEventType = <T extends { type?: string | EventType }>(
       return "Medley";
     case 3:
       return "Raid";
+    case 4:
+      return "Slot";
     default:
       return event.type;
   }
@@ -52,6 +54,8 @@ export const getRawEventType = (type: number): string | number => {
       return "Poker";
     case 4:
       return "Raid";
+    case 5:
+      return "Slot";
     default:
       return type;
   }
