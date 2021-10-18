@@ -10,7 +10,8 @@
     "start": "next start",
     "format:fix": "prettier --fix ./src/**/*.{ts,tsx}",
     "lint": "tsc && eslint ./src/**/*.{ts,tsx}",
-    "lint:fix": "eslint --fix ./src/**/*.{ts,tsx}"
+    "lint:fix": "eslint --fix ./src/**/*.{ts,tsx}",
+    "update": "yarn esm-ts-node scripts/yankAssets.ts && yarn esm-ts-node scripts/pullEventData.ts"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.0.8",
