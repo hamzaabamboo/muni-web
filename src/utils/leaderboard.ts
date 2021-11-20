@@ -5,7 +5,7 @@ import { EventType } from "types/Event";
 import { LeaderboardEntry } from "types/Leaderboard";
 
 export const getIsPlayingStyles = (
-  data: LeaderboardEntry,
+  data: Pick<LeaderboardEntry, "date">,
   lastUpdated: number,
   eventType: EventType,
   colorMode: ColorMode,

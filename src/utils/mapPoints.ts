@@ -7,4 +7,5 @@ export const mapPointsToChanges = (p: LeaderboardPoint): PastChangeEntry => ({
   date: p.date,
   points: p.points,
   name: p.name,
+  playerid: p.playerid,
 });

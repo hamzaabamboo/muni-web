@@ -35,7 +35,7 @@ const paths = [
     url: "/live",
   },
 ];
-export const Navigation = ({ en }) => {
+export const Navigation = ({ en }: { en?: boolean }) => {
   const router = useRouter();
   return (
     <Flex py={2} mb={2} justifyContent={["center", "start"]} flexWrap="wrap">

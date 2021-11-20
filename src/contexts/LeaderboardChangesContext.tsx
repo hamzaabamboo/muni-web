@@ -16,7 +16,7 @@ import { LeaderboardContext } from "./LeaderboardContext";
 import { ServerContext } from "./ServerProvider";
 
 export const LeaderboardChangesContext = createContext<{
-  changes?: Record<Tier, number>;
+  changes?: Partial<Record<Tier, number>>;
   pastUpdates?: PastChangeEntry[];
 }>({});
 
@@ -66,6 +66,7 @@ export const LeaderboardChangesProvider: FC<{}> = ({ children }) => {
             date: d.date,
             points: d.points,
             name: d.name,
+            playerid: d.playerid,
           });
         }
         return [

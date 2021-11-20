@@ -45,11 +45,12 @@ ctx.onmessage = ({
         rank: Number(group) as Tier,
         points: sum(point, (d) => d.points),
         date: date,
+        playerid: point[0].playerid,
       };
     });
   }
 
-  const forecast: Record<Tier, LeaderboardPoint[]> = mapValues(
+  const forecast: Partial<Record<Tier, LeaderboardPoint[]>> = mapValues(
     groupBy(points, (d) => d.rank),
     (data, rank) => {
       const maxIdx = maxIndex(data, (a) => a.points);

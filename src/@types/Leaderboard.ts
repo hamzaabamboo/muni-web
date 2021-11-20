@@ -19,7 +19,7 @@ export interface LeaderboardPoint {
   description?: string;
   difference?: number;
   points: number;
-  playerid: string;
+  playerid?: string;
 }
 
 export type Tier =
@@ -61,4 +61,5 @@ export interface PastChangeEntry {
   change: number;
   date: string;
   name: string;
+  playerid: string;
 }
