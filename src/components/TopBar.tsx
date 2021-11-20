@@ -80,7 +80,7 @@ export const TopBar = () => {
                 <Text fontSize="lg">View all events</Text>
               </Link>
               <Link
-                href={getAbsolutePath("/en/")}
+                href={getAbsolutePath("/en")}
                 _hover={{ textDecor: "none" }}
                 as="a"
               >
