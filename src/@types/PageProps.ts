@@ -9,6 +9,7 @@ interface CommonPageProps {
   };
   backgroundImage?: string;
   isStatic?: boolean;
+  server?: "en" | "jp";
 }
 
 export type PageProps<T = {}> = CommonPageProps & T;

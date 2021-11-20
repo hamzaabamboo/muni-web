@@ -7,6 +7,7 @@ export interface LeaderboardEntry {
   description: string;
   points: number;
   rate: string;
+  playerid: string;
 }
 
 export interface LeaderboardPoint {
@@ -18,6 +19,7 @@ export interface LeaderboardPoint {
   description?: string;
   difference?: number;
   points: number;
+  playerid: string;
 }
 
 export type Tier =

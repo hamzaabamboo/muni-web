@@ -47,7 +47,7 @@ export const RankDetailModal: React.FC<{
                 <Text fontWeight="bold" as="span">
                   Current player
                 </Text>
-                : {data.name}
+                : {data.name} ({data.playerid})
               </Text>
               <Text>
                 <Text fontWeight="bold" as="span">

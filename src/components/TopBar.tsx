@@ -6,14 +6,18 @@ import {
   Link,
   useColorModeValue,
   Box,
+  HStack,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useContext } from "react";
+import { ServerContext } from "src/contexts/ServerProvider";
 import { useBGColor } from "src/theme/hooks";
 import { getAbsolutePath } from "utils/assets";
 
 export const TopBar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const bg = useBGColor();
+  const { server } = useContext(ServerContext);
+
   return (
     <Box w={"100%"} bg={bg}>
       <Flex
@@ -31,13 +35,19 @@ export const TopBar = () => {
             fontWeight="bold"
             px={2}
           >
-            <Text as="span" textDecor="line-through" color="red.400">
-              Muni
-            </Text>{" "}
-            Towa Web (Please give me a proper name)
+            {server === "en" ? (
+              <>Towa Web EN</>
+            ) : (
+              <>
+                <Text as="span" textDecor="line-through" color="red.400">
+                  Muni
+                </Text>{" "}
+                Towa Web (Please give me a proper name)
+              </>
+            )}
           </Text>
         </Link>
-        <Flex
+        <HStack
           alignItems="center"
           justifyContent={["space-between", null, "unset"]}
           px={2}
@@ -50,14 +60,35 @@ export const TopBar = () => {
               onChange={() => toggleColorMode?.()}
             ></Switch>
           </Text>
-          <Link
-            href={getAbsolutePath("/event")}
-            _hover={{ textDecor: "none" }}
-            as="a"
-          >
-            <Text fontSize="lg">View all events</Text>
-          </Link>
-        </Flex>
+          {server === "en" ? (
+            <>
+              <Link
+                href={getAbsolutePath("/")}
+                _hover={{ textDecor: "none" }}
+                as="a"
+              >
+                <Text fontSize="lg">Back to JP</Text>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                href={getAbsolutePath("/event")}
+                _hover={{ textDecor: "none" }}
+                as="a"
+              >
+                <Text fontSize="lg">View all events</Text>
+              </Link>
+              <Link
+                href={getAbsolutePath("/en/")}
+                _hover={{ textDecor: "none" }}
+                as="a"
+              >
+                <Text fontSize="lg">EN</Text>
+              </Link>
+            </>
+          )}
+        </HStack>
       </Flex>
     </Box>
   );

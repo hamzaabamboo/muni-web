@@ -3,13 +3,23 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
+const enPaths = [
+  {
+    label: "Leaderboard",
+    url: "/en/",
+  },
+  {
+    label: "Graph",
+    url: "/en/graph",
+  },
+];
 const paths = [
   {
     label: "Muniboard",
     url: "/",
   },
   {
-    label: "Player (Beta :kek:)",
+    label: "Player",
     url: "/player",
   },
   {
@@ -25,11 +35,11 @@ const paths = [
     url: "/live",
   },
 ];
-export const Navigation = () => {
+export const Navigation = ({ en }) => {
   const router = useRouter();
   return (
     <Flex py={2} mb={2} justifyContent={["center", "start"]} flexWrap="wrap">
-      {paths.map((p) => (
+      {(en ? enPaths : paths).map((p) => (
         <Button
           mx={2}
           p={2}

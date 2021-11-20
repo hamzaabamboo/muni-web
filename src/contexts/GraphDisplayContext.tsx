@@ -56,7 +56,9 @@ export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
           playerFilters.some(
             (f) =>
               (p.name && compareTwoStrings(f, p.name) > THRESHOLD) ||
-              (p.description && compareTwoStrings(f, p.description) > THRESHOLD)
+              (p.description &&
+                compareTwoStrings(f, p.description) > THRESHOLD) ||
+              (p.playerid && compareTwoStrings(f, p.playerid) > THRESHOLD)
           )
         )
         .sort((b, a) => (isoParse(b.date) > isoParse(a.date) ? 0 : 1));

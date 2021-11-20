@@ -7,6 +7,7 @@ import { EventProvider } from "src/contexts/EventContext";
 import { GraphProvider } from "src/contexts/GraphContext";
 import { LeaderboardChangesProvider } from "src/contexts/LeaderboardChangesContext";
 import { LeaderboardProvider } from "src/contexts/LeaderboardContext";
+import { ServerProvider } from "src/contexts/ServerProvider";
 import { ThemeProvider } from "src/contexts/ThemeContext";
 import theme from "src/theme";
 import { Fonts } from "src/theme/Fonts";
@@ -20,7 +21,7 @@ function MyApp({
   Component: React.FC<PageProps>;
   pageProps: PageProps;
 }) {
-  const { isStatic, head, backgroundImage } = pageProps;
+  const { isStatic, head, server, backgroundImage } = pageProps;
   const { title, image, description, url } = head || {};
 
   return (
@@ -84,25 +85,27 @@ function MyApp({
       </Head>
       <ThemeProvider defaultImage={backgroundImage}>
         <ChakraProvider theme={theme}>
-          <Fonts />
-          {!isStatic ? (
-            <ComposeProviders
-              providers={[
-                EventProvider,
-                LeaderboardProvider,
-                GraphProvider,
-                LeaderboardChangesProvider,
-              ]}
-            >
+          <ServerProvider server={server ?? "jp"}>
+            <Fonts />
+            {!isStatic ? (
+              <ComposeProviders
+                providers={[
+                  EventProvider,
+                  LeaderboardProvider,
+                  GraphProvider,
+                  LeaderboardChangesProvider,
+                ]}
+              >
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </ComposeProviders>
+            ) : (
               <Layout>
                 <Component {...pageProps} />
               </Layout>
-            </ComposeProviders>
-          ) : (
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          )}
+            )}
+          </ServerProvider>
         </ChakraProvider>
       </ThemeProvider>
     </>

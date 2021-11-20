@@ -2,13 +2,23 @@ import axios from "axios";
 import { Leaderboard } from "types/Leaderboard";
 import { fixWeirdNumbering, getProxiedUrl } from "./utils";
 
-export const getLeaderboardData = async (): Promise<Leaderboard> => {
+export const getLeaderboardData = (
+  server = "jp"
+) => async (): Promise<Leaderboard> => {
   const res = await Promise.all([
     axios.get<Leaderboard>(
-      getProxiedUrl("http://www.projectdivar.com/eventdata/t20")
+      getProxiedUrl(
+        `http://www.projectdivar.com/eventdata/t20${
+          server === "en" ? "?en=true" : ""
+        }`
+      )
     ),
     axios.get<Leaderboard>(
-      getProxiedUrl("http://www.projectdivar.com/eventdata/t50")
+      getProxiedUrl(
+        `http://www.projectdivar.com/eventdata/t50${
+          server === "en" ? "?en=true" : ""
+        }`
+      )
     ),
   ]);
   return res

@@ -1,7 +1,15 @@
 import { getLeaderboardData } from "api/getLeaderboardData";
-import { createContext, FC, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  FC,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Leaderboard } from "types/Leaderboard";
 import { sleep } from "utils/sleep";
+import { ServerContext } from "./ServerProvider";
 
 export const LeaderboardContext = createContext<{
   lbData?: Leaderboard;
@@ -12,6 +20,7 @@ export const LeaderboardProvider: FC<{ lbData?: Leaderboard }> = ({
   lbData: lbDataStatic,
   children,
 }) => {
+  const { server } = useContext(ServerContext);
   const [lbData, setLbData] = useState<Leaderboard>();
   const [lastUpdated, setLastUpdated] = useState<Date>();
   const [interval] = useState<number>(20000);
@@ -22,7 +31,7 @@ export const LeaderboardProvider: FC<{ lbData?: Leaderboard }> = ({
     const loop = async () => {
       while (!killMe) {
         try {
-          const data = await getLeaderboardData();
+          const data = await getLeaderboardData(server)();
           if (killMe) break;
           setLbData(data);
           setLastUpdated(new Date());
@@ -35,7 +44,11 @@ export const LeaderboardProvider: FC<{ lbData?: Leaderboard }> = ({
     () => {
       killMe = true;
     };
-  }, [interval]);
+  }, [interval, server]);
+
+  useEffect(() => {
+    setLbData([]);
+  }, [server]);
 
   return (
     <LeaderboardContext.Provider

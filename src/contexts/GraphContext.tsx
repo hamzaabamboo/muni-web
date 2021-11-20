@@ -13,6 +13,7 @@ import {
 import { LeaderboardPoint } from "types/Leaderboard";
 import { EventContext } from "./EventContext";
 import { LeaderboardContext } from "./LeaderboardContext";
+import { ServerContext } from "./ServerProvider";
 
 export const GraphContext = createContext<{
   points?: LeaderboardPoint[];
@@ -23,11 +24,16 @@ export const GraphProvider: FC<{}> = ({ children }) => {
   const { event } = useContext(EventContext);
   const [points, setPoints] = useState<LeaderboardPoint[]>();
   const lastUpdated = useRef<Record<string, DateTime>>({});
+  const { server } = useContext(ServerContext);
 
   const getData = useCallback(() => {
     if (!event) return Promise.resolve(undefined);
-    return getAllLeaderboard(event.eventid);
-  }, [event]);
+    return getAllLeaderboard(server)(event.eventid);
+  }, [event, server]);
+
+  useEffect(() => {
+    lastUpdated.current = {};
+  }, [server]);
 
   usePromiseEffect(getData, setPoints);
 

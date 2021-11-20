@@ -13,6 +13,7 @@ import { EventContext } from "./EventContext";
 import { GraphContext } from "./GraphContext";
 import { GraphDisplayContext } from "./GraphDisplayContext";
 import { LeaderboardContext } from "./LeaderboardContext";
+import { ServerContext } from "./ServerProvider";
 
 export const LeaderboardChangesContext = createContext<{
   changes?: Record<Tier, number>;
@@ -23,9 +24,8 @@ export const LeaderboardChangesProvider: FC<{}> = ({ children }) => {
   const { lbData } = useContext(LeaderboardContext);
   const { points } = useContext(GraphContext);
   const { event } = useContext(EventContext);
-  const [changes, setChanges] = useState<Record<Tier, number>>(
-    {} as Record<Tier, number>
-  );
+  const { server } = useContext(ServerContext);
+  const [changes, setChanges] = useState<Partial<Record<Tier, number>>>({});
   const [pastUpdates, setPastUpdates] = useState<
     PastChangeEntry[] | undefined
   >();
@@ -37,6 +37,11 @@ export const LeaderboardChangesProvider: FC<{}> = ({ children }) => {
       setPastUpdates(points.map<PastChangeEntry>(mapPointsToChanges));
     }
   }, [points]);
+
+  useEffect(() => {
+    oldLb.current = undefined;
+    setChanges({});
+  }, [server]);
 
   useEffect(() => {
     if (!event || !pastUpdates) return;
