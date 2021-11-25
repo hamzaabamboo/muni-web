@@ -1,7 +1,7 @@
 import { fixWeirdNumbering, getWeirdEventType } from "../src/api/utils";
 import axios from "axios";
 import { createCanvas, loadImage } from "canvas";
-import { max } from "d3-array";
+import { max } from "lodash";
 import { DateTime } from "luxon";
 import { join } from "path";
 import { Event } from "../src/@types/Event";
