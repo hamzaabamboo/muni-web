@@ -13,7 +13,7 @@ export const Announcements = () => {
         </Text>
         . <br />
         Unfortunately, I'll probably not be updating the web as often. But feel
-        free to contact me via discord HamP#4124 to let me know what could be
+        free to contact me via discord HamP#4125 to let me know what could be
         improved or whether you want to help contribute.
       </AlertDescription>
     </Alert>
