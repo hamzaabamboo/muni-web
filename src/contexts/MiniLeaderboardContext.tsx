@@ -11,27 +11,29 @@ import { Leaderboard, LeaderboardConfig } from "types/Leaderboard";
 import { sleep } from "utils/sleep";
 import { ServerContext } from "./ServerProvider";
 
-export const LeaderboardContext = createContext<{
+export const MiniLeaderboardContext = createContext<{
   lbData?: Leaderboard;
   lastUpdated?: Date;
+  lbConfig?: LeaderboardConfig;
+  setLbConfig?: (cfg: LeaderboardConfig) => void;
 }>({});
 
-export const LeaderboardProvider: FC<{ lbData?: Leaderboard }> = ({
-  lbData: lbDataStatic,
-  children,
-}) => {
+export const MiniLeaderboardProvider: FC<{
+  lbData?: Record<string, Record<string, Leaderboard>>;
+}> = ({ lbData: lbDataStatic, children }) => {
   const { server } = useContext(ServerContext);
+  const [lbConfig, setLbConfig] = useState<LeaderboardConfig>();
   const [lbData, setLbData] = useState<Leaderboard>();
   const [lastUpdated, setLastUpdated] = useState<Date>();
   const [interval] = useState<number>(20000);
 
   useEffect(() => {
-    if (lbDataStatic) return;
+    if (lbDataStatic || !lbConfig) return;
     let killMe = false;
     const loop = async () => {
       while (!killMe) {
         try {
-          const data = await getLeaderboardData(server)();
+          const data = await getLeaderboardData(server)(lbConfig);
           if (killMe) break;
           setLbData(data);
           setLastUpdated(new Date());
@@ -44,20 +46,22 @@ export const LeaderboardProvider: FC<{ lbData?: Leaderboard }> = ({
     return () => {
       killMe = true;
     };
-  }, [interval, server]);
+  }, [interval, server, lbConfig]);
 
   useEffect(() => {
     setLbData([]);
   }, [server]);
 
   return (
-    <LeaderboardContext.Provider
+    <MiniLeaderboardContext.Provider
       value={{
-        lbData: lbDataStatic || lbData,
+        lbData,
         lastUpdated,
+        lbConfig,
+        setLbConfig,
       }}
     >
       {children}
-    </LeaderboardContext.Provider>
+    </MiniLeaderboardContext.Provider>
   );
 };

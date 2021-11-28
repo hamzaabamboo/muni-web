@@ -1,3 +1,7 @@
+export type LeaderboardConfig = {
+  leaderboardType: number;
+  leaderboardId: number;
+};
 export type Leaderboard = LeaderboardEntry[];
 export interface LeaderboardEntry {
   rank: Tier;

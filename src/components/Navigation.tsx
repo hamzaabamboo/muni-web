@@ -34,6 +34,10 @@ const paths = [
     label: "Live",
     url: "/live",
   },
+  {
+    label: "Other Leaderboards",
+    url: "/leaderboards",
+  },
 ];
 export const Navigation = ({ en }: { en?: boolean }) => {
   const router = useRouter();
