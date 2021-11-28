@@ -10,16 +10,11 @@ import {
 import { Table, Tbody, Thead } from "@chakra-ui/table";
 import { getWeirdEventType } from "api/utils";
 import { tierBorders } from "constants/tierborder";
-import humanize from "humanize-duration";
-import { DateTime } from "luxon";
-import React, { FC, useContext, useMemo } from "react";
-import { EventContext } from "src/contexts/EventContext";
-import { LeaderboardChangesContext } from "src/contexts/LeaderboardChangesContext";
-import { LeaderboardContext } from "src/contexts/LeaderboardContext";
+import React, { FC, useContext } from "react";
 import { MiniLeaderboardContext } from "src/contexts/MiniLeaderboardContext";
 import { Tier as ITier } from "types/Leaderboard";
 import { formatPoints } from "utils/formatPoints";
-import { getIsPlayingStyles, getToBoatTime } from "utils/leaderboard";
+import { getIsPlayingStyles } from "utils/leaderboard";
 import { getLastUpdatedTime } from "utils/time";
 import { CenteredSpinner } from "./CenteredSpinner";
 import { Tier } from "./Tier";
@@ -36,6 +31,7 @@ export const MiniLeaderboard: FC<LeaderboardProps> = ({
   title,
   onTierSelected,
 }) => {
+  const { colorMode } = useColorMode();
   const breakpoint = useBreakpoint();
   const { lbData } = useContext(MiniLeaderboardContext);
 
@@ -60,6 +56,7 @@ export const MiniLeaderboard: FC<LeaderboardProps> = ({
         <Tbody>
           {lbData.map((entry, index, arr) => (
             <Tr
+              {...(getIsPlayingStyles(entry, 0, undefined, colorMode) ?? {})}
               key={entry.rank}
               borderBottom={tierBorders.includes(entry.rank) && "2px solid"}
               borderBottomColor="gray.400"
