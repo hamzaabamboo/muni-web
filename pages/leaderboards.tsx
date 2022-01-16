@@ -12,15 +12,6 @@ import { MiniLeaderboardProvider } from "src/contexts/MiniLeaderboardContext";
 export default function Home() {
   const { event } = useContext(EventContext);
 
-  useEffect(() => {
-    if (
-      event &&
-      DateTime.fromISO(event.enddate).diffNow("seconds").seconds < 0
-    ) {
-      router.push("/towaland");
-    }
-  }, [event]);
-
   return (
     <>
       <EventInfo />

@@ -16,15 +16,6 @@ export default function Home() {
   const [currentTier, setCurrentTier] = useState<Tier>();
   const { event } = useContext(EventContext);
 
-  useEffect(() => {
-    if (
-      event &&
-      DateTime.fromISO(event.enddate).diffNow("seconds").seconds < 0
-    ) {
-      router.push("/towaland");
-    }
-  }, [event]);
-
   const showTierDetail = (tier: Tier) => {
     setCurrentTier(tier);
   };
