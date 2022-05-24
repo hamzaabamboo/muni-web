@@ -23,8 +23,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "16"
-      - run: npm install
-      - run: npm run build:static
+      - run: yarn
+      - run: yarn build:static
         env:
           DEPLOY_TARGET: "gh-pages"
           NEXT_PUBLIC_BASE_URL: "/muni-web"
