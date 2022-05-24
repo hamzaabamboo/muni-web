@@ -26,10 +26,10 @@ export const GraphDisplayContext = createContext<{
   setPlayerFilters?: Dispatch<SetStateAction<string[]>>;
 }>({});
 
-export const GraphDisplayProvider: FC<{ points?: LeaderboardPoint[] }> = ({
-  points: staticPoints,
-  children,
-}) => {
+export const GraphDisplayProvider: FC<{
+  points?: LeaderboardPoint[];
+  children: React.ReactNode;
+}> = ({ points: staticPoints, children }) => {
   const { points: _points } = useContext(GraphContext);
   const [playerFilters, setPlayerFilters] = useState<string[]>([]);
   const [displayTier, setDisplayTier] = useLocalStorage<Tier[]>(

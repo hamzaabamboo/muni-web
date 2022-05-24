@@ -12,14 +12,17 @@ export const ThemeContext = createContext<{
   setBgImage?: Dispatch<SetStateAction<string>>;
 }>({});
 
-export const ThemeProvider: React.FC<{ defaultImage?: string }> = ({
+export const ThemeProvider = ({
   defaultImage,
   children,
+}: {
+  defaultImage?: string;
+  children: React.ReactNode;
 }) => {
   const [bgImage, _setBgImage] = useState<string>();
 
   const setBgImage = useCallback(
-    (args) => {
+    (args:string) => {
       if (defaultImage) return;
       _setBgImage(args);
     },

@@ -16,10 +16,10 @@ export const LeaderboardContext = createContext<{
   lastUpdated?: Date;
 }>({});
 
-export const LeaderboardProvider: FC<{ lbData?: Leaderboard }> = ({
-  lbData: lbDataStatic,
-  children,
-}) => {
+export const LeaderboardProvider: FC<{
+  lbData?: Leaderboard;
+  children: React.ReactNode;
+}> = ({ lbData: lbDataStatic, children }) => {
   const { server } = useContext(ServerContext);
   const [lbData, setLbData] = useState<Leaderboard>();
   const [lastUpdated, setLastUpdated] = useState<Date>();

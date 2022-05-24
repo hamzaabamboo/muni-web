@@ -20,6 +20,7 @@ export const MiniLeaderboardContext = createContext<{
 
 export const MiniLeaderboardProvider: FC<{
   lbData?: Record<string, Record<string, Leaderboard>>;
+  children: React.ReactNode;
 }> = ({ lbData: lbDataStatic, children }) => {
   const { server } = useContext(ServerContext);
   const [lbConfig, setLbConfig] = useState<LeaderboardConfig>();

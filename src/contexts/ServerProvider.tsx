@@ -6,10 +6,10 @@ export const ServerContext = createContext<{
   setServer?: Dispatch<SetStateAction<DJServer>>;
 }>({});
 
-export const ServerProvider: React.FC<{ server?: DJServer }> = ({
-  server,
-  children,
-}) => {
+export const ServerProvider: React.FC<{
+  server?: DJServer;
+  children: React.ReactNode;
+}> = ({ server, children }) => {
   return (
     <ServerContext.Provider value={{ server }}>
       {children}

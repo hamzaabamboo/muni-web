@@ -22,7 +22,10 @@ export const AnalysisContext = createContext<{
   setInterval?: Dispatch<SetStateAction<number>>;
 }>({});
 
-export const AnalysisProvider: FC<{ all?: boolean }> = ({ children, all }) => {
+export const AnalysisProvider: FC<{
+  all?: boolean;
+  children: React.ReactNode;
+}> = ({ children, all }) => {
   const { points: allPoints } = useContext(GraphContext);
   const { points: displayPoints } = useContext(GraphDisplayContext);
   const { event } = useContext(EventContext);

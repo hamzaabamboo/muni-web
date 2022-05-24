@@ -176,7 +176,7 @@ export const Towaland = () => {
                 </option>
               ))}
             </Select>
-            <Text whiteSpace="nowrap">(Doesn't make sense though)</Text>
+            <Text whiteSpace="nowrap">(Doesn&apos;t make sense though)</Text>
           </Flex>
         )}
       </Flex>

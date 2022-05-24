@@ -19,7 +19,9 @@ export const GraphContext = createContext<{
   points?: LeaderboardPoint[];
 }>({});
 
-export const GraphProvider: FC<{}> = ({ children }) => {
+export const GraphProvider: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { lbData } = useContext(LeaderboardContext);
   const { event } = useContext(EventContext);
   const [points, setPoints] = useState<LeaderboardPoint[]>();

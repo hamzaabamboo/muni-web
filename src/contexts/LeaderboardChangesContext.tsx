@@ -20,7 +20,9 @@ export const LeaderboardChangesContext = createContext<{
   pastUpdates?: PastChangeEntry[];
 }>({});
 
-export const LeaderboardChangesProvider: FC<{}> = ({ children }) => {
+export const LeaderboardChangesProvider: FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const { lbData } = useContext(LeaderboardContext);
   const { points } = useContext(GraphContext);
   const { event } = useContext(EventContext);

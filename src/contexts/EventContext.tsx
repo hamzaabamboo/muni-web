@@ -1,6 +1,13 @@
 import { getEventData } from "api/events";
 import { usePromiseEffect } from "hooks/usePromiseEffect";
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Event } from "types/Event";
 import { getAbsolutePath } from "utils/assets";
 import { ServerContext } from "./ServerProvider";
@@ -12,11 +19,12 @@ export const EventContext = createContext<{
 
 export const EventProvider: React.FC<{
   event?: Event;
+  children: React.ReactNode;
 }> = ({ event, children }) => {
   const { setBgImage } = useContext(ThemeContext);
   const [_event, setEvent] = useState<Event>(event);
   const { server } = useContext(ServerContext);
-  const getData = useCallback(getEventData(server ?? "jp"), [server])
+  const getData = useCallback(getEventData(server ?? "jp"), [server]);
   if (!event) usePromiseEffect(getData, setEvent);
 
   const res = useMemo(() => _event || event, [_event, event]);

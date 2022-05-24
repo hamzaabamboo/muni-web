@@ -4,7 +4,7 @@ import { ThemeContext } from "src/contexts/ThemeContext";
 import { Footer } from "./Footer";
 import { TopBar } from "./TopBar";
 
-export const Layout: FC = ({ children }) => {
+export const Layout: FC<{children: React.ReactNode}> = ({ children }) => {
   const { bgImage } = useContext(ThemeContext);
   const { colorMode } = useColorMode();
 
