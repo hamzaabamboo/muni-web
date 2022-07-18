@@ -159,9 +159,11 @@ export async function getStaticProps({
   const { id } = params;
   if (typeof id !== "string" || isNaN(Number(id))) return;
 
-  const event = (JSON.parse(
-    await decrypt(join(__dirname, "../../../../data/events"))
-  ) as RawEvent[])
+  const event = (
+    JSON.parse(
+      await decrypt(join(__dirname, "../../../../data/events"))
+    ) as RawEvent[]
+  )
     .map(mapEvent)
     .find((e) => {
       return e.eventid === Number(id);
@@ -212,7 +214,7 @@ export async function getStaticProps({
 export async function getStaticPaths() {
   const allEvents = await readdir(join(__dirname, "../../../../data/results"));
   return {
-    paths: allEvents.map((e) => `/event/${e}`) || [],
+    paths: allEvents.filter((e) => e).map((e) => `/event/${e}`) || [],
     fallback: false,
   };
 }
