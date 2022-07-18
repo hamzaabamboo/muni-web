@@ -22,19 +22,23 @@ async function getEventData() {
       console.log("skipping", e.eventid);
       return;
     } catch {}
-    const points = (
-      await axios.get<LeaderboardPoint[]>(
-        `http://www.projectdivar.com/eventdata/t20?all=true&event=${
-          Number(e.eventid) - 2
-        }`
-      )
-    ).data;
-    console.log("fetching", e.eventid);
-    const encryptedTxt = await encrypt(JSON.stringify(points));
-    await writeFile(
-      join(__dirname, "../data/results/" + e.eventid),
-      encryptedTxt
-    );
+    try {
+      const points = (
+        await axios.get<LeaderboardPoint[]>(
+          `http://www.projectdivar.com/eventdata/t20?all=true&event=${
+            Number(e.eventid) - 2
+          }`
+        )
+      ).data;
+      console.log("fetching", e.eventid);
+      const encryptedTxt = await encrypt(JSON.stringify(points));
+      await writeFile(
+        join(__dirname, "../data/results/" + e.eventid),
+        encryptedTxt
+      );
+    } catch {
+      console.error(e.eventid, "load failed");
+    }
   });
 
   await Promise.all(p);
