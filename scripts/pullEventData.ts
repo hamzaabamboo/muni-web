@@ -45,7 +45,11 @@ async function getEventData() {
 }
 
 async function main() {
-  await getEventData();
+  try {
+    await getEventData();
+  } catch (e) {
+    console.log("error", e);
+  }
 }
 
 main();
