@@ -34,7 +34,7 @@ export const MiniLeaderboardPicker = () => {
     }
   }, [data]);
   return (
-    <HStack>
+    <HStack flexWrap="wrap">
       {data.map((d) => {
         const label = labelsMap
           ? getLabels(labelsMap[d.leaderboardType], d.leaderboardId)
