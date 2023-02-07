@@ -1,14 +1,12 @@
-import { Button } from "@chakra-ui/button";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Button } from "@chakra-ui/react";
 import React, { useContext, useMemo } from "react";
 import { GraphContext } from "src/contexts/GraphContext";
 import { GraphDisplayContext } from "src/contexts/GraphDisplayContext";
 import { Tier } from "types/Leaderboard";
 
 export const TierSelector = () => {
-  const { displayTier, setDisplayTier, allTiers } = useContext(
-    GraphDisplayContext
-  );
+  const { displayTier, setDisplayTier, allTiers } =
+    useContext(GraphDisplayContext);
 
   const toggleTier = (t: Tier) => {
     if (displayTier?.includes(t))

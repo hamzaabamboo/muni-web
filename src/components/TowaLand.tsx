@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/layout";
+import { Flex } from "@chakra-ui/react";
 import React, { useEffect, useRef, useState } from "react";
 import { Application, Ticker } from "pixi.js";
 import { useSize } from "web-api-hooks";

@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -16,44 +12,21 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "jsx": "preserve",
     "paths": {
-      "types/*": [
-        "./src/@types/*"
-      ],
-      "components/*": [
-        "./src/components/*"
-      ],
-      "utils/*": [
-        "./src/utils/*"
-      ],
-      "api/*": [
-        "./src/api/*"
-      ],
-      "constants/*": [
-        "./src/constants/*"
-      ],
-      "hooks/*": [
-        "./src/hooks/*"
-      ],
-      "db/*": [
-        "./src/db/*"
-      ]
+      "types/*": ["./src/@types/*"],
+      "components/*": ["./src/components/*"],
+      "utils/*": ["./src/utils/*"],
+      "api/*": ["./src/api/*"],
+      "constants/*": ["./src/constants/*"],
+      "hooks/*": ["./src/hooks/*"],
+      "db/*": ["./src/db/*"]
     },
     "baseUrl": ".",
-    "types": [
-      "pixi.js",
-      "node"
-    ],
+    "types": ["pixi.js", "node"],
     "incremental": true
   },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

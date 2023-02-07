@@ -12,6 +12,32 @@ import { encrypt } from "../src/utils/encryption";
 
 require("dotenv").config();
 
+const serialize = (data: LeaderboardPoint[]) => {
+  return data.map((item) => {
+    const {
+      id,
+      eventid,
+      rank,
+      date,
+      name,
+      description,
+      difference,
+      points,
+      playerid,
+    } = item;
+    return [
+      id,
+      eventid,
+      rank,
+      date,
+      name,
+      description,
+      difference,
+      points,
+      playerid,
+    ];
+  });
+};
 async function getEventData() {
   const event = (
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
@@ -31,7 +57,7 @@ async function getEventData() {
         )
       ).data;
       console.log("fetching", e.eventid);
-      const encryptedTxt = await encrypt(JSON.stringify(points));
+      const encryptedTxt = await encrypt(JSON.stringify(serialize(points)));
       await writeFile(
         join(__dirname, "../data/results/" + e.eventid),
         encryptedTxt

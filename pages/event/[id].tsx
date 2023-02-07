@@ -32,6 +32,33 @@ import { getAbsolutePath } from "utils/assets";
 import { decrypt } from "utils/encryption";
 import { useSize } from "web-api-hooks";
 
+const deserialize = (data: unknown[][]) => {
+  return data.map((item) => {
+    const [
+      id,
+      eventid,
+      rank,
+      date,
+      name,
+      description,
+      difference,
+      points,
+      playerid,
+    ] = item;
+    return {
+      id,
+      eventid,
+      rank,
+      date,
+      name,
+      description,
+      difference,
+      points,
+      playerid,
+    } as unknown as LeaderboardPoint;
+  });
+};
+
 interface EventPageProps {
   event: Event;
   points: LeaderboardPoint[];
@@ -175,8 +202,8 @@ export async function getStaticProps({
     return;
   }
 
-  const points = JSON.parse(
-    await decrypt(join(__dirname, "../../../../data/results/" + id))
+  const points = deserialize(
+    JSON.parse(await decrypt(join(__dirname, "../../../../data/results/" + id)))
   );
 
   const desc = `${DateTime.fromISO(event.startdate)

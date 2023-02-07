@@ -1,6 +1,12 @@
-import { Input } from "@chakra-ui/input";
-import { Divider, ListItem, Stack, Text } from "@chakra-ui/layout";
-import { Button, List } from "@chakra-ui/react";
+import {
+  Button,
+  List,
+  Divider,
+  ListItem,
+  Stack,
+  Text,
+  Input,
+} from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { GraphContext } from "src/contexts/GraphContext";
 import { GraphDisplayContext } from "src/contexts/GraphDisplayContext";

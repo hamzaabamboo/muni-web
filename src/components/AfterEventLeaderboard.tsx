@@ -1,5 +1,14 @@
-import { Flex, Td, Text, Th, Tr, useBreakpoint } from "@chakra-ui/react";
-import { Table, Tbody, Thead } from "@chakra-ui/table";
+import {
+  Flex,
+  Td,
+  Text,
+  Th,
+  Tr,
+  useBreakpoint,
+  Table,
+  Tbody,
+  Thead,
+} from "@chakra-ui/react";
 import { tierBorders } from "constants/tierborder";
 import { DateTime } from "luxon";
 import React, { FC, useContext, useMemo } from "react";

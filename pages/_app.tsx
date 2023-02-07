@@ -1,4 +1,4 @@
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, createLocalStorageManager } from "@chakra-ui/react";
 import { Layout } from "components/Layout";
 import Head from "next/head";
 import React from "react";
@@ -13,6 +13,8 @@ import theme from "src/theme";
 import { Fonts } from "src/theme/Fonts";
 import { PageProps } from "types/PageProps";
 import { getAbsolutePath } from "utils/assets";
+
+const manager = createLocalStorageManager("color-mode");
 
 function MyApp({
   Component,
@@ -84,7 +86,7 @@ function MyApp({
         />
       </Head>
       <ThemeProvider defaultImage={backgroundImage}>
-        <ChakraProvider theme={theme}>
+        <ChakraProvider colorModeManager={manager} theme={theme}>
           <ServerProvider server={server ?? "jp"}>
             <Fonts />
             {!isStatic ? (

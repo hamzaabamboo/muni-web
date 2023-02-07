@@ -1,5 +1,4 @@
-import { Button } from "@chakra-ui/button";
-import { HStack } from "@chakra-ui/layout";
+import { Button, HStack } from "@chakra-ui/react";
 import { getMiniLeaderboardOverview } from "api/getLeaderboardData";
 import { usePromiseEffect } from "hooks/usePromiseEffect";
 import { useCallback, useContext, useEffect, useState } from "react";

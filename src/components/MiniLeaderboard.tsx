@@ -4,10 +4,12 @@ import {
   Text,
   Th,
   Tr,
+  Table,
+  Tbody,
+  Thead,
   useBreakpoint,
   useColorMode,
 } from "@chakra-ui/react";
-import { Table, Tbody, Thead } from "@chakra-ui/table";
 import { getWeirdEventType } from "api/utils";
 import { tierBorders } from "constants/tierborder";
 import React, { FC, useContext } from "react";

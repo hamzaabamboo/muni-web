@@ -1,5 +1,10 @@
-import { Text, Link } from "@chakra-ui/react";
-import { Alert, AlertTitle, AlertDescription } from "@chakra-ui/alert";
+import {
+  Text,
+  Link,
+  Alert,
+  AlertTitle,
+  AlertDescription,
+} from "@chakra-ui/react";
 
 export const Announcements = () => {
   return (
