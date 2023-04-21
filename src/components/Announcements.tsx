@@ -7,6 +7,7 @@ import {
 } from "@chakra-ui/react";
 
 export const Announcements = () => {
+  return null;
   return (
     <Alert status="info" my={2}>
       <AlertTitle mr={2}>Announcement</AlertTitle>
