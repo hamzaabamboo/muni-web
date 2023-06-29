@@ -1,5 +1,4 @@
-import { max, min } from "d3";
-import { isoParse } from "d3-time-format";
+import { maxBy, minBy } from "lodash";
 import { DateTime } from "luxon";
 
 export const groupByTime = <T extends { date: string } = any>(
@@ -8,8 +7,8 @@ export const groupByTime = <T extends { date: string } = any>(
 ): { date: string; data: T[] }[] => {
   const times: Record<number, T[]> = Object.fromEntries(
     generateTimeArray(
-      min(data, (d) => isoParse(d.date)),
-      max(data, (d) => isoParse(d.date)),
+      DateTime.fromISO(minBy(data, (d) => d.date).date).toJSDate(),
+      DateTime.fromISO(maxBy(data, (d) => d.date).date).toJSDate(),
       interval
     ).map((d) => [d, []])
   );
@@ -38,3 +37,6 @@ export const generateTimeArray = (start: Date, end: Date, interval: number) => {
       return minTime + i;
     });
 };
+
+
+

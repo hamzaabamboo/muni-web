@@ -1,10 +1,12 @@
 import axios from "axios";
-import { stat, writeFile } from "fs/promises";
+import { writeFile } from "fs/promises";
+import { groupBy } from "lodash";
 import { join } from "path";
-import { LeaderboardPoint } from "types/Leaderboard";
+import { LeaderboardPoint, Tier } from "types/Leaderboard";
 import { Event } from "../src/@types/Event";
 import { fixWeirdNumbering } from "../src/api/utils";
 import { encrypt } from "../src/utils/encryption";
+import { groupByTime } from "../src/utils/groupByTime";
 
 require("dotenv").config();
 
@@ -39,11 +41,11 @@ async function getEventData(en = false) {
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true${en === true ? "&en=true" : ''}`)
   ).data.map(fixWeirdNumbering);
   const p = event.map(async (e) => {
-    try {
-      await stat(join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid));
-      console.log("skipping", e.eventid);
-      return;
-    } catch {}
+    // try {
+    //   await stat(join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid));
+    //   console.log("skipping", e.eventid);
+    //   return;
+    // } catch {}
     try {
       const points = (
         await axios.get<LeaderboardPoint[]>(
@@ -52,8 +54,9 @@ async function getEventData(en = false) {
           }${en === true ? "&en=true" : ''}`
         )
       ).data;
-      console.log("fetching", e.eventid);
-      const encryptedTxt = await encrypt(JSON.stringify(serialize(points)));
+      console.log("fetching", e.eventid, en ? "(en)": "");
+      const prunedPoints = Object.values(groupBy(points, (p) => p.rank as Tier)).flatMap(g => groupByTime(g, 300000).map((d) => d.data.slice(-1)[0]).filter(d => !!d))
+      const encryptedTxt = await encrypt(JSON.stringify(serialize(prunedPoints)))
       await writeFile(
         join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid),
         encryptedTxt
