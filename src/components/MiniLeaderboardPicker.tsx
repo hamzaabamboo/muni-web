@@ -34,8 +34,8 @@ export const MiniLeaderboardPicker = () => {
   }, [data]);
   return (
     <HStack flexWrap="wrap">
-      {data.map((d) => {
-        const label = labelsMap
+      {data.map((d, idx) => {
+        const label = labelsMap && d.leaderboardType in labelsMap
           ? getLabels(labelsMap[d.leaderboardType], d.leaderboardId)
           : `(${d.leaderboardType}, ${d.leaderboardId})`;
         const isSelected =
@@ -60,6 +60,6 @@ const getLabels = (map: IEventAggregationMap, id?: number) => {
     case "MainAddPoint":
       return "Overall";
     default:
-      return `${map.pointTypeName}${id !== 0 ? ` ${id}` : ""}`;
+      return `${map?.pointTypeName ?? ''}${id !== 0 ? ` ${id}` : ""}`;
   }
 };

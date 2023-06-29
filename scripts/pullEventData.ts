@@ -1,13 +1,9 @@
-import { decode } from "@msgpack/msgpack";
 import axios from "axios";
-import { createWriteStream, readFileSync, statSync } from "fs";
-import { copyFile, stat, writeFile } from "fs/promises";
-import { DateTime } from "luxon";
+import { stat, writeFile } from "fs/promises";
 import { join } from "path";
 import { LeaderboardPoint } from "types/Leaderboard";
-import { generateEventBanner } from "../scripts/generateEventBanner";
-import { Event, RawEvent } from "../src/@types/Event";
-import { fixWeirdNumbering, mapEvent } from "../src/api/utils";
+import { Event } from "../src/@types/Event";
+import { fixWeirdNumbering } from "../src/api/utils";
 import { encrypt } from "../src/utils/encryption";
 
 require("dotenv").config();
@@ -38,13 +34,13 @@ const serialize = (data: LeaderboardPoint[]) => {
     ];
   });
 };
-async function getEventData() {
+async function getEventData(en = false) {
   const event = (
-    await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true`)
+    await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true${en === true ? "&en=true" : ''}`)
   ).data.map(fixWeirdNumbering);
   const p = event.map(async (e) => {
     try {
-      await stat(join(__dirname, "../data/results/" + e.eventid));
+      await stat(join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid));
       console.log("skipping", e.eventid);
       return;
     } catch {}
@@ -53,13 +49,13 @@ async function getEventData() {
         await axios.get<LeaderboardPoint[]>(
           `http://www.projectdivar.com/eventdata/t20?all=true&event=${
             Number(e.eventid) - 2
-          }`
+          }${en === true ? "&en=true" : ''}`
         )
       ).data;
       console.log("fetching", e.eventid);
       const encryptedTxt = await encrypt(JSON.stringify(serialize(points)));
       await writeFile(
-        join(__dirname, "../data/results/" + e.eventid),
+        join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid),
         encryptedTxt
       );
     } catch {
@@ -73,6 +69,7 @@ async function getEventData() {
 async function main() {
   try {
     await getEventData();
+    await getEventData(true);
   } catch (e) {
     console.log("error", e);
   }

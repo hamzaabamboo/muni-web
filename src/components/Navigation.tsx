@@ -1,7 +1,6 @@
-import { Flex, Button } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
 
 const enPaths = [
   {
@@ -11,6 +10,10 @@ const enPaths = [
   {
     label: "Graph",
     url: "/en/graph",
+  },
+  {
+    label: "Player",
+    url: "/en/player",
   },
 ];
 const paths = [

@@ -1,14 +1,13 @@
 import {
-  Flex,
-  Text,
-  Switch,
-  useColorMode,
-  Link,
-  useColorModeValue,
   Box,
+  Flex,
   HStack,
+  Link,
+  Switch,
+  Text,
+  useColorMode
 } from "@chakra-ui/react";
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { ServerContext } from "src/contexts/ServerProvider";
 import { useBGColor } from "src/theme/hooks";
 import { getAbsolutePath } from "utils/assets";
@@ -60,25 +59,26 @@ export const TopBar = () => {
               onChange={() => toggleColorMode?.()}
             ></Switch>
           </Text>
-          {server === "en" ? (
+        
+            <Link
+                href={getAbsolutePath(server === "en" ? "/en/event": "/event")}
+                _hover={{ textDecor: "none" }}
+                as="a"
+              >
+                <Text fontSize="lg">View all events</Text>
+              </Link>
+              {server === "en" ? (
             <>
               <Link
                 href={getAbsolutePath("/")}
                 _hover={{ textDecor: "none" }}
                 as="a"
               >
-                <Text fontSize="lg">Back to JP</Text>
+                <Text fontSize="lg">JP</Text>
               </Link>
             </>
           ) : (
             <>
-              <Link
-                href={getAbsolutePath("/event")}
-                _hover={{ textDecor: "none" }}
-                as="a"
-              >
-                <Text fontSize="lg">View all events</Text>
-              </Link>
               <Link
                 href={getAbsolutePath("/en")}
                 _hover={{ textDecor: "none" }}
