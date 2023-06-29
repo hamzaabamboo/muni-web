@@ -1,5 +1,5 @@
 import axios from "axios";
-import { writeFile } from "fs/promises";
+import { stat, writeFile } from "fs/promises";
 import { groupBy } from "lodash";
 import { join } from "path";
 import { LeaderboardPoint, Tier } from "types/Leaderboard";
@@ -41,11 +41,11 @@ async function getEventData(en = false) {
     await axios.get<Event[]>(`http://www.projectdivar.com/ev?all=true${en === true ? "&en=true" : ''}`)
   ).data.map(fixWeirdNumbering);
   const p = event.map(async (e) => {
-    // try {
-    //   await stat(join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid));
-    //   console.log("skipping", e.eventid);
-    //   return;
-    // } catch {}
+    try {
+      await stat(join(__dirname, `../data/${en === true ? "en/" : ''}results/` + e.eventid));
+      console.log("skipping", e.eventid);
+      return;
+    } catch {}
     try {
       const points = (
         await axios.get<LeaderboardPoint[]>(
