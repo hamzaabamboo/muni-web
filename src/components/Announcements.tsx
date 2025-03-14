@@ -1,10 +1,10 @@
 import {
   Text,
-  Link,
   Alert,
   AlertTitle,
   AlertDescription
 } from "@chakra-ui/react";
+import Link from "next/link";
 
 export const Announcements = () => {
   // return null;
