@@ -3,24 +3,22 @@ import {
   Link,
   Alert,
   AlertTitle,
-  AlertDescription,
+  AlertDescription
 } from "@chakra-ui/react";
 
 export const Announcements = () => {
-  return null;
+  // return null;
   return (
     <Alert status="info" my={2}>
       <AlertTitle mr={2}>Announcement</AlertTitle>
       <AlertDescription>
-        Hi, thank you for using Towa Web/ Muni Web (?). <br />
-        We got EN server support now !!! Try it out{" "}
+        (2025/03/14) Hi, I'm back from the dead. we just hit over 5 million data
+        points the other day, crazy. So I updated data for past events for both
+        JP and EN, check it out&nbsp;
         <Text as="span" colorScheme="blue">
-          <Link href={"/en/"}>Here</Link>
+          <Link href={"/event"}>here</Link>
         </Text>
-        . <br />
-        Unfortunately, I&apos;ll probably not be updating the web as often. But
-        feel free to contact me via discord HamP#4125 to let me know what could
-        be improved or whether you want to help contribute.
+        .
       </AlertDescription>
     </Alert>
   );

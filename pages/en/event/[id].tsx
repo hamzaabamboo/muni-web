@@ -1,9 +1,11 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
 import {
+  fixWeirdNumbering,
   getProxiedUrl,
   getWeirdEventType,
   mapEvent
 } from "api/utils";
+import axios from "axios";
 import { AfterEventLeaderboard } from "components/AfterEventLeaderboard";
 import { AnalysisOptions } from "components/AnalysisOptions";
 import { EventInfo } from "components/EventInfo";
@@ -41,7 +43,7 @@ const deserialize = (data: unknown[][]) => {
       description,
       difference,
       points,
-      playerid,
+      playerid
     ] = item;
     return {
       id,
@@ -52,7 +54,7 @@ const deserialize = (data: unknown[][]) => {
       description,
       difference,
       points,
-      playerid,
+      playerid
     } as unknown as LeaderboardPoint;
   });
 };
@@ -70,7 +72,7 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
     "graphFlags",
     {
       showTooltip: false,
-      advancedZoom: false,
+      advancedZoom: false
     }
   );
 
@@ -179,12 +181,12 @@ export default function GraphPage(props: PageProps<EventPageProps>) {
   );
 }
 export async function getStaticProps({
-  params,
+  params
 }: GetStaticPropsContext): Promise<{ props: PageProps<EventPageProps> }> {
   const { id } = params;
   if (typeof id !== "string" || isNaN(Number(id))) return;
 
-  const event = (
+  const localEvent = (
     JSON.parse(
       await decrypt(join(__dirname, "../../../../../data/en/events"))
     ) as RawEvent[]
@@ -194,6 +196,16 @@ export async function getStaticProps({
       return e.eventid === Number(id);
     });
 
+  const event =
+    localEvent ??
+    (
+      await axios.get<Event[]>(
+        `http://www.projectdivar.com/ev?all=true&en=true`
+      )
+    ).data
+      .map(fixWeirdNumbering)
+      .find((e) => e.eventid === Number(id));
+
   try {
     await stat(join(__dirname, "../../../../../data/en/results/" + id));
   } catch {
@@ -201,7 +213,9 @@ export async function getStaticProps({
   }
 
   const points = deserialize(
-    JSON.parse(await decrypt(join(__dirname, "../../../../../data/en/results/" + id)))
+    JSON.parse(
+      await decrypt(join(__dirname, "../../../../../data/en/results/" + id))
+    )
   );
 
   const desc = `${DateTime.fromISO(event.startdate)
@@ -224,22 +238,24 @@ export async function getStaticProps({
         image: [
           getAbsolutePath(`/images/events/og_banner/${event.eventid}.png`),
           getAbsolutePath(`/images/events/banner/${event.eventid}.png`),
-          getAbsolutePath(`/images/events/logo/${event.eventid}.png`),
+          getAbsolutePath(`/images/events/logo/${event.eventid}.png`)
         ],
         description: desc,
-        title: `Create むに web | ${event.name}`,
+        title: `Create むに web | ${event.name}`
       },
       backgroundImage: getAbsolutePath(
         `/images/events/background/${event.eventid}.jpg`
-      ),
-    },
+      )
+    }
   };
 }
 
 export async function getStaticPaths() {
-  const allEvents = await readdir(join(__dirname, "../../../../../data/en/results"));
+  const allEvents = await readdir(
+    join(__dirname, "../../../../../data/en/results")
+  );
   return {
     paths: allEvents.filter((e) => e).map((e) => `/en/event/${e}`) || [],
-    fallback: false,
+    fallback: false
   };
 }

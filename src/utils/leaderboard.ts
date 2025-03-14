@@ -1,4 +1,4 @@
-import { ColorMode } from "@chakra-ui/color-mode";
+import { ColorMode } from "@chakra-ui/react";
 import { thresholds } from "constants/threshold";
 import { DateTime, Duration } from "luxon";
 import { EventType } from "types/Event";
@@ -18,13 +18,13 @@ export const getIsPlayingStyles = (
   )
     return {};
   if (threshold) {
-    if (lastUpdated > threshold[0].value ?? 3000)
+    if (lastUpdated > (threshold[0].value ?? 3000))
       return { bg: colorMode === "light" ? "red.100" : "red.800" };
     if (threshold[1] && lastUpdated > threshold[1].value)
       return { bg: colorMode === "light" ? "yellow.100" : "yellow.800" };
   }
   return {
-    bg: colorMode === "light" ? "gray.100" : "gray.700",
+    bg: colorMode === "light" ? "gray.100" : "gray.700"
   };
 };
 
